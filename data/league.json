@@ -1,0 +1,251 @@
+{
+  "league": {
+    "id": "21bb4ab4-d0c7-4709-9c97-b7c13c5d665e",
+    "name": "Test",
+    "format": "swiss",
+    "bestOfFrames": 3,
+    "createdAt": "2026-01-13T10:12:14.811Z",
+    "updatedAt": "2026-01-13T10:16:10.587Z",
+    "currentRound": 3,
+    "totalRounds": 7
+  },
+  "players": [
+    {
+      "id": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f",
+      "name": "Mark",
+      "active": true,
+      "stats": {
+        "matchesPlayed": 2,
+        "matchesWon": 1,
+        "matchesLost": 1,
+        "framesWon": 2,
+        "framesLost": 2,
+        "points": 2,
+        "frameDifference": 0,
+        "byesReceived": 0
+      }
+    },
+    {
+      "id": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
+      "name": "Frank",
+      "active": true,
+      "stats": {
+        "matchesPlayed": 2,
+        "matchesWon": 2,
+        "matchesLost": 0,
+        "framesWon": 4,
+        "framesLost": 1,
+        "points": 4,
+        "frameDifference": 3,
+        "byesReceived": 0
+      }
+    },
+    {
+      "id": "081db25b-4d57-4c89-9007-80a7f1a856ef",
+      "name": "Bill",
+      "active": true,
+      "stats": {
+        "matchesPlayed": 2,
+        "matchesWon": 0,
+        "matchesLost": 2,
+        "framesWon": 0,
+        "framesLost": 4,
+        "points": 0,
+        "frameDifference": -4,
+        "byesReceived": 0
+      }
+    },
+    {
+      "id": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
+      "name": "John",
+      "active": true,
+      "stats": {
+        "matchesPlayed": 2,
+        "matchesWon": 1,
+        "matchesLost": 1,
+        "framesWon": 3,
+        "framesLost": 2,
+        "points": 2,
+        "frameDifference": 1,
+        "byesReceived": 0
+      }
+    }
+  ],
+  "rounds": [
+    {
+      "roundNumber": 1,
+      "status": "pending",
+      "matches": [
+        {
+          "id": "daa8f7e2-b3f1-42a4-b0c0-6bca809e7f3a",
+          "player1Id": "081db25b-4d57-4c89-9007-80a7f1a856ef",
+          "player2Id": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
+          "status": "completed",
+          "frames": [
+            {
+              "frameNumber": 1,
+              "player1Score": 24,
+              "player2Score": 52,
+              "winnerId": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f"
+            },
+            {
+              "frameNumber": 2,
+              "player1Score": 12,
+              "player2Score": 45,
+              "winnerId": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f"
+            }
+          ],
+          "player1FramesWon": 0,
+          "player2FramesWon": 2,
+          "winnerId": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
+          "isBye": false,
+          "completedAt": "2026-01-13T10:12:43.060Z"
+        },
+        {
+          "id": "0de22405-ae47-4107-a8ec-4676d14a4ca9",
+          "player1Id": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
+          "player2Id": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f",
+          "status": "completed",
+          "frames": [
+            {
+              "frameNumber": 1,
+              "player1Score": 76,
+              "player2Score": 12,
+              "winnerId": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44"
+            },
+            {
+              "frameNumber": 2,
+              "player1Score": 56,
+              "player2Score": 45,
+              "winnerId": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44"
+            }
+          ],
+          "player1FramesWon": 2,
+          "player2FramesWon": 0,
+          "winnerId": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
+          "isBye": false,
+          "completedAt": "2026-01-13T10:12:53.986Z"
+        }
+      ],
+      "generatedAt": "2026-01-13T10:12:31.428Z"
+    },
+    {
+      "roundNumber": 2,
+      "status": "pending",
+      "matches": [
+        {
+          "id": "fb1f2fc3-d040-4ee1-9c69-507eedec8966",
+          "player1Id": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
+          "player2Id": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
+          "status": "completed",
+          "frames": [
+            {
+              "frameNumber": 1,
+              "player1Score": 11,
+              "player2Score": 56,
+              "winnerId": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44"
+            },
+            {
+              "frameNumber": 2,
+              "player1Score": 51,
+              "player2Score": 12,
+              "winnerId": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f"
+            },
+            {
+              "frameNumber": 3,
+              "player1Score": 76,
+              "player2Score": 66,
+              "winnerId": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f"
+            }
+          ],
+          "player1FramesWon": 2,
+          "player2FramesWon": 1,
+          "winnerId": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
+          "isBye": false,
+          "completedAt": "2026-01-13T10:13:27.315Z"
+        },
+        {
+          "id": "2e3a37d0-2051-4530-99e7-4008d81cc49e",
+          "player1Id": "081db25b-4d57-4c89-9007-80a7f1a856ef",
+          "player2Id": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f",
+          "status": "completed",
+          "frames": [
+            {
+              "frameNumber": 1,
+              "player1Score": 12,
+              "player2Score": 67,
+              "winnerId": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f"
+            },
+            {
+              "frameNumber": 2,
+              "player1Score": 12,
+              "player2Score": 78,
+              "winnerId": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f"
+            }
+          ],
+          "player1FramesWon": 0,
+          "player2FramesWon": 2,
+          "winnerId": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f",
+          "isBye": false,
+          "completedAt": "2026-01-13T10:13:39.599Z"
+        }
+      ],
+      "generatedAt": "2026-01-13T10:13:00.307Z"
+    },
+    {
+      "roundNumber": 3,
+      "status": "pending",
+      "matches": [
+        {
+          "id": "62111d3d-8d5f-4698-8d46-796500b62a72",
+          "player1Id": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
+          "player2Id": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f",
+          "status": "pending",
+          "frames": [],
+          "player1FramesWon": 0,
+          "player2FramesWon": 0,
+          "winnerId": null,
+          "isBye": false
+        },
+        {
+          "id": "c25d2781-8a75-4ed6-bc27-95f0df903575",
+          "player1Id": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
+          "player2Id": "081db25b-4d57-4c89-9007-80a7f1a856ef",
+          "status": "pending",
+          "frames": [],
+          "player1FramesWon": 0,
+          "player2FramesWon": 0,
+          "winnerId": null,
+          "isBye": false
+        }
+      ],
+      "generatedAt": "2026-01-13T10:16:10.587Z"
+    }
+  ],
+  "pairingHistory": [
+    [
+      "081db25b-4d57-4c89-9007-80a7f1a856ef",
+      "bb06130c-ce6d-40fb-ba9e-b84caf025a8f"
+    ],
+    [
+      "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
+      "54879c7d-2e7a-4ec7-a2f4-5a509244d90f"
+    ],
+    [
+      "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
+      "4739a50b-b72c-41fb-bd87-dfd9e68a3a44"
+    ],
+    [
+      "081db25b-4d57-4c89-9007-80a7f1a856ef",
+      "54879c7d-2e7a-4ec7-a2f4-5a509244d90f"
+    ],
+    [
+      "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
+      "54879c7d-2e7a-4ec7-a2f4-5a509244d90f"
+    ],
+    [
+      "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
+      "081db25b-4d57-4c89-9007-80a7f1a856ef"
+    ]
+  ]
+}
