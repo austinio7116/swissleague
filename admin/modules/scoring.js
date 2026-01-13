@@ -1,8 +1,21 @@
-import { MATCH_STATUS, ERROR_TYPES } from '../../shared/constants.js';
+import { MATCH_STATUS, ROUND_STATUS, ERROR_TYPES } from '../../shared/constants.js';
 import { LeagueError } from './storage.js';
 import { PlayerManager } from './players.js';
 
 export class ScoringManager {
+  static updateRoundStatus(round) {
+    // Check if all matches in the round are completed
+    const allMatchesCompleted = round.matches.every(match =>
+      match.status === MATCH_STATUS.COMPLETED
+    );
+    
+    if (allMatchesCompleted && round.matches.length > 0) {
+      return { ...round, status: ROUND_STATUS.COMPLETED };
+    }
+    
+    return round;
+  }
+
   static addFrame(leagueData, matchId, player1Score, player2Score) {
     const { match, round } = this.findMatch(leagueData, matchId);
     
@@ -57,15 +70,18 @@ export class ScoringManager {
     }
 
     // Update match in round
-    const updatedRound = {
+    let updatedRound = {
       ...round,
       matches: round.matches.map(m => m.id === matchId ? updatedMatch : m)
     };
 
+    // Check if round should be marked as completed
+    updatedRound = this.updateRoundStatus(updatedRound);
+
     // Update round in league data
     let updatedData = {
       ...leagueData,
-      rounds: leagueData.rounds.map(r => 
+      rounds: leagueData.rounds.map(r =>
         r.roundNumber === round.roundNumber ? updatedRound : r
       )
     };
@@ -142,15 +158,18 @@ export class ScoringManager {
     }
 
     // Update match in round
-    const updatedRound = {
+    let updatedRound = {
       ...round,
       matches: round.matches.map(m => m.id === matchId ? updatedMatch : m)
     };
 
+    // Check if round should be marked as completed
+    updatedRound = this.updateRoundStatus(updatedRound);
+
     // Update round in league data
     let updatedData = {
       ...leagueData,
-      rounds: leagueData.rounds.map(r => 
+      rounds: leagueData.rounds.map(r =>
         r.roundNumber === round.roundNumber ? updatedRound : r
       )
     };
@@ -198,15 +217,18 @@ export class ScoringManager {
     delete updatedMatch.completedAt;
 
     // Update match in round
-    const updatedRound = {
+    let updatedRound = {
       ...round,
       matches: round.matches.map(m => m.id === matchId ? updatedMatch : m)
     };
 
+    // Check if round should be marked as completed (or back to in-progress)
+    updatedRound = this.updateRoundStatus(updatedRound);
+
     // Update round in league data
     let updatedData = {
       ...leagueData,
-      rounds: leagueData.rounds.map(r => 
+      rounds: leagueData.rounds.map(r =>
         r.roundNumber === round.roundNumber ? updatedRound : r
       )
     };

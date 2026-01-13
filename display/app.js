@@ -173,6 +173,8 @@ class DisplayApp {
   }
 
   sortPlayerStats(column) {
+    if (!this.leagueData) return;
+    
     // Toggle direction if clicking the same column
     if (StatisticsRenderer.currentSort.column === column) {
       StatisticsRenderer.currentSort.direction =

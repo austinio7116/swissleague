@@ -74,7 +74,7 @@
   "rounds": [
     {
       "roundNumber": 1,
-      "status": "pending",
+      "status": "completed",
       "matches": [
         {
           "id": "daa8f7e2-b3f1-42a4-b0c0-6bca809e7f3a",
@@ -131,7 +131,7 @@
     },
     {
       "roundNumber": 2,
-      "status": "pending",
+      "status": "completed",
       "matches": [
         {
           "id": "fb1f2fc3-d040-4ee1-9c69-507eedec8966",

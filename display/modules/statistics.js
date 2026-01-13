@@ -10,6 +10,38 @@ import {
 export class StatisticsRenderer {
   static currentSort = { column: 'matchesWon', direction: 'desc' };
 
+  static calculateSnookerPoints(leagueData, playerId) {
+    let pointsScored = 0;
+    let pointsConceded = 0;
+
+    leagueData.rounds.forEach(round => {
+      round.matches.forEach(match => {
+        if (match.status === 'completed' && !match.isBye) {
+          const isPlayer1 = match.player1Id === playerId;
+          const isPlayer2 = match.player2Id === playerId;
+
+          if (isPlayer1 || isPlayer2) {
+            match.frames.forEach(frame => {
+              if (isPlayer1) {
+                pointsScored += frame.player1Score;
+                pointsConceded += frame.player2Score;
+              } else if (isPlayer2) {
+                pointsScored += frame.player2Score;
+                pointsConceded += frame.player1Score;
+              }
+            });
+          }
+        }
+      });
+    });
+
+    return {
+      pointsScored,
+      pointsConceded,
+      pointsDifference: pointsScored - pointsConceded
+    };
+  }
+
   static renderPlayerStats(leagueData, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -22,7 +54,7 @@ export class StatisticsRenderer {
     }
 
     // Sort players
-    const sortedPlayers = this.sortPlayers(players, this.currentSort.column, this.currentSort.direction);
+    const sortedPlayers = this.sortPlayers(players, leagueData, this.currentSort.column, this.currentSort.direction);
 
     let html = `
       <div class="player-statistics">
@@ -32,7 +64,7 @@ export class StatisticsRenderer {
             <thead>
               <tr>
                 <th data-sort="name" class="${this.currentSort.column === 'name' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('name')">Player</th>
-                <th data-sort="points" class="${this.currentSort.column === 'points' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('points')">Points</th>
+                <th data-sort="matchPoints" class="${this.currentSort.column === 'matchPoints' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchPoints')">Match Pts</th>
                 <th data-sort="matchesWon" class="${this.currentSort.column === 'matchesWon' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesWon')">Wins</th>
                 <th data-sort="matchesLost" class="${this.currentSort.column === 'matchesLost' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesLost')">Losses</th>
                 <th data-sort="matchesPlayed" class="${this.currentSort.column === 'matchesPlayed' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesPlayed')">Played</th>
@@ -40,6 +72,8 @@ export class StatisticsRenderer {
                 <th data-sort="framesWon" class="${this.currentSort.column === 'framesWon' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('framesWon')">Frames Won</th>
                 <th data-sort="framesLost" class="${this.currentSort.column === 'framesLost' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('framesLost')">Frames Lost</th>
                 <th data-sort="frameDifference" class="${this.currentSort.column === 'frameDifference' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('frameDifference')">Frame Diff</th>
+                <th data-sort="pointsScored" class="${this.currentSort.column === 'pointsScored' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('pointsScored')">Points For</th>
+                <th data-sort="pointsConceded" class="${this.currentSort.column === 'pointsConceded' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('pointsConceded')">Points Against</th>
                 <th data-sort="pointsDifference" class="${this.currentSort.column === 'pointsDifference' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('pointsDifference')">Points Diff</th>
                 <th>Actions</th>
               </tr>
@@ -49,7 +83,7 @@ export class StatisticsRenderer {
 
     sortedPlayers.forEach(player => {
       const winRate = calculateWinRate(player.stats);
-      const pointsDifference = (player.stats.matchesWon * 2) - (player.stats.matchesLost * 0); // 2 points per win, 0 per loss
+      const snookerPoints = this.calculateSnookerPoints(leagueData, player.id);
 
       html += `
         <tr>
@@ -64,8 +98,10 @@ export class StatisticsRenderer {
           <td class="frame-diff ${player.stats.frameDifference >= 0 ? 'positive' : 'negative'}">
             ${player.stats.frameDifference > 0 ? '+' : ''}${player.stats.frameDifference}
           </td>
-          <td class="points-diff ${pointsDifference >= 0 ? 'positive' : 'negative'}">
-            ${pointsDifference > 0 ? '+' : ''}${pointsDifference}
+          <td>${snookerPoints.pointsScored}</td>
+          <td>${snookerPoints.pointsConceded}</td>
+          <td class="points-diff ${snookerPoints.pointsDifference >= 0 ? 'positive' : 'negative'}">
+            ${snookerPoints.pointsDifference > 0 ? '+' : ''}${snookerPoints.pointsDifference}
           </td>
           <td>
             <button class="btn-view-details" onclick="displayApp.showPlayerDetails('${player.id}')">
@@ -86,7 +122,7 @@ export class StatisticsRenderer {
     container.innerHTML = html;
   }
 
-  static sortPlayers(players, column, direction) {
+  static sortPlayers(players, leagueData, column, direction) {
     const sorted = [...players].sort((a, b) => {
       let aVal, bVal;
 
@@ -103,11 +139,22 @@ export class StatisticsRenderer {
           bVal = calculateWinRate(b.stats);
           break;
         
-        case 'pointsDifference':
-          aVal = (a.stats.matchesWon * 2);
-          bVal = (b.stats.matchesWon * 2);
+        case 'pointsScored':
+          aVal = this.calculateSnookerPoints(leagueData, a.id).pointsScored;
+          bVal = this.calculateSnookerPoints(leagueData, b.id).pointsScored;
           break;
         
+        case 'pointsConceded':
+          aVal = this.calculateSnookerPoints(leagueData, a.id).pointsConceded;
+          bVal = this.calculateSnookerPoints(leagueData, b.id).pointsConceded;
+          break;
+        
+        case 'pointsDifference':
+          aVal = this.calculateSnookerPoints(leagueData, a.id).pointsDifference;
+          bVal = this.calculateSnookerPoints(leagueData, b.id).pointsDifference;
+          break;
+        
+        case 'matchPoints':
         case 'points':
           aVal = a.stats.points;
           bVal = b.stats.points;
@@ -296,7 +343,12 @@ export class StatisticsRenderer {
     });
 
     const activePlayers = players.filter(p => p.active).length;
-    const completedRounds = rounds.filter(r => r.status === 'completed').length;
+    
+    // Count rounds as completed if all their matches are completed
+    const completedRounds = rounds.filter(round => {
+      if (round.matches.length === 0) return false;
+      return round.matches.every(match => match.status === 'completed');
+    }).length;
 
     let html = `
       <div class="league-stats">
