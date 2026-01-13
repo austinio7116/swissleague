@@ -944,22 +944,65 @@ class AdminApp {
 
     try {
       const data = await readJSONFile(file);
-      const validation = validateLeagueData(data);
       
-      if (!validation.valid) {
-        this.showError('Invalid league data: ' + validation.error);
-        return;
-      }
+      // Check if this is a multi-league format or single-league format
+      const isMultiLeague = data.leagues && typeof data.leagues === 'object';
+      
+      if (isMultiLeague) {
+        // Multi-league format - import all leagues
+        if (!confirm('This will import all leagues from the file and merge with existing data. Continue?')) {
+          return;
+        }
+        
+        StorageManager.backup();
+        
+        // Import each league
+        let importedCount = 0;
+        for (const [leagueId, leagueData] of Object.entries(data.leagues)) {
+          const validation = validateLeagueData(leagueData);
+          if (validation.valid) {
+            StorageManager.saveLeague(leagueData);
+            importedCount++;
+          }
+        }
+        
+        // Set current league if specified
+        if (data.currentLeagueId && data.leagues[data.currentLeagueId]) {
+          this.leagueData = data.leagues[data.currentLeagueId];
+          StorageManager.setCurrentLeagueId(data.currentLeagueId);
+        } else {
+          // Load the first league
+          const firstLeagueId = Object.keys(data.leagues)[0];
+          if (firstLeagueId) {
+            this.leagueData = data.leagues[firstLeagueId];
+            StorageManager.setCurrentLeagueId(firstLeagueId);
+          }
+        }
+        
+        this.updateCurrentLeagueIndicator();
+        this.showSuccess(`Successfully imported ${importedCount} league(s)!`);
+        this.switchView(VIEWS.PLAYERS);
+      } else {
+        // Single-league format
+        const validation = validateLeagueData(data);
+        
+        if (!validation.valid) {
+          this.showError('Invalid league data: ' + validation.error);
+          return;
+        }
 
-      if (!confirm('This will replace all current data. Continue?')) {
-        return;
-      }
+        if (!confirm('This will import this league and add it to your leagues. Continue?')) {
+          return;
+        }
 
-      StorageManager.backup();
-      this.leagueData = data;
-      this.saveData();
-      this.showSuccess('League data imported successfully!');
-      this.switchView(VIEWS.PLAYERS);
+        StorageManager.backup();
+        StorageManager.saveLeague(data);
+        this.leagueData = data;
+        StorageManager.setCurrentLeagueId(data.league.id);
+        this.updateCurrentLeagueIndicator();
+        this.showSuccess('League data imported successfully!');
+        this.switchView(VIEWS.PLAYERS);
+      }
     } catch (error) {
       this.showError('Failed to import data: ' + error.message);
     }

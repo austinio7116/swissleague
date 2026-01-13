@@ -271,8 +271,8 @@ class DisplayApp {
   showGitHubLeagueSelector() {
     if (!this.allLeaguesData) return;
 
-    const mainContent = document.getElementById('main-content');
-    if (!mainContent) return;
+    const appMain = document.querySelector('.app-main');
+    if (!appMain) return;
 
     const leagues = this.allLeaguesData.leagues;
     const leaguesList = Object.values(leagues).map(league => ({
@@ -284,8 +284,20 @@ class DisplayApp {
       status: league.league.status || (league.league.currentRound >= league.league.totalRounds ? 'completed' : 'active')
     })).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
 
-    mainContent.innerHTML = `
-      <div class="league-selector-container" style="padding: 2rem;">
+    // Hide all view containers
+    document.querySelectorAll('.view-container').forEach(container => {
+      container.style.display = 'none';
+    });
+
+    // Remove existing selector if present
+    const existingSelector = document.querySelector('.league-selector-container');
+    if (existingSelector) {
+      existingSelector.remove();
+    }
+
+    // Create and insert league selector
+    const selectorHTML = `
+      <div class="league-selector-container view-container" style="padding: 2rem; display: block;">
         <h2>Select a League to View</h2>
         <div class="local-leagues-grid" style="margin-top: 2rem;">
           ${leaguesList.map(league => `
@@ -308,7 +320,16 @@ class DisplayApp {
         </div>
       </div>
     `;
-    mainContent.style.display = 'block';
+    
+    appMain.insertAdjacentHTML('beforeend', selectorHTML);
+    
+    // Ensure main content is visible
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+      mainContent.style.display = 'flex';
+    }
+    
+    this.hideConfigSection();
   }
 
   selectGitHubLeague(leagueId) {
@@ -319,13 +340,19 @@ class DisplayApp {
 
     this.leagueData = this.allLeaguesData.leagues[leagueId];
     
-    // Hide the league selector and show main content
+    // Remove the league selector if it exists
+    const selectorContainer = document.querySelector('.league-selector-container');
+    if (selectorContainer) {
+      selectorContainer.remove();
+    }
+    
+    // Ensure main content structure is visible
     const mainContent = document.getElementById('main-content');
     if (mainContent) {
       mainContent.style.display = 'flex';
-      mainContent.innerHTML = ''; // Clear the selector
     }
     
+    this.hideConfigSection();
     this.renderLeagueInfo();
     this.switchView('standings'); // Reset to standings view
     this.showSuccess('League loaded successfully!');
