@@ -11,6 +11,10 @@
     <header class="app-header">
       <h1>🎱 Swiss Snooker League - Admin</h1>
       <p class="subtitle">Manage your league, players, and matches</p>
+      <div id="current-league-indicator" style="display: none; margin-top: 10px;">
+        <span id="current-league-name" style="font-weight: bold;"></span>
+        <button id="switch-league-btn" class="btn btn-sm btn-secondary" style="margin-left: 10px;">Switch League</button>
+      </div>
     </header>
 
     <nav class="main-nav" style="display: none;">
@@ -22,6 +26,11 @@
     </nav>
 
     <main class="app-main">
+      <!-- League Selector View -->
+      <div id="league-selector-view" class="view" style="display: none;">
+        <div id="league-selector-content"></div>
+      </div>
+
       <!-- League Setup View -->
       <div id="league-setup-view" class="view">
         <div id="league-setup-content"></div>

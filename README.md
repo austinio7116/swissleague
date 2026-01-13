@@ -2,23 +2,34 @@
 
 A lightweight, browser-based system for managing Snooker leagues using the Swiss tournament format. Features separate admin and display interfaces, with data persistence via local storage and GitHub Pages deployment.
 
+## ✨ New in Version 2.0
+
+- **🎱 Snooker Score Points**: Main standings table now includes Points For, Points Against, and Points +/- columns
+- **🏆 Multiple League Support**: Create and manage multiple independent leagues simultaneously
+- **📊 Cross-League Statistics**: Track player performance across all leagues
+- **🔄 League Selector**: Easy switching between active and completed leagues
+- **💾 Dual Data Sources**: Display interface supports both GitHub URLs and local storage
+
+👉 **[See the Multi-League Guide](MULTI_LEAGUE_GUIDE.md) for complete details on new features**
+
 ## Features
 
 ### Admin Interface
-- 🏆 Create and configure leagues with customizable best-of-N frames
+- 🏆 Create and configure multiple leagues with customizable best-of-N frames
+- 🔄 Switch between leagues and view cross-league statistics
 - 👥 Manage players (add, edit, deactivate)
 - 🎯 Automatic Swiss-format pairing generation
-- 📊 Frame-by-frame score entry
-- 💾 Local storage persistence
+- 📊 Frame-by-frame score entry with snooker points tracking
+- 💾 Multi-league local storage persistence
 - 📤 JSON export/import for backup and portability
 - ♿ Responsive design for desktop and tablet use
 
 ### Display Interface
-- 📈 Live standings table with sortable columns
+- 📈 Live standings table with sortable columns including snooker points
 - 🎮 Outstanding matches view
 - 📜 Complete match history
 - 📊 Detailed player statistics
-- 🔄 Loads data directly from GitHub repository
+- 🔄 Loads data from GitHub repository OR local storage
 - 📱 Fully responsive for all devices
 - 🖨️ Print-friendly styling
 
@@ -344,12 +355,16 @@ This project is provided as-is for personal and recreational use. Feel free to m
 
 ## Roadmap
 
-### Current Version (v1.0)
+### Current Version (v2.0)
 - ✅ Basic league management
 - ✅ Swiss pairing algorithm
 - ✅ Score entry and tracking
 - ✅ Public display interface
 - ✅ GitHub Pages deployment
+- ✅ **Multiple league support**
+- ✅ **Cross-league player statistics**
+- ✅ **Snooker score points tracking**
+- ✅ **Dual data source display (GitHub + Local)**
 
 ### Future Enhancements
 - 📧 Email notifications for pairings
@@ -359,6 +374,8 @@ This project is provided as-is for personal and recreational use. Feel free to m
 - 🏆 Tournament bracket visualization
 - 🎯 Player rating system (ELO)
 - 🔀 Multi-format support (Round Robin, Knockout)
+- 📈 Performance trends across seasons
+- 👤 Dedicated player profile pages
 
 ## Support
 

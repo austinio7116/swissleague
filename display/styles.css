@@ -19,6 +19,151 @@
   --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* Config Tabs */
+.config-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.tab-btn {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--dark-color);
+  transition: all 0.3s;
+}
+
+.tab-btn:hover {
+  background: var(--light-color);
+}
+
+.tab-btn.active {
+  color: var(--accent-color);
+  border-bottom-color: var(--accent-color);
+}
+
+.config-tab {
+  animation: fadeIn 0.3s;
+}
+
+.tab-description {
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+}
+
+/* Local Leagues */
+.local-leagues-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.league-card {
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.league-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.league-card.active {
+  border-color: var(--success-color);
+}
+
+.league-card.completed {
+  border-color: #6c757d;
+  opacity: 0.85;
+}
+
+.league-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.league-card-header h4 {
+  color: var(--primary-color);
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.league-card-body p {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.league-card-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.league-card-actions .btn {
+  flex: 1;
+}
+
+.no-leagues {
+  text-align: center;
+  padding: 3rem;
+  background: var(--light-color);
+  border-radius: 8px;
+}
+
+.no-leagues a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.no-leagues a:hover {
+  text-decoration: underline;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge-active {
+  background: var(--success-color);
+  color: white;
+}
+
+.badge-completed {
+  background: #6c757d;
+  color: white;
+}
+
+.error-message {
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+  padding: 1rem;
+  color: #721c24;
+  text-align: center;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   line-height: 1.6;

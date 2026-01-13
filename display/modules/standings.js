@@ -1,6 +1,38 @@
 import { calculateStandings, escapeHtml, calculateWinRate, calculateAvgFrames } from '../utils/helpers.js';
 
 export class StandingsRenderer {
+  static calculateSnookerPoints(leagueData, playerId) {
+    let pointsScored = 0;
+    let pointsConceded = 0;
+
+    leagueData.rounds.forEach(round => {
+      round.matches.forEach(match => {
+        if (match.status === 'completed' && !match.isBye) {
+          const isPlayer1 = match.player1Id === playerId;
+          const isPlayer2 = match.player2Id === playerId;
+
+          if (isPlayer1 || isPlayer2) {
+            match.frames.forEach(frame => {
+              if (isPlayer1) {
+                pointsScored += frame.player1Score;
+                pointsConceded += frame.player2Score;
+              } else if (isPlayer2) {
+                pointsScored += frame.player2Score;
+                pointsConceded += frame.player1Score;
+              }
+            });
+          }
+        }
+      });
+    });
+
+    return {
+      pointsScored,
+      pointsConceded,
+      pointsDifference: pointsScored - pointsConceded
+    };
+  }
+
   static render(leagueData, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -23,13 +55,16 @@ export class StandingsRenderer {
             <tr>
               <th data-sort="rank">Rank</th>
               <th data-sort="name">Player</th>
-              <th data-sort="points">Points</th>
+              <th data-sort="points">Match Pts</th>
               <th data-sort="played">Played</th>
               <th data-sort="won">Won</th>
               <th data-sort="lost">Lost</th>
               <th data-sort="framesWon">Frames Won</th>
               <th data-sort="framesLost">Frames Lost</th>
-              <th data-sort="frameDiff">+/-</th>
+              <th data-sort="frameDiff">Frame +/-</th>
+              <th data-sort="pointsScored">Points For</th>
+              <th data-sort="pointsConceded">Points Against</th>
+              <th data-sort="pointsDiff">Points +/-</th>
               <th data-sort="winRate">Win %</th>
             </tr>
           </thead>
@@ -38,6 +73,7 @@ export class StandingsRenderer {
 
     standings.forEach((player, index) => {
       const winRate = calculateWinRate(player.stats);
+      const snookerPoints = this.calculateSnookerPoints(leagueData, player.id);
       const rankClass = index < 3 ? `rank-${index + 1}` : '';
       
       html += `
@@ -52,6 +88,11 @@ export class StandingsRenderer {
           <td>${player.stats.framesLost}</td>
           <td class="frame-diff ${player.stats.frameDifference >= 0 ? 'positive' : 'negative'}">
             ${player.stats.frameDifference > 0 ? '+' : ''}${player.stats.frameDifference}
+          </td>
+          <td>${snookerPoints.pointsScored}</td>
+          <td>${snookerPoints.pointsConceded}</td>
+          <td class="points-diff ${snookerPoints.pointsDifference >= 0 ? 'positive' : 'negative'}">
+            ${snookerPoints.pointsDifference > 0 ? '+' : ''}${snookerPoints.pointsDifference}
           </td>
           <td>${winRate}%</td>
         </tr>
@@ -116,7 +157,7 @@ export class StandingsRenderer {
         case 'name':
           aVal = a.querySelector('.player-name').textContent;
           bVal = b.querySelector('.player-name').textContent;
-          return direction === 'asc' 
+          return direction === 'asc'
             ? aVal.localeCompare(bVal)
             : bVal.localeCompare(aVal);
         case 'points':
@@ -147,9 +188,21 @@ export class StandingsRenderer {
           aVal = parseInt(a.querySelector('.frame-diff').textContent);
           bVal = parseInt(b.querySelector('.frame-diff').textContent);
           break;
+        case 'pointsScored':
+          aVal = parseInt(a.cells[9].textContent);
+          bVal = parseInt(b.cells[9].textContent);
+          break;
+        case 'pointsConceded':
+          aVal = parseInt(a.cells[10].textContent);
+          bVal = parseInt(b.cells[10].textContent);
+          break;
+        case 'pointsDiff':
+          aVal = parseInt(a.querySelector('.points-diff').textContent);
+          bVal = parseInt(b.querySelector('.points-diff').textContent);
+          break;
         case 'winRate':
-          aVal = parseFloat(a.cells[9].textContent);
-          bVal = parseFloat(b.cells[9].textContent);
+          aVal = parseFloat(a.cells[12].textContent);
+          bVal = parseFloat(b.cells[12].textContent);
           break;
         default:
           return 0;

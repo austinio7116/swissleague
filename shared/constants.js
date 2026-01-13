@@ -1,10 +1,13 @@
 // Shared constants for the Swiss Snooker League system
 
 export const STORAGE_KEYS = {
-  LEAGUE_DATA: 'snooker_league_data',
+  LEAGUE_DATA: 'snooker_league_data', // Legacy - single league
+  LEAGUES: 'snooker_leagues', // New - multiple leagues
+  CURRENT_LEAGUE_ID: 'snooker_current_league_id',
   SETTINGS: 'snooker_league_settings',
   BACKUP: 'snooker_league_backup',
-  GITHUB_URL: 'snooker_league_github_url'
+  GITHUB_URL: 'snooker_league_github_url',
+  ALL_PLAYERS: 'snooker_all_players' // Cross-league player stats
 };
 
 export const MATCH_STATUS = {
@@ -38,6 +41,7 @@ export const ERROR_TYPES = {
 };
 
 export const VIEWS = {
+  LEAGUE_SELECTOR: 'league-selector',
   LEAGUE_SETUP: 'league-setup',
   PLAYERS: 'players',
   ROUNDS: 'rounds',

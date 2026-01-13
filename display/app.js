@@ -3,18 +3,23 @@ import { StandingsRenderer } from './modules/standings.js';
 import { MatchesRenderer } from './modules/matches.js';
 import { StatisticsRenderer } from './modules/statistics.js';
 import { formatDate, escapeHtml } from './utils/helpers.js';
+import { STORAGE_KEYS } from '../shared/constants.js';
 
 class DisplayApp {
   constructor() {
     this.dataLoader = new DataLoader();
     this.leagueData = null;
     this.currentView = 'standings';
+    this.dataSource = 'github'; // 'github' or 'local'
     this.init();
   }
 
   async init() {
     // Set up event listeners
     this.setupEventListeners();
+
+    // Load local leagues list
+    this.loadLocalLeaguesList();
 
     // Always load data if we have a URL (including default)
     if (this.dataLoader.dataUrl) {
@@ -26,6 +31,14 @@ class DisplayApp {
   }
 
   setupEventListeners() {
+    // Configuration tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const tab = e.target.dataset.tab;
+        this.switchTab(tab);
+      });
+    });
+
     // Configuration
     const loadDataBtn = document.getElementById('load-data-btn');
     if (loadDataBtn) {
@@ -53,6 +66,125 @@ class DisplayApp {
           this.saveAndLoadUrl();
         }
       });
+    }
+  }
+
+  switchTab(tabName) {
+    // Update tab buttons
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.tab === tabName);
+    });
+
+    // Update tab content
+    document.querySelectorAll('.config-tab').forEach(tab => {
+      tab.style.display = 'none';
+    });
+
+    const activeTab = document.getElementById(`${tabName}-tab`);
+    if (activeTab) {
+      activeTab.style.display = 'block';
+    }
+
+    this.dataSource = tabName;
+
+    // Reload local leagues if switching to local tab
+    if (tabName === 'local') {
+      this.loadLocalLeaguesList();
+    }
+  }
+
+  loadLocalLeaguesList() {
+    const container = document.getElementById('local-leagues-list');
+    if (!container) return;
+
+    try {
+      const leaguesJson = localStorage.getItem(STORAGE_KEYS.LEAGUES);
+      if (!leaguesJson) {
+        container.innerHTML = `
+          <div class="no-leagues">
+            <p>No local leagues found.</p>
+            <p>Create leagues using the <a href="../admin/index.html">Admin Interface</a>.</p>
+          </div>
+        `;
+        return;
+      }
+
+      const leagues = JSON.parse(leaguesJson);
+      const leaguesList = Object.values(leagues).map(league => ({
+        id: league.league.id,
+        name: league.league.name,
+        updatedAt: league.league.updatedAt,
+        currentRound: league.league.currentRound,
+        totalRounds: league.league.totalRounds,
+        status: league.league.currentRound >= league.league.totalRounds ? 'completed' : 'active'
+      })).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+      if (leaguesList.length === 0) {
+        container.innerHTML = `
+          <div class="no-leagues">
+            <p>No local leagues found.</p>
+            <p>Create leagues using the <a href="../admin/index.html">Admin Interface</a>.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="local-leagues-grid">
+          ${leaguesList.map(league => `
+            <div class="league-card ${league.status}">
+              <div class="league-card-header">
+                <h4>${escapeHtml(league.name)}</h4>
+                <span class="badge badge-${league.status}">${league.status}</span>
+              </div>
+              <div class="league-card-body">
+                <p><strong>Round:</strong> ${league.currentRound} of ${league.totalRounds}</p>
+                <p><strong>Last Updated:</strong> ${formatDate(league.updatedAt)}</p>
+              </div>
+              <div class="league-card-actions">
+                <button class="btn btn-primary" onclick="displayApp.loadLocalLeague('${league.id}')">
+                  View League
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    } catch (error) {
+      console.error('Failed to load local leagues:', error);
+      container.innerHTML = `
+        <div class="error-message">
+          <p>Failed to load local leagues.</p>
+        </div>
+      `;
+    }
+  }
+
+  loadLocalLeague(leagueId) {
+    try {
+      const leaguesJson = localStorage.getItem(STORAGE_KEYS.LEAGUES);
+      if (!leaguesJson) {
+        this.showError('No local leagues found');
+        return;
+      }
+
+      const leagues = JSON.parse(leaguesJson);
+      const leagueData = leagues[leagueId];
+
+      if (!leagueData) {
+        this.showError('League not found');
+        return;
+      }
+
+      this.leagueData = leagueData;
+      this.dataSource = 'local';
+      this.hideConfigSection();
+      this.renderLeagueInfo();
+      this.renderCurrentView();
+      this.showSuccess('League loaded successfully!');
+      this.updateLastUpdated(leagueData.league.updatedAt);
+    } catch (error) {
+      this.showError('Failed to load league: ' + error.message);
     }
   }
 

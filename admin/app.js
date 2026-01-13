@@ -35,9 +35,16 @@ class AdminApp {
     // Set up event listeners
     this.setupEventListeners();
 
+    // Check if we have multiple leagues
+    const leaguesList = StorageManager.getLeaguesList();
+    
     // Render initial view
     if (this.leagueData) {
+      this.updateCurrentLeagueIndicator();
       this.switchView(VIEWS.PLAYERS);
+    } else if (leaguesList.length > 0) {
+      // Have leagues but none selected
+      this.switchView(VIEWS.LEAGUE_SELECTOR);
     } else {
       this.switchView(VIEWS.LEAGUE_SETUP);
     }
@@ -51,6 +58,12 @@ class AdminApp {
         this.switchView(view);
       });
     });
+
+    // Switch league button
+    const switchLeagueBtn = document.getElementById('switch-league-btn');
+    if (switchLeagueBtn) {
+      switchLeagueBtn.addEventListener('click', () => this.switchView(VIEWS.LEAGUE_SELECTOR));
+    }
 
     // League setup
     const createLeagueBtn = document.getElementById('create-league-btn');
@@ -146,6 +159,9 @@ class AdminApp {
 
   renderView(viewName) {
     switch (viewName) {
+      case VIEWS.LEAGUE_SELECTOR:
+        this.renderLeagueSelector();
+        break;
       case VIEWS.LEAGUE_SETUP:
         this.renderLeagueSetup();
         break;
@@ -838,9 +854,179 @@ class AdminApp {
   saveData() {
     try {
       StorageManager.save(this.leagueData);
+      StorageManager.updateAllPlayersStats(); // Update cross-league stats
     } catch (error) {
       this.showError('Failed to save data: ' + error.message);
     }
+  }
+
+  updateCurrentLeagueIndicator() {
+    const indicator = document.getElementById('current-league-indicator');
+    const nameElement = document.getElementById('current-league-name');
+    
+    if (this.leagueData && indicator && nameElement) {
+      nameElement.textContent = `Current League: ${this.leagueData.league.name}`;
+      indicator.style.display = 'block';
+    } else if (indicator) {
+      indicator.style.display = 'none';
+    }
+  }
+
+  renderLeagueSelector() {
+    const container = document.getElementById('league-selector-content');
+    if (!container) return;
+
+    const leaguesList = StorageManager.getLeaguesList();
+
+    container.innerHTML = `
+      <div class="league-selector-section">
+        <h2>Select or Create a League</h2>
+        
+        <div class="leagues-grid">
+          ${leaguesList.length > 0 ? `
+            <div class="existing-leagues">
+              <h3>Existing Leagues</h3>
+              <div class="leagues-list">
+                ${leaguesList.map(league => `
+                  <div class="league-card ${league.status}">
+                    <div class="league-card-header">
+                      <h4>${escapeHtml(league.name)}</h4>
+                      <span class="badge badge-${league.status}">${league.status}</span>
+                    </div>
+                    <div class="league-card-body">
+                      <p><strong>Round:</strong> ${league.currentRound} of ${league.totalRounds}</p>
+                      <p><strong>Last Updated:</strong> ${formatDate(league.updatedAt)}</p>
+                    </div>
+                    <div class="league-card-actions">
+                      <button class="btn btn-primary" onclick="app.selectLeague('${league.id}')">
+                        ${league.status === 'active' ? 'Manage' : 'View'}
+                      </button>
+                      <button class="btn btn-danger btn-sm" onclick="app.deleteLeagueConfirm('${league.id}')">Delete</button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          ` : `
+            <div class="no-leagues">
+              <p>No leagues found. Create your first league to get started!</p>
+            </div>
+          `}
+          
+          <div class="create-new-league">
+            <h3>Create New League</h3>
+            <button class="btn btn-success btn-lg" onclick="app.switchView('${VIEWS.LEAGUE_SETUP}')">
+              + Create New League
+            </button>
+          </div>
+        </div>
+
+        <div class="all-players-stats" style="margin-top: 30px;">
+          <h3>All-Time Player Statistics</h3>
+          <button class="btn btn-secondary" onclick="app.showAllPlayersStats()">View Cross-League Stats</button>
+        </div>
+      </div>
+    `;
+  }
+
+  selectLeague(leagueId) {
+    try {
+      const leagueData = StorageManager.loadLeague(leagueId);
+      if (leagueData) {
+        this.leagueData = leagueData;
+        StorageManager.setCurrentLeagueId(leagueId);
+        this.updateCurrentLeagueIndicator();
+        this.showSuccess('League loaded successfully!');
+        this.switchView(VIEWS.PLAYERS);
+      } else {
+        this.showError('Failed to load league');
+      }
+    } catch (error) {
+      this.showError('Failed to load league: ' + error.message);
+    }
+  }
+
+  deleteLeagueConfirm(leagueId) {
+    const leagues = StorageManager.getAllLeagues();
+    const league = leagues[leagueId];
+    
+    if (!league) return;
+
+    if (!confirm(`Are you sure you want to delete "${league.league.name}"? This cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      StorageManager.deleteLeague(leagueId);
+      this.showSuccess('League deleted successfully!');
+      
+      // If we deleted the current league, clear it
+      if (this.leagueData && this.leagueData.league.id === leagueId) {
+        this.leagueData = null;
+      }
+      
+      this.renderLeagueSelector();
+    } catch (error) {
+      this.showError('Failed to delete league: ' + error.message);
+    }
+  }
+
+  showAllPlayersStats() {
+    const allPlayers = StorageManager.getAllPlayersStats();
+    const playersList = Object.values(allPlayers).sort((a, b) => b.totalPoints - a.totalPoints);
+
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <div class="modal-content" style="max-width: 900px;">
+        <div class="modal-header">
+          <h2>All-Time Player Statistics</h2>
+          <button class="btn-close" onclick="this.closest('.modal').remove()">×</button>
+        </div>
+        <div class="modal-body">
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Total Points</th>
+                <th>Matches Played</th>
+                <th>Matches Won</th>
+                <th>Win %</th>
+                <th>Frames Won</th>
+                <th>Frames Lost</th>
+                <th>Leagues</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${playersList.map(player => {
+                const winRate = player.totalMatchesPlayed > 0
+                  ? ((player.totalMatchesWon / player.totalMatchesPlayed) * 100).toFixed(1)
+                  : 0;
+                return `
+                  <tr>
+                    <td><strong>${escapeHtml(player.name)}</strong></td>
+                    <td>${player.totalPoints}</td>
+                    <td>${player.totalMatchesPlayed}</td>
+                    <td>${player.totalMatchesWon}</td>
+                    <td>${winRate}%</td>
+                    <td>${player.totalFramesWon}</td>
+                    <td>${player.totalFramesLost}</td>
+                    <td>${player.leagues.length}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.remove();
+      }
+    });
   }
 
   showError(message) {
