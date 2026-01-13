@@ -9,6 +9,7 @@ class DisplayApp {
   constructor() {
     this.dataLoader = new DataLoader();
     this.leagueData = null;
+    this.allLeaguesData = null; // Store all leagues when loaded from GitHub
     this.currentView = 'standings';
     this.dataSource = 'github'; // 'github' or 'local'
     this.init();
@@ -207,12 +208,34 @@ class DisplayApp {
       const result = await this.dataLoader.fetchLeagueData();
       
       if (result.success) {
-        this.leagueData = result.data;
-        this.hideConfigSection();
-        this.renderLeagueInfo();
-        this.renderCurrentView();
-        this.showSuccess('Data loaded successfully!');
-        this.updateLastUpdated(result.timestamp);
+        // Check if it's multi-league format
+        if (result.isMultiLeague) {
+          this.allLeaguesData = result.data;
+          
+          // If there's a current league ID, load that league
+          if (result.data.currentLeagueId && result.data.leagues[result.data.currentLeagueId]) {
+            this.leagueData = result.data.leagues[result.data.currentLeagueId];
+            this.hideConfigSection();
+            this.renderLeagueInfo();
+            this.renderCurrentView();
+            this.showSuccess('Data loaded successfully!');
+            this.updateLastUpdated(result.timestamp);
+            
+            // Show league selector button if multiple leagues
+            this.showLeagueSelectorButton();
+          } else {
+            // Show league selector if no current league
+            this.showGitHubLeagueSelector();
+          }
+        } else {
+          // Legacy single-league format
+          this.leagueData = result.data;
+          this.hideConfigSection();
+          this.renderLeagueInfo();
+          this.renderCurrentView();
+          this.showSuccess('Data loaded successfully!');
+          this.updateLastUpdated(result.timestamp);
+        }
       } else {
         this.showError(`Failed to load data: ${result.error}`);
         this.showConfigSection();
@@ -223,6 +246,80 @@ class DisplayApp {
     } finally {
       this.showLoading(false);
     }
+  }
+
+  showLeagueSelectorButton() {
+    if (!this.allLeaguesData || Object.keys(this.allLeaguesData.leagues).length <= 1) {
+      return;
+    }
+
+    const leagueInfo = document.getElementById('league-info');
+    if (leagueInfo && !document.getElementById('change-league-btn')) {
+      const button = document.createElement('button');
+      button.id = 'change-league-btn';
+      button.className = 'btn btn-secondary';
+      button.textContent = 'Switch League';
+      button.style.marginTop = '10px';
+      button.onclick = () => this.showGitHubLeagueSelector();
+      leagueInfo.appendChild(button);
+    }
+  }
+
+  showGitHubLeagueSelector() {
+    if (!this.allLeaguesData) return;
+
+    const mainContent = document.getElementById('main-content');
+    if (!mainContent) return;
+
+    const leagues = this.allLeaguesData.leagues;
+    const leaguesList = Object.values(leagues).map(league => ({
+      id: league.league.id,
+      name: league.league.name,
+      updatedAt: league.league.updatedAt,
+      currentRound: league.league.currentRound,
+      totalRounds: league.league.totalRounds,
+      status: league.league.status || (league.league.currentRound >= league.league.totalRounds ? 'completed' : 'active')
+    })).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+    mainContent.innerHTML = `
+      <div class="league-selector-container" style="padding: 2rem;">
+        <h2>Select a League to View</h2>
+        <div class="local-leagues-grid" style="margin-top: 2rem;">
+          ${leaguesList.map(league => `
+            <div class="league-card ${league.status}">
+              <div class="league-card-header">
+                <h4>${escapeHtml(league.name)}</h4>
+                <span class="badge badge-${league.status}">${league.status}</span>
+              </div>
+              <div class="league-card-body">
+                <p><strong>Round:</strong> ${league.currentRound} of ${league.totalRounds}</p>
+                <p><strong>Last Updated:</strong> ${formatDate(league.updatedAt)}</p>
+              </div>
+              <div class="league-card-actions">
+                <button class="btn btn-primary" onclick="displayApp.selectGitHubLeague('${league.id}')">
+                  View League
+                </button>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    mainContent.style.display = 'block';
+  }
+
+  selectGitHubLeague(leagueId) {
+    if (!this.allLeaguesData || !this.allLeaguesData.leagues[leagueId]) {
+      this.showError('League not found');
+      return;
+    }
+
+    this.leagueData = this.allLeaguesData.leagues[leagueId];
+    this.renderLeagueInfo();
+    this.renderCurrentView();
+    this.showSuccess('League loaded successfully!');
+    this.updateLastUpdated(this.leagueData.league.updatedAt);
+    this.showLeagueSelectorButton();
   }
 
   showConfigSection() {

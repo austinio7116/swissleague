@@ -528,10 +528,16 @@ class AdminApp {
         <h2>Data Management</h2>
         
         <div class="data-actions">
-          <button id="export-json-btn" class="btn btn-primary">Export JSON</button>
+          <button id="export-json-btn" class="btn btn-primary">Export All Leagues</button>
+          <button id="export-single-btn" class="btn btn-secondary">Export Current League Only</button>
           <button id="import-json-btn" class="btn btn-secondary">Import JSON</button>
           <input type="file" id="import-file-input" accept=".json" style="display: none;">
           <button id="clear-data-btn" class="btn btn-danger">Clear All Data</button>
+        </div>
+        
+        <div class="export-info" style="background: #e7f3ff; padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+          <p><strong>Export All Leagues:</strong> Creates a multi-league JSON file containing all your leagues. Use this for GitHub deployment to show league history.</p>
+          <p><strong>Export Current League:</strong> Exports only the currently selected league as a single-league JSON file.</p>
         </div>
 
         ${backupInfo.exists ? `
@@ -553,6 +559,11 @@ class AdminApp {
     const exportBtn = document.getElementById('export-json-btn');
     if (exportBtn) {
       exportBtn.addEventListener('click', () => this.exportJSON());
+    }
+    
+    const exportSingleBtn = document.getElementById('export-single-btn');
+    if (exportSingleBtn) {
+      exportSingleBtn.addEventListener('click', () => this.exportSingleLeague());
     }
     
     const importBtn = document.getElementById('import-json-btn');
@@ -765,6 +776,35 @@ class AdminApp {
   }
 
   exportJSON() {
+    if (!this.leagueData) {
+      this.showError('No league data to export');
+      return;
+    }
+
+    try {
+      // Get all leagues from storage
+      const allLeagues = StorageManager.getAllLeagues();
+      
+      // Create multi-league export format
+      const exportData = {
+        leagues: allLeagues,
+        currentLeagueId: this.leagueData.league.id,
+        metadata: {
+          version: '2.0',
+          lastUpdated: new Date().toISOString(),
+          exportedBy: 'Swiss Snooker League Admin'
+        }
+      };
+      
+      const filename = `all-leagues-${Date.now()}.json`;
+      downloadJSON(exportData, filename);
+      this.showSuccess('All leagues exported successfully!');
+    } catch (error) {
+      this.showError('Failed to export data: ' + error.message);
+    }
+  }
+
+  exportSingleLeague() {
     if (!this.leagueData) {
       this.showError('No league data to export');
       return;

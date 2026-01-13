@@ -54,7 +54,21 @@ export class DataLoader {
 
       const data = await response.json();
       
-      // Validate basic structure
+      // Check if it's the new multi-league format
+      if (data.leagues && typeof data.leagues === 'object') {
+        // New multi-league format
+        this.cachedData = data;
+        this.lastFetchTime = new Date().toISOString();
+        
+        return {
+          success: true,
+          data,
+          isMultiLeague: true,
+          timestamp: this.lastFetchTime
+        };
+      }
+      
+      // Legacy single-league format
       if (!data.league || !data.players || !data.rounds) {
         throw new Error('Invalid league data structure');
       }
@@ -65,6 +79,7 @@ export class DataLoader {
       return {
         success: true,
         data,
+        isMultiLeague: false,
         timestamp: this.lastFetchTime
       };
     } catch (error) {
