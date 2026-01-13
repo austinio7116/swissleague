@@ -941,6 +941,53 @@ body {
   }
 }
 
+/* Player Selection Styles */
+.existing-players-section {
+  border-top: 1px solid var(--border-color);
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.existing-players-section h4 {
+  color: var(--dark-color);
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+}
+
+.player-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.player-chip {
+  background: white;
+  border: 2px solid var(--accent-color);
+  color: var(--accent-color);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.player-chip:hover {
+  background: var(--accent-color);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.more-players {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  color: #6c757d;
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
 /* Print Styles */
 @media print {
   .main-nav,

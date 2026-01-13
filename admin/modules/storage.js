@@ -297,6 +297,25 @@ class StorageManager {
       return {};
     }
   }
+
+  // Get all unique player names across all leagues
+  static getAllUniquePlayerNames() {
+    try {
+      const leagues = this.getAllLeagues();
+      const playerNames = new Set();
+
+      Object.values(leagues).forEach(leagueData => {
+        leagueData.players.forEach(player => {
+          playerNames.add(player.name);
+        });
+      });
+
+      return Array.from(playerNames).sort();
+    } catch (error) {
+      console.error('Failed to get unique player names:', error);
+      return [];
+    }
+  }
 }
 
 export { StorageManager, LeagueError };

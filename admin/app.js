@@ -184,14 +184,40 @@ class AdminApp {
     const container = document.getElementById('league-setup-content');
     if (!container) return;
 
+    // Always show the create new league form
+    const bestOfOptions = LeagueManager.getBestOfOptions();
+    
+    let html = `
+      <div class="create-league-form">
+        <h2>Create New League</h2>
+        <div class="form-group">
+          <label for="league-name">League Name</label>
+          <input type="text" id="league-name" class="form-control" placeholder="e.g., Winter 2026 Snooker League" required>
+        </div>
+        <div class="form-group">
+          <label for="best-of-frames">Best of Frames</label>
+          <select id="best-of-frames" class="form-control">
+            ${bestOfOptions.map(n => `<option value="${n}"${n === 5 ? ' selected' : ''}>Best of ${n}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="total-rounds">Total Rounds</label>
+          <input type="number" id="total-rounds" class="form-control" value="7" min="1" max="20">
+          <small class="form-text">Recommended: 7 rounds for Swiss format</small>
+        </div>
+        <div id="league-errors" class="error-container"></div>
+        <button id="create-league-btn" class="btn btn-primary">Create League</button>
+      </div>
+    `;
+
     if (this.leagueData) {
-      // Show existing league info
+      // Show current league info above the form
       const league = this.leagueData.league;
       const stats = LeagueManager.getLeagueStats(this.leagueData);
       
-      container.innerHTML = `
-        <div class="league-info">
-          <h2>${escapeHtml(league.name)}</h2>
+      html = `
+        <div class="league-info" style="margin-bottom: 2rem;">
+          <h2>Current League: ${escapeHtml(league.name)}</h2>
           <div class="league-details">
             <p><strong>Format:</strong> Swiss (Best of ${league.bestOfFrames})</p>
             <p><strong>Total Rounds:</strong> ${league.totalRounds}</p>
@@ -200,40 +226,84 @@ class AdminApp {
             <p><strong>Completed Rounds:</strong> ${stats.completedRounds}</p>
             <p><strong>Created:</strong> ${formatDate(league.createdAt)}</p>
           </div>
-          <button class="btn btn-danger" onclick="app.resetLeague()">Reset League</button>
+          <p style="margin-top: 1rem;"><em>Creating a new league will save the current league and switch to the new one.</em></p>
         </div>
-      `;
-    } else {
-      // Show create league form
-      const bestOfOptions = LeagueManager.getBestOfOptions();
-      
-      container.innerHTML = `
-        <div class="create-league-form">
-          <h2>Create New League</h2>
-          <div class="form-group">
-            <label for="league-name">League Name</label>
-            <input type="text" id="league-name" class="form-control" placeholder="e.g., Winter 2026 Snooker League" required>
-          </div>
-          <div class="form-group">
-            <label for="best-of-frames">Best of Frames</label>
-            <select id="best-of-frames" class="form-control">
-              ${bestOfOptions.map(n => `<option value="${n}"${n === 5 ? ' selected' : ''}>Best of ${n}</option>`).join('')}
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="total-rounds">Total Rounds</label>
-            <input type="number" id="total-rounds" class="form-control" value="7" min="1" max="20">
-            <small class="form-text">Recommended: 7 rounds for Swiss format</small>
-          </div>
-          <div id="league-errors" class="error-container"></div>
-          <button id="create-league-btn" class="btn btn-primary">Create League</button>
-        </div>
-      `;
-            // Attach event listener after button is rendered
-      const createLeagueBtn = document.getElementById('create-league-btn');
-      if (createLeagueBtn) {
-        createLeagueBtn.addEventListener('click', () => this.createLeague());
+      ` + html;
+    }
+
+    container.innerHTML = html;
+    
+    // Attach event listener after button is rendered
+    const createLeagueBtn = document.getElementById('create-league-btn');
+    if (createLeagueBtn) {
+      createLeagueBtn.addEventListener('click', () => this.createLeague());
+    }
+  }
+
+  createLeague() {
+    const name = document.getElementById('league-name').value;
+    const bestOfFrames = document.getElementById('best-of-frames').value;
+    const totalRounds = document.getElementById('total-rounds').value;
+
+    clearValidationErrors('league-errors');
+
+    // Validate
+    const nameValidation = ScoreValidator.validateLeagueName(name);
+    if (!nameValidation.valid) {
+      showValidationErrors(nameValidation.errors, 'league-errors');
+      return;
+    }
+
+    const framesValidation = ScoreValidator.validateBestOfFrames(bestOfFrames);
+    if (!framesValidation.valid) {
+      showValidationErrors(framesValidation.errors, 'league-errors');
+      return;
+    }
+
+    const roundsValidation = ScoreValidator.validateTotalRounds(totalRounds, 0);
+    if (!roundsValidation.valid) {
+      showValidationErrors(roundsValidation.errors, 'league-errors');
+      return;
+    }
+
+    try {
+      // Save current league if it exists
+      if (this.leagueData) {
+        StorageManager.saveLeague(this.leagueData);
       }
+      
+      // Create new league
+      this.leagueData = LeagueManager.createLeague(name, bestOfFrames, totalRounds);
+      this.saveData();
+      this.updateCurrentLeagueIndicator();
+      this.showSuccess('League created successfully!');
+      this.switchView(VIEWS.PLAYERS);
+    } catch (error) {
+      this.showError('Failed to create league: ' + error.message);
+    }
+  }
+
+  resetLeague() {
+    if (!confirm('This will reset the current league and delete all data for it. Continue?')) {
+      return;
+    }
+
+    try {
+      if (this.leagueData) {
+        StorageManager.deleteLeague(this.leagueData.league.id);
+      }
+      this.leagueData = null;
+      this.showSuccess('League reset successfully!');
+      
+      // Check if there are other leagues
+      const leaguesList = StorageManager.getLeaguesList();
+      if (leaguesList.length > 0) {
+        this.switchView(VIEWS.LEAGUE_SELECTOR);
+      } else {
+        this.switchView(VIEWS.LEAGUE_SETUP);
+      }
+    } catch (error) {
+      this.showError('Failed to reset league: ' + error.message);
     }
   }
 
@@ -246,6 +316,11 @@ class AdminApp {
     const activePlayers = PlayerManager.getActivePlayers(this.leagueData);
     const inactivePlayers = PlayerManager.getInactivePlayers(this.leagueData);
     const standings = calculateStandings(this.leagueData);
+    
+    // Get all unique player names from all leagues
+    const allPlayerNames = StorageManager.getAllUniquePlayerNames();
+    const currentPlayerNames = this.leagueData.players.map(p => p.name);
+    const availablePlayerNames = allPlayerNames.filter(name => !currentPlayerNames.includes(name));
 
     container.innerHTML = `
       <div class="players-section">
@@ -255,11 +330,36 @@ class AdminApp {
           <div class="form-group">
             <label for="player-name">Add Player</label>
             <div class="input-group">
-              <input type="text" id="player-name" class="form-control" placeholder="Player name">
+              <input type="text" id="player-name" class="form-control" placeholder="Enter new player name" list="existing-players">
+              <datalist id="existing-players">
+                ${availablePlayerNames.map(name => `<option value="${escapeHtml(name)}">`).join('')}
+              </datalist>
               <button id="add-player-btn" class="btn btn-primary">Add Player</button>
             </div>
+            ${availablePlayerNames.length > 0 ? `
+              <small class="form-text">
+                💡 Tip: ${availablePlayerNames.length} player${availablePlayerNames.length !== 1 ? 's' : ''} from other leagues available.
+                Start typing to see suggestions or enter a new name.
+              </small>
+            ` : ''}
           </div>
           <div id="player-errors" class="error-container"></div>
+          
+          ${availablePlayerNames.length > 0 ? `
+            <div class="existing-players-section" style="margin-top: 1rem;">
+              <h4>Quick Add from Other Leagues</h4>
+              <div class="player-chips">
+                ${availablePlayerNames.slice(0, 10).map(name => `
+                  <button class="player-chip" onclick="app.quickAddPlayer('${escapeHtml(name)}')">
+                    + ${escapeHtml(name)}
+                  </button>
+                `).join('')}
+                ${availablePlayerNames.length > 10 ? `
+                  <span class="more-players">+${availablePlayerNames.length - 10} more (use search above)</span>
+                ` : ''}
+              </div>
+            </div>
+          ` : ''}
         </div>
 
         <div class="standings-table-container">
@@ -637,6 +737,25 @@ class AdminApp {
       this.leagueData = PlayerManager.addPlayer(this.leagueData, name);
       this.saveData();
       nameInput.value = '';
+      this.showSuccess(`Player ${name} added successfully!`);
+      this.renderPlayers();
+    } catch (error) {
+      this.showError('Failed to add player: ' + error.message);
+    }
+  }
+
+  quickAddPlayer(name) {
+    clearValidationErrors('player-errors');
+
+    const validation = ScoreValidator.validatePlayerName(name, this.leagueData.players);
+    if (!validation.valid) {
+      showValidationErrors(validation.errors, 'player-errors');
+      return;
+    }
+
+    try {
+      this.leagueData = PlayerManager.addPlayer(this.leagueData, name);
+      this.saveData();
       this.showSuccess(`Player ${name} added successfully!`);
       this.renderPlayers();
     } catch (error) {
