@@ -8,6 +8,8 @@ import {
 } from '../utils/helpers.js';
 
 export class StatisticsRenderer {
+  static currentSort = { column: 'matchesWon', direction: 'desc' };
+
   static renderPlayerStats(leagueData, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -19,80 +21,140 @@ export class StatisticsRenderer {
       return;
     }
 
+    // Sort players
+    const sortedPlayers = this.sortPlayers(players, this.currentSort.column, this.currentSort.direction);
+
     let html = `
       <div class="player-statistics">
         <h2>Player Statistics</h2>
-        <div class="stats-grid">
+        <div class="table-responsive">
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th data-sort="name" class="${this.currentSort.column === 'name' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('name')">Player</th>
+                <th data-sort="points" class="${this.currentSort.column === 'points' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('points')">Points</th>
+                <th data-sort="matchesWon" class="${this.currentSort.column === 'matchesWon' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesWon')">Wins</th>
+                <th data-sort="matchesLost" class="${this.currentSort.column === 'matchesLost' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesLost')">Losses</th>
+                <th data-sort="matchesPlayed" class="${this.currentSort.column === 'matchesPlayed' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesPlayed')">Played</th>
+                <th data-sort="winRate" class="${this.currentSort.column === 'winRate' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('winRate')">Win %</th>
+                <th data-sort="framesWon" class="${this.currentSort.column === 'framesWon' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('framesWon')">Frames Won</th>
+                <th data-sort="framesLost" class="${this.currentSort.column === 'framesLost' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('framesLost')">Frames Lost</th>
+                <th data-sort="frameDifference" class="${this.currentSort.column === 'frameDifference' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('frameDifference')">Frame Diff</th>
+                <th data-sort="pointsDifference" class="${this.currentSort.column === 'pointsDifference' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('pointsDifference')">Points Diff</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
     `;
 
-    players.forEach(player => {
+    sortedPlayers.forEach(player => {
       const winRate = calculateWinRate(player.stats);
-      const avgFrames = calculateAvgFrames(player.stats);
-      const matches = getPlayerMatches(leagueData, player.id);
-      const completedMatches = matches.filter(m => m.status === 'completed');
+      const pointsDifference = (player.stats.matchesWon * 2) - (player.stats.matchesLost * 0); // 2 points per win, 0 per loss
 
       html += `
-        <div class="player-stat-card">
-          <h3>${escapeHtml(player.name)}</h3>
-          <div class="stat-grid">
-            <div class="stat-item">
-              <span class="stat-label">Points</span>
-              <span class="stat-value">${player.stats.points}</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Win Rate</span>
-              <span class="stat-value">${winRate}%</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Matches</span>
-              <span class="stat-value">${player.stats.matchesPlayed}</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Wins</span>
-              <span class="stat-value wins">${player.stats.matchesWon}</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Losses</span>
-              <span class="stat-value losses">${player.stats.matchesLost}</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Frames Won</span>
-              <span class="stat-value">${player.stats.framesWon}</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Frames Lost</span>
-              <span class="stat-value">${player.stats.framesLost}</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Frame Diff</span>
-              <span class="stat-value ${player.stats.frameDifference >= 0 ? 'positive' : 'negative'}">
-                ${player.stats.frameDifference > 0 ? '+' : ''}${player.stats.frameDifference}
-              </span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Avg Frames/Match</span>
-              <span class="stat-value">${avgFrames}</span>
-            </div>
-            ${player.stats.byesReceived > 0 ? `
-              <div class="stat-item">
-                <span class="stat-label">Byes</span>
-                <span class="stat-value">${player.stats.byesReceived}</span>
-              </div>
-            ` : ''}
-          </div>
-          <button class="btn-view-details" onclick="displayApp.showPlayerDetails('${player.id}')">
-            View Details
-          </button>
-        </div>
+        <tr>
+          <td class="player-name">${escapeHtml(player.name)}</td>
+          <td class="points">${player.stats.points}</td>
+          <td class="wins">${player.stats.matchesWon}</td>
+          <td class="losses">${player.stats.matchesLost}</td>
+          <td>${player.stats.matchesPlayed}</td>
+          <td>${winRate}%</td>
+          <td>${player.stats.framesWon}</td>
+          <td>${player.stats.framesLost}</td>
+          <td class="frame-diff ${player.stats.frameDifference >= 0 ? 'positive' : 'negative'}">
+            ${player.stats.frameDifference > 0 ? '+' : ''}${player.stats.frameDifference}
+          </td>
+          <td class="points-diff ${pointsDifference >= 0 ? 'positive' : 'negative'}">
+            ${pointsDifference > 0 ? '+' : ''}${pointsDifference}
+          </td>
+          <td>
+            <button class="btn-view-details" onclick="displayApp.showPlayerDetails('${player.id}')">
+              View Details
+            </button>
+          </td>
+        </tr>
       `;
     });
 
     html += `
+            </tbody>
+          </table>
         </div>
       </div>
     `;
 
     container.innerHTML = html;
+  }
+
+  static sortPlayers(players, column, direction) {
+    const sorted = [...players].sort((a, b) => {
+      let aVal, bVal;
+
+      switch (column) {
+        case 'name':
+          aVal = a.name.toLowerCase();
+          bVal = b.name.toLowerCase();
+          return direction === 'asc'
+            ? aVal.localeCompare(bVal)
+            : bVal.localeCompare(aVal);
+        
+        case 'winRate':
+          aVal = calculateWinRate(a.stats);
+          bVal = calculateWinRate(b.stats);
+          break;
+        
+        case 'pointsDifference':
+          aVal = (a.stats.matchesWon * 2);
+          bVal = (b.stats.matchesWon * 2);
+          break;
+        
+        case 'points':
+          aVal = a.stats.points;
+          bVal = b.stats.points;
+          break;
+        
+        case 'matchesWon':
+          aVal = a.stats.matchesWon;
+          bVal = b.stats.matchesWon;
+          break;
+        
+        case 'matchesLost':
+          aVal = a.stats.matchesLost;
+          bVal = b.stats.matchesLost;
+          break;
+        
+        case 'matchesPlayed':
+          aVal = a.stats.matchesPlayed;
+          bVal = b.stats.matchesPlayed;
+          break;
+        
+        case 'framesWon':
+          aVal = a.stats.framesWon;
+          bVal = b.stats.framesWon;
+          break;
+        
+        case 'framesLost':
+          aVal = a.stats.framesLost;
+          bVal = b.stats.framesLost;
+          break;
+        
+        case 'frameDifference':
+          aVal = a.stats.frameDifference;
+          bVal = b.stats.frameDifference;
+          break;
+        
+        default:
+          return 0;
+      }
+
+      if (direction === 'asc') {
+        return aVal - bVal;
+      } else {
+        return bVal - aVal;
+      }
+    });
+
+    return sorted;
   }
 
   static renderPlayerDetails(leagueData, playerId, containerId) {

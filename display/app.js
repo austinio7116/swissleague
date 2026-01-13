@@ -172,6 +172,21 @@ class DisplayApp {
     MatchesRenderer.toggleFrames(matchId);
   }
 
+  sortPlayerStats(column) {
+    // Toggle direction if clicking the same column
+    if (StatisticsRenderer.currentSort.column === column) {
+      StatisticsRenderer.currentSort.direction =
+        StatisticsRenderer.currentSort.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+      // New column, default to descending for numeric columns, ascending for name
+      StatisticsRenderer.currentSort.column = column;
+      StatisticsRenderer.currentSort.direction = column === 'name' ? 'asc' : 'desc';
+    }
+    
+    // Re-render the statistics view
+    StatisticsRenderer.renderPlayerStats(this.leagueData, 'statistics-content');
+  }
+
   showPlayerDetails(playerId) {
     // Create modal or switch to details view
     const modal = document.createElement('div');
