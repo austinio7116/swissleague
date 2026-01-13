@@ -457,6 +457,23 @@ class DisplayApp {
     StatisticsRenderer.renderPlayerStats(this.leagueData, 'statistics-content');
   }
 
+  sortCrossLeagueStats(column) {
+    if (!this.allLeaguesData) return;
+    
+    // Toggle direction if clicking the same column
+    if (StatisticsRenderer.crossLeagueSort.column === column) {
+      StatisticsRenderer.crossLeagueSort.direction =
+        StatisticsRenderer.crossLeagueSort.direction === 'asc' ? 'desc' : 'asc';
+    } else {
+      // New column, default to descending for numeric columns, ascending for name
+      StatisticsRenderer.crossLeagueSort.column = column;
+      StatisticsRenderer.crossLeagueSort.direction = column === 'name' ? 'asc' : 'desc';
+    }
+    
+    // Re-render the cross-league statistics view
+    StatisticsRenderer.renderPlayerStats(this.leagueData, 'statistics-content', this.allLeaguesData);
+  }
+
   showPlayerDetails(playerId) {
     // Create modal or switch to details view
     const modal = document.createElement('div');

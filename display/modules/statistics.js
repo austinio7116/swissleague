@@ -9,6 +9,7 @@ import {
 
 export class StatisticsRenderer {
   static currentSort = { column: 'matchesWon', direction: 'desc' };
+  static crossLeagueSort = { column: 'totalMatchPoints', direction: 'desc' };
 
   static calculateSnookerPoints(leagueData, playerId) {
     let pointsScored = 0;
@@ -227,6 +228,102 @@ export class StatisticsRenderer {
     return sorted;
   }
 
+  static sortCrossLeaguePlayers(players, column, direction) {
+    const sorted = [...players].sort((a, b) => {
+      let aVal, bVal;
+
+      switch (column) {
+        case 'name':
+          aVal = a.name.toLowerCase();
+          bVal = b.name.toLowerCase();
+          return direction === 'asc'
+            ? aVal.localeCompare(bVal)
+            : bVal.localeCompare(aVal);
+        
+        case 'totalMatchPoints':
+          aVal = a.totalMatchPoints;
+          bVal = b.totalMatchPoints;
+          break;
+        
+        case 'totalBuchholz':
+          aVal = a.totalBuchholz;
+          bVal = b.totalBuchholz;
+          break;
+        
+        case 'avgSOS':
+          aVal = a.leagueCount > 0 ? (a.totalSOS / a.leagueCount) : 0;
+          bVal = b.leagueCount > 0 ? (b.totalSOS / b.leagueCount) : 0;
+          break;
+        
+        case 'totalMatchesWon':
+          aVal = a.totalMatchesWon;
+          bVal = b.totalMatchesWon;
+          break;
+        
+        case 'totalMatchesLost':
+          aVal = a.totalMatchesLost;
+          bVal = b.totalMatchesLost;
+          break;
+        
+        case 'totalMatchesPlayed':
+          aVal = a.totalMatchesPlayed;
+          bVal = b.totalMatchesPlayed;
+          break;
+        
+        case 'winRate':
+          aVal = a.totalMatchesPlayed > 0 ? (a.totalMatchesWon / a.totalMatchesPlayed) : 0;
+          bVal = b.totalMatchesPlayed > 0 ? (b.totalMatchesWon / b.totalMatchesPlayed) : 0;
+          break;
+        
+        case 'totalFramesWon':
+          aVal = a.totalFramesWon;
+          bVal = b.totalFramesWon;
+          break;
+        
+        case 'totalFramesLost':
+          aVal = a.totalFramesLost;
+          bVal = b.totalFramesLost;
+          break;
+        
+        case 'frameDiff':
+          aVal = a.totalFramesWon - a.totalFramesLost;
+          bVal = b.totalFramesWon - b.totalFramesLost;
+          break;
+        
+        case 'totalPointsScored':
+          aVal = a.totalPointsScored;
+          bVal = b.totalPointsScored;
+          break;
+        
+        case 'totalPointsConceded':
+          aVal = a.totalPointsConceded;
+          bVal = b.totalPointsConceded;
+          break;
+        
+        case 'pointsDiff':
+          aVal = a.totalPointsScored - a.totalPointsConceded;
+          bVal = b.totalPointsScored - b.totalPointsConceded;
+          break;
+        
+        case 'leagueCount':
+          aVal = a.leagueCount;
+          bVal = b.leagueCount;
+          break;
+        
+        default:
+          return 0;
+      }
+
+      if (direction === 'asc') {
+        return aVal - bVal;
+      } else {
+        return bVal - aVal;
+      }
+    });
+
+    return sorted;
+  }
+
   static renderPlayerDetails(leagueData, playerId, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -401,8 +498,8 @@ export class StatisticsRenderer {
       return;
     }
 
-    // Sort by total match points by default
-    playersArray.sort((a, b) => b.totalMatchPoints - a.totalMatchPoints);
+    // Sort players using current sort settings
+    const sortedPlayers = this.sortCrossLeaguePlayers(playersArray, this.crossLeagueSort.column, this.crossLeagueSort.direction);
 
     let html = `
       <div class="player-statistics">
@@ -412,27 +509,27 @@ export class StatisticsRenderer {
           <table class="stats-table">
             <thead>
               <tr>
-                <th>Player</th>
-                <th>Match Pts</th>
-                <th title="Buchholz Score: Total of all Buchholz scores from each league. Shows cumulative opponent strength across all competitions.">Buchholz ⓘ</th>
-                <th title="Average Strength of Schedule: Your average opponent quality across all leagues. Higher percentage means you consistently faced tougher competition.">Avg SOS ⓘ</th>
-                <th>Wins</th>
-                <th>Losses</th>
-                <th>Played</th>
-                <th>Win %</th>
-                <th>Frames Won</th>
-                <th>Frames Lost</th>
-                <th>Frame Diff</th>
-                <th>Points For</th>
-                <th>Points Against</th>
-                <th>Points Diff</th>
-                <th>Leagues</th>
+                <th data-sort="name" class="${this.crossLeagueSort.column === 'name' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('name')">Player</th>
+                <th data-sort="totalMatchPoints" class="${this.crossLeagueSort.column === 'totalMatchPoints' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('totalMatchPoints')">Match Pts</th>
+                <th data-sort="totalBuchholz" class="${this.crossLeagueSort.column === 'totalBuchholz' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('totalBuchholz')" title="Buchholz Score: Total of all Buchholz scores from each league. Shows cumulative opponent strength across all competitions.">Buchholz ⓘ</th>
+                <th data-sort="avgSOS" class="${this.crossLeagueSort.column === 'avgSOS' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('avgSOS')" title="Average Strength of Schedule: Your average opponent quality across all leagues. Higher percentage means you consistently faced tougher competition.">Avg SOS ⓘ</th>
+                <th data-sort="totalMatchesWon" class="${this.crossLeagueSort.column === 'totalMatchesWon' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('totalMatchesWon')">Wins</th>
+                <th data-sort="totalMatchesLost" class="${this.crossLeagueSort.column === 'totalMatchesLost' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('totalMatchesLost')">Losses</th>
+                <th data-sort="totalMatchesPlayed" class="${this.crossLeagueSort.column === 'totalMatchesPlayed' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('totalMatchesPlayed')">Played</th>
+                <th data-sort="winRate" class="${this.crossLeagueSort.column === 'winRate' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('winRate')">Win %</th>
+                <th data-sort="totalFramesWon" class="${this.crossLeagueSort.column === 'totalFramesWon' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('totalFramesWon')">Frames Won</th>
+                <th data-sort="totalFramesLost" class="${this.crossLeagueSort.column === 'totalFramesLost' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('totalFramesLost')">Frames Lost</th>
+                <th data-sort="frameDiff" class="${this.crossLeagueSort.column === 'frameDiff' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('frameDiff')">Frame Diff</th>
+                <th data-sort="totalPointsScored" class="${this.crossLeagueSort.column === 'totalPointsScored' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('totalPointsScored')">Points For</th>
+                <th data-sort="totalPointsConceded" class="${this.crossLeagueSort.column === 'totalPointsConceded' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('totalPointsConceded')">Points Against</th>
+                <th data-sort="pointsDiff" class="${this.crossLeagueSort.column === 'pointsDiff' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('pointsDiff')">Points Diff</th>
+                <th data-sort="leagueCount" class="${this.crossLeagueSort.column === 'leagueCount' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('leagueCount')">Leagues</th>
               </tr>
             </thead>
             <tbody>
     `;
 
-    playersArray.forEach(player => {
+    sortedPlayers.forEach(player => {
       const winRate = player.totalMatchesPlayed > 0
         ? ((player.totalMatchesWon / player.totalMatchesPlayed) * 100).toFixed(1)
         : 0;
@@ -461,7 +558,7 @@ export class StatisticsRenderer {
           <td class="points-diff ${pointsDiff >= 0 ? 'positive' : 'negative'}">
             ${pointsDiff > 0 ? '+' : ''}${pointsDiff}
           </td>
-          <td><span class="league-count">${player.leagues.length} league${player.leagues.length !== 1 ? 's' : ''}</span></td>
+          <td><span class="league-count">${player.leagues.length}</span></td>
         </tr>
       `;
     });
