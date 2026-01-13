@@ -71,8 +71,8 @@ export class StatisticsRenderer {
               <tr>
                 <th data-sort="name" class="${this.currentSort.column === 'name' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('name')">Player</th>
                 <th data-sort="matchPoints" class="${this.currentSort.column === 'matchPoints' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchPoints')">Match Pts</th>
-                <th data-sort="buchholzScore" class="${this.currentSort.column === 'buchholzScore' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('buchholzScore')" title="Sum of opponents' match points">Buchholz</th>
-                <th data-sort="strengthOfSchedule" class="${this.currentSort.column === 'strengthOfSchedule' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('strengthOfSchedule')" title="Average opponent win rate">SOS</th>
+                <th data-sort="buchholzScore" class="${this.currentSort.column === 'buchholzScore' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('buchholzScore')" title="Buchholz Score: Adds up all your opponents' match points. Higher = you played tougher opponents. Used as first tiebreaker when players have equal points.">Buchholz ⓘ</th>
+                <th data-sort="strengthOfSchedule" class="${this.currentSort.column === 'strengthOfSchedule' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('strengthOfSchedule')" title="Strength of Schedule (SOS): Shows how strong your opponents were on average. 100% = all opponents won all their matches. 0% = all opponents lost all their matches. Used as second tiebreaker.">SOS ⓘ</th>
                 <th data-sort="matchesWon" class="${this.currentSort.column === 'matchesWon' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesWon')">Wins</th>
                 <th data-sort="matchesLost" class="${this.currentSort.column === 'matchesLost' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesLost')">Losses</th>
                 <th data-sort="matchesPlayed" class="${this.currentSort.column === 'matchesPlayed' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesPlayed')">Played</th>
@@ -414,8 +414,8 @@ export class StatisticsRenderer {
               <tr>
                 <th>Player</th>
                 <th>Match Pts</th>
-                <th title="Sum of Buchholz scores across leagues">Buchholz</th>
-                <th title="Average SOS across leagues">Avg SOS</th>
+                <th title="Buchholz Score: Total of all Buchholz scores from each league. Shows cumulative opponent strength across all competitions.">Buchholz ⓘ</th>
+                <th title="Average Strength of Schedule: Your average opponent quality across all leagues. Higher percentage means you consistently faced tougher competition.">Avg SOS ⓘ</th>
                 <th>Wins</th>
                 <th>Losses</th>
                 <th>Played</th>

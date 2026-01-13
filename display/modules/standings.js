@@ -56,8 +56,8 @@ export class StandingsRenderer {
               <th data-sort="rank">Rank</th>
               <th data-sort="name">Player</th>
               <th data-sort="points">Match Pts</th>
-              <th data-sort="buchholz" title="Sum of opponents' match points">Buchholz</th>
-              <th data-sort="sos" title="Average opponent win rate">SOS</th>
+              <th data-sort="buchholz" title="Buchholz Score: Adds up all your opponents' match points. Higher = you played tougher opponents. Used as first tiebreaker when players have equal points.">Buchholz ⓘ</th>
+              <th data-sort="sos" title="Strength of Schedule (SOS): Shows how strong your opponents were on average. 100% = all opponents won all their matches. 0% = all opponents lost all their matches. Used as second tiebreaker.">SOS ⓘ</th>
               <th data-sort="played">Played</th>
               <th data-sort="won">Won</th>
               <th data-sort="lost">Lost</th>
