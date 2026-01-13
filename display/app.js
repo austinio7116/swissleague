@@ -16,7 +16,7 @@ class DisplayApp {
     // Set up event listeners
     this.setupEventListeners();
 
-    // Check if we have a saved URL
+    // Always load data if we have a URL (including default)
     if (this.dataLoader.dataUrl) {
       document.getElementById('github-url').value = this.dataLoader.dataUrl;
       await this.loadData();

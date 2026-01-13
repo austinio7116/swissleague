@@ -1,6 +1,8 @@
 import { STORAGE_KEYS } from '../../shared/constants.js';
 import { convertGitHubUrl } from '../utils/helpers.js';
 
+const DEFAULT_GITHUB_URL = 'https://raw.githubusercontent.com/austinio7116/swissleague/refs/heads/main/data/league.json';
+
 export class DataLoader {
   constructor() {
     this.dataUrl = this.loadSavedUrl();
@@ -10,10 +12,11 @@ export class DataLoader {
 
   loadSavedUrl() {
     try {
-      return localStorage.getItem(STORAGE_KEYS.GITHUB_URL) || '';
+      const savedUrl = localStorage.getItem(STORAGE_KEYS.GITHUB_URL);
+      return savedUrl || DEFAULT_GITHUB_URL;
     } catch (error) {
       console.error('Failed to load saved URL:', error);
-      return '';
+      return DEFAULT_GITHUB_URL;
     }
   }
 
