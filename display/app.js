@@ -178,12 +178,15 @@ class DisplayApp {
       }
 
       this.leagueData = leagueData;
+      // Store all leagues data for cross-league stats
+      this.allLeaguesData = { leagues: leagues };
       this.dataSource = 'local';
       this.hideConfigSection();
       this.renderLeagueInfo();
       this.renderCurrentView();
       this.showSuccess('League loaded successfully!');
       this.updateLastUpdated(leagueData.league.updatedAt);
+      this.showLeagueSelectorButton();
     } catch (error) {
       this.showError('Failed to load league: ' + error.message);
     }
@@ -315,8 +318,16 @@ class DisplayApp {
     }
 
     this.leagueData = this.allLeaguesData.leagues[leagueId];
+    
+    // Hide the league selector and show main content
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+      mainContent.style.display = 'flex';
+      mainContent.innerHTML = ''; // Clear the selector
+    }
+    
     this.renderLeagueInfo();
-    this.renderCurrentView();
+    this.switchView('standings'); // Reset to standings view
     this.showSuccess('League loaded successfully!');
     this.updateLastUpdated(this.leagueData.league.updatedAt);
     this.showLeagueSelectorButton();
@@ -392,7 +403,8 @@ class DisplayApp {
         MatchesRenderer.renderHistory(this.leagueData, 'history-content');
         break;
       case 'statistics':
-        StatisticsRenderer.renderPlayerStats(this.leagueData, 'statistics-content');
+        // Pass allLeaguesData if available to show cross-league stats
+        StatisticsRenderer.renderPlayerStats(this.leagueData, 'statistics-content', this.allLeaguesData);
         break;
     }
   }

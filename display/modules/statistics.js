@@ -42,9 +42,15 @@ export class StatisticsRenderer {
     };
   }
 
-  static renderPlayerStats(leagueData, containerId) {
+  static renderPlayerStats(leagueData, containerId, allLeaguesData = null) {
     const container = document.getElementById(containerId);
     if (!container) return;
+
+    // If we have all leagues data, show cross-league stats
+    if (allLeaguesData && allLeaguesData.leagues) {
+      this.renderCrossLeagueStats(allLeaguesData, containerId);
+      return;
+    }
 
     const players = leagueData.players.filter(p => p.active && p.stats.matchesPlayed > 0);
 
@@ -315,6 +321,128 @@ export class StatisticsRenderer {
 
     html += `
           </div>
+        </div>
+      </div>
+    `;
+
+    container.innerHTML = html;
+  }
+
+  static renderCrossLeagueStats(allLeaguesData, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // Aggregate stats across all leagues
+    const playerStats = {};
+
+    Object.values(allLeaguesData.leagues).forEach(leagueData => {
+      leagueData.players.forEach(player => {
+        if (!player.stats || player.stats.matchesPlayed === 0) return;
+
+        if (!playerStats[player.name]) {
+          playerStats[player.name] = {
+            name: player.name,
+            totalMatchPoints: 0,
+            totalMatchesWon: 0,
+            totalMatchesLost: 0,
+            totalMatchesPlayed: 0,
+            totalFramesWon: 0,
+            totalFramesLost: 0,
+            totalPointsScored: 0,
+            totalPointsConceded: 0,
+            leagues: []
+          };
+        }
+
+        const stats = playerStats[player.name];
+        stats.totalMatchPoints += player.stats.points;
+        stats.totalMatchesWon += player.stats.matchesWon;
+        stats.totalMatchesLost += player.stats.matchesLost;
+        stats.totalMatchesPlayed += player.stats.matchesPlayed;
+        stats.totalFramesWon += player.stats.framesWon;
+        stats.totalFramesLost += player.stats.framesLost;
+
+        // Calculate snooker points for this league
+        const snookerPoints = this.calculateSnookerPoints(leagueData, player.id);
+        stats.totalPointsScored += snookerPoints.pointsScored;
+        stats.totalPointsConceded += snookerPoints.pointsConceded;
+
+        stats.leagues.push(leagueData.league.name);
+      });
+    });
+
+    const playersArray = Object.values(playerStats);
+
+    if (playersArray.length === 0) {
+      container.innerHTML = '<p class="no-data">No player statistics available yet.</p>';
+      return;
+    }
+
+    // Sort by total match points by default
+    playersArray.sort((a, b) => b.totalMatchPoints - a.totalMatchPoints);
+
+    let html = `
+      <div class="player-statistics">
+        <h2>All-Time Player Statistics</h2>
+        <p class="stats-subtitle">Aggregated across all leagues</p>
+        <div class="table-responsive">
+          <table class="stats-table">
+            <thead>
+              <tr>
+                <th>Player</th>
+                <th>Match Pts</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Played</th>
+                <th>Win %</th>
+                <th>Frames Won</th>
+                <th>Frames Lost</th>
+                <th>Frame Diff</th>
+                <th>Points For</th>
+                <th>Points Against</th>
+                <th>Points Diff</th>
+                <th>Leagues</th>
+              </tr>
+            </thead>
+            <tbody>
+    `;
+
+    playersArray.forEach(player => {
+      const winRate = player.totalMatchesPlayed > 0
+        ? ((player.totalMatchesWon / player.totalMatchesPlayed) * 100).toFixed(1)
+        : 0;
+      const frameDiff = player.totalFramesWon - player.totalFramesLost;
+      const pointsDiff = player.totalPointsScored - player.totalPointsConceded;
+
+      html += `
+        <tr>
+          <td class="player-name">${escapeHtml(player.name)}</td>
+          <td class="points">${player.totalMatchPoints}</td>
+          <td class="wins">${player.totalMatchesWon}</td>
+          <td class="losses">${player.totalMatchesLost}</td>
+          <td>${player.totalMatchesPlayed}</td>
+          <td>${winRate}%</td>
+          <td>${player.totalFramesWon}</td>
+          <td>${player.totalFramesLost}</td>
+          <td class="frame-diff ${frameDiff >= 0 ? 'positive' : 'negative'}">
+            ${frameDiff > 0 ? '+' : ''}${frameDiff}
+          </td>
+          <td>${player.totalPointsScored}</td>
+          <td>${player.totalPointsConceded}</td>
+          <td class="points-diff ${pointsDiff >= 0 ? 'positive' : 'negative'}">
+            ${pointsDiff > 0 ? '+' : ''}${pointsDiff}
+          </td>
+          <td><span class="league-count">${player.leagues.length} league${player.leagues.length !== 1 ? 's' : ''}</span></td>
+        </tr>
+      `;
+    });
+
+    html += `
+            </tbody>
+          </table>
+        </div>
+        <div class="stats-note" style="margin-top: 1rem; padding: 1rem; background: #e7f3ff; border-radius: 4px;">
+          <p><strong>Note:</strong> These statistics are aggregated across all leagues. Individual league statistics can be viewed by selecting a specific league.</p>
         </div>
       </div>
     `;
