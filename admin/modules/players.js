@@ -1,4 +1,5 @@
 import { generateId } from '../utils/helpers.js';
+import { POINTS } from '../../shared/constants.js';
 
 export class PlayerManager {
   static createPlayer(name) {
@@ -14,7 +15,9 @@ export class PlayerManager {
         framesLost: 0,
         points: 0,
         frameDifference: 0,
-        byesReceived: 0
+        byesReceived: 0,
+        strengthOfSchedule: 0,
+        buchholzScore: 0
       }
     };
   }
@@ -85,8 +88,12 @@ export class PlayerManager {
       framesLost: 0,
       points: 0,
       frameDifference: 0,
-      byesReceived: 0
+      byesReceived: 0,
+      strengthOfSchedule: 0,
+      buchholzScore: 0
     };
+
+    const opponentIds = [];
 
     // Calculate stats from all completed matches
     for (const round of leagueData.rounds) {
@@ -98,7 +105,7 @@ export class PlayerManager {
           stats.byesReceived++;
           stats.matchesWon++;
           stats.matchesPlayed++;
-          stats.points += 2;
+          stats.points += POINTS.BYE;
           stats.framesWon += match.player1FramesWon || 0;
           continue;
         }
@@ -108,29 +115,59 @@ export class PlayerManager {
           stats.matchesPlayed++;
           stats.framesWon += match.player1FramesWon;
           stats.framesLost += match.player2FramesWon;
+          opponentIds.push(match.player2Id);
           
           if (match.winnerId === playerId) {
             stats.matchesWon++;
-            stats.points += 2;
+            stats.points += POINTS.WIN;
           } else {
             stats.matchesLost++;
+            stats.points += POINTS.LOSS;
           }
         } else if (match.player2Id === playerId) {
           stats.matchesPlayed++;
           stats.framesWon += match.player2FramesWon;
           stats.framesLost += match.player1FramesWon;
+          opponentIds.push(match.player1Id);
           
           if (match.winnerId === playerId) {
             stats.matchesWon++;
-            stats.points += 2;
+            stats.points += POINTS.WIN;
           } else {
             stats.matchesLost++;
+            stats.points += POINTS.LOSS;
           }
         }
       }
     }
 
     stats.frameDifference = stats.framesWon - stats.framesLost;
+
+    // Calculate Strength of Schedule (SOS) and Buchholz Score
+    if (opponentIds.length > 0) {
+      let totalOpponentWinRate = 0;
+      let totalOpponentPoints = 0;
+
+      for (const opponentId of opponentIds) {
+        const opponent = leagueData.players.find(p => p.id === opponentId);
+        if (opponent && opponent.stats) {
+          // Calculate opponent's win rate
+          const opponentWinRate = opponent.stats.matchesPlayed > 0
+            ? (opponent.stats.matchesWon / opponent.stats.matchesPlayed)
+            : 0;
+          totalOpponentWinRate += opponentWinRate;
+          
+          // Sum opponent's points for Buchholz
+          totalOpponentPoints += opponent.stats.points;
+        }
+      }
+
+      // SOS is the average win rate of all opponents
+      stats.strengthOfSchedule = totalOpponentWinRate / opponentIds.length;
+      
+      // Buchholz is the sum of all opponents' points
+      stats.buchholzScore = totalOpponentPoints;
+    }
 
     return this.updatePlayer(leagueData, playerId, { stats });
   }

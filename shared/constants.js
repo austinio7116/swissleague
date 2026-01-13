@@ -23,9 +23,9 @@ export const ROUND_STATUS = {
 };
 
 export const POINTS = {
-  WIN: 2,
+  WIN: 1,
   LOSS: 0,
-  BYE: 2
+  BYE: 1
 };
 
 export const BEST_OF_OPTIONS = [3, 5, 7, 9, 11];

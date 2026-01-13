@@ -56,6 +56,8 @@ export class StandingsRenderer {
               <th data-sort="rank">Rank</th>
               <th data-sort="name">Player</th>
               <th data-sort="points">Match Pts</th>
+              <th data-sort="buchholz" title="Sum of opponents' match points">Buchholz</th>
+              <th data-sort="sos" title="Average opponent win rate">SOS</th>
               <th data-sort="played">Played</th>
               <th data-sort="won">Won</th>
               <th data-sort="lost">Lost</th>
@@ -75,12 +77,17 @@ export class StandingsRenderer {
       const winRate = calculateWinRate(player.stats);
       const snookerPoints = this.calculateSnookerPoints(leagueData, player.id);
       const rankClass = index < 3 ? `rank-${index + 1}` : '';
+      const buchholz = player.stats.buchholzScore || 0;
+      const sos = player.stats.strengthOfSchedule || 0;
+      const sosPercent = (sos * 100).toFixed(1);
       
       html += `
         <tr class="${rankClass}" data-player-id="${player.id}">
           <td class="rank">${index + 1}</td>
           <td class="player-name">${escapeHtml(player.name)}</td>
           <td class="points"><strong>${player.stats.points}</strong></td>
+          <td class="buchholz">${buchholz}</td>
+          <td class="sos">${sosPercent}%</td>
           <td>${player.stats.matchesPlayed}</td>
           <td class="wins">${player.stats.matchesWon}</td>
           <td class="losses">${player.stats.matchesLost}</td>
@@ -164,9 +171,17 @@ export class StandingsRenderer {
           aVal = parseInt(a.querySelector('.points').textContent);
           bVal = parseInt(b.querySelector('.points').textContent);
           break;
+        case 'buchholz':
+          aVal = parseInt(a.querySelector('.buchholz').textContent);
+          bVal = parseInt(b.querySelector('.buchholz').textContent);
+          break;
+        case 'sos':
+          aVal = parseFloat(a.querySelector('.sos').textContent);
+          bVal = parseFloat(b.querySelector('.sos').textContent);
+          break;
         case 'played':
-          aVal = parseInt(a.cells[3].textContent);
-          bVal = parseInt(b.cells[3].textContent);
+          aVal = parseInt(a.cells[5].textContent);
+          bVal = parseInt(b.cells[5].textContent);
           break;
         case 'won':
           aVal = parseInt(a.querySelector('.wins').textContent);
@@ -177,32 +192,32 @@ export class StandingsRenderer {
           bVal = parseInt(b.querySelector('.losses').textContent);
           break;
         case 'framesWon':
-          aVal = parseInt(a.cells[6].textContent);
-          bVal = parseInt(b.cells[6].textContent);
+          aVal = parseInt(a.cells[8].textContent);
+          bVal = parseInt(b.cells[8].textContent);
           break;
         case 'framesLost':
-          aVal = parseInt(a.cells[7].textContent);
-          bVal = parseInt(b.cells[7].textContent);
+          aVal = parseInt(a.cells[9].textContent);
+          bVal = parseInt(b.cells[9].textContent);
           break;
         case 'frameDiff':
           aVal = parseInt(a.querySelector('.frame-diff').textContent);
           bVal = parseInt(b.querySelector('.frame-diff').textContent);
           break;
         case 'pointsScored':
-          aVal = parseInt(a.cells[9].textContent);
-          bVal = parseInt(b.cells[9].textContent);
+          aVal = parseInt(a.cells[11].textContent);
+          bVal = parseInt(b.cells[11].textContent);
           break;
         case 'pointsConceded':
-          aVal = parseInt(a.cells[10].textContent);
-          bVal = parseInt(b.cells[10].textContent);
+          aVal = parseInt(a.cells[12].textContent);
+          bVal = parseInt(b.cells[12].textContent);
           break;
         case 'pointsDiff':
           aVal = parseInt(a.querySelector('.points-diff').textContent);
           bVal = parseInt(b.querySelector('.points-diff').textContent);
           break;
         case 'winRate':
-          aVal = parseFloat(a.cells[12].textContent);
-          bVal = parseFloat(b.cells[12].textContent);
+          aVal = parseFloat(a.cells[14].textContent);
+          bVal = parseFloat(b.cells[14].textContent);
           break;
         default:
           return 0;

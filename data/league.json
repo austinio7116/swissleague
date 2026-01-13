@@ -22,9 +22,11 @@
             "matchesLost": 1,
             "framesWon": 2,
             "framesLost": 2,
-            "points": 2,
+            "points": 1,
             "frameDifference": 0,
-            "byesReceived": 0
+            "byesReceived": 0,
+            "strengthOfSchedule": 0.25,
+            "buchholzScore": 1
           }
         },
         {
@@ -37,9 +39,11 @@
             "matchesLost": 0,
             "framesWon": 4,
             "framesLost": 1,
-            "points": 4,
+            "points": 2,
             "frameDifference": 3,
-            "byesReceived": 0
+            "byesReceived": 0,
+            "strengthOfSchedule": 0.25,
+            "buchholzScore": 1
           }
         },
         {
@@ -54,7 +58,9 @@
             "framesLost": 4,
             "points": 0,
             "frameDifference": -4,
-            "byesReceived": 0
+            "byesReceived": 0,
+            "strengthOfSchedule": 0.75,
+            "buchholzScore": 3
           }
         },
         {
@@ -67,9 +73,11 @@
             "matchesLost": 1,
             "framesWon": 3,
             "framesLost": 2,
-            "points": 2,
+            "points": 1,
             "frameDifference": 1,
-            "byesReceived": 0
+            "byesReceived": 0,
+            "strengthOfSchedule": 0.75,
+            "buchholzScore": 3
           }
         }
       ],
@@ -275,7 +283,9 @@
             "framesLost": 2,
             "points": 0,
             "frameDifference": -2,
-            "byesReceived": 0
+            "byesReceived": 0,
+            "strengthOfSchedule": 1,
+            "buchholzScore": 1
           }
         },
         {
@@ -288,9 +298,11 @@
             "matchesLost": 0,
             "framesWon": 2,
             "framesLost": 0,
-            "points": 2,
+            "points": 1,
             "frameDifference": 2,
-            "byesReceived": 0
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
           }
         },
         {
@@ -303,9 +315,11 @@
             "matchesLost": 0,
             "framesWon": 2,
             "framesLost": 0,
-            "points": 2,
+            "points": 1,
             "frameDifference": 2,
-            "byesReceived": 0
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
           }
         },
         {
@@ -313,14 +327,16 @@
           "name": "Mark",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
-            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "matchesWon": 1,
             "matchesLost": 0,
-            "framesWon": 0,
+            "framesWon": 2,
             "framesLost": 0,
-            "points": 0,
-            "frameDifference": 0,
-            "byesReceived": 0
+            "points": 1,
+            "frameDifference": 2,
+            "byesReceived": 1,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
           }
         },
         {
@@ -335,7 +351,9 @@
             "framesLost": 2,
             "points": 0,
             "frameDifference": -2,
-            "byesReceived": 0
+            "byesReceived": 0,
+            "strengthOfSchedule": 1,
+            "buchholzScore": 1
           }
         }
       ],

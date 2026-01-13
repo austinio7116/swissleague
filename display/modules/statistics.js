@@ -71,6 +71,8 @@ export class StatisticsRenderer {
               <tr>
                 <th data-sort="name" class="${this.currentSort.column === 'name' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('name')">Player</th>
                 <th data-sort="matchPoints" class="${this.currentSort.column === 'matchPoints' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchPoints')">Match Pts</th>
+                <th data-sort="buchholzScore" class="${this.currentSort.column === 'buchholzScore' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('buchholzScore')" title="Sum of opponents' match points">Buchholz</th>
+                <th data-sort="strengthOfSchedule" class="${this.currentSort.column === 'strengthOfSchedule' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('strengthOfSchedule')" title="Average opponent win rate">SOS</th>
                 <th data-sort="matchesWon" class="${this.currentSort.column === 'matchesWon' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesWon')">Wins</th>
                 <th data-sort="matchesLost" class="${this.currentSort.column === 'matchesLost' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesLost')">Losses</th>
                 <th data-sort="matchesPlayed" class="${this.currentSort.column === 'matchesPlayed' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesPlayed')">Played</th>
@@ -90,11 +92,16 @@ export class StatisticsRenderer {
     sortedPlayers.forEach(player => {
       const winRate = calculateWinRate(player.stats);
       const snookerPoints = this.calculateSnookerPoints(leagueData, player.id);
+      const buchholz = player.stats.buchholzScore || 0;
+      const sos = player.stats.strengthOfSchedule || 0;
+      const sosPercent = (sos * 100).toFixed(1);
 
       html += `
         <tr>
           <td class="player-name">${escapeHtml(player.name)}</td>
           <td class="points">${player.stats.points}</td>
+          <td class="buchholz">${buchholz}</td>
+          <td class="sos">${sosPercent}%</td>
           <td class="wins">${player.stats.matchesWon}</td>
           <td class="losses">${player.stats.matchesLost}</td>
           <td>${player.stats.matchesPlayed}</td>
@@ -143,6 +150,16 @@ export class StatisticsRenderer {
         case 'winRate':
           aVal = calculateWinRate(a.stats);
           bVal = calculateWinRate(b.stats);
+          break;
+        
+        case 'buchholzScore':
+          aVal = a.stats.buchholzScore || 0;
+          bVal = b.stats.buchholzScore || 0;
+          break;
+        
+        case 'strengthOfSchedule':
+          aVal = a.stats.strengthOfSchedule || 0;
+          bVal = b.stats.strengthOfSchedule || 0;
           break;
         
         case 'pointsScored':
@@ -350,6 +367,9 @@ export class StatisticsRenderer {
             totalFramesLost: 0,
             totalPointsScored: 0,
             totalPointsConceded: 0,
+            totalBuchholz: 0,
+            totalSOS: 0,
+            leagueCount: 0,
             leagues: []
           };
         }
@@ -361,6 +381,9 @@ export class StatisticsRenderer {
         stats.totalMatchesPlayed += player.stats.matchesPlayed;
         stats.totalFramesWon += player.stats.framesWon;
         stats.totalFramesLost += player.stats.framesLost;
+        stats.totalBuchholz += (player.stats.buchholzScore || 0);
+        stats.totalSOS += (player.stats.strengthOfSchedule || 0);
+        stats.leagueCount++;
 
         // Calculate snooker points for this league
         const snookerPoints = this.calculateSnookerPoints(leagueData, player.id);
@@ -391,6 +414,8 @@ export class StatisticsRenderer {
               <tr>
                 <th>Player</th>
                 <th>Match Pts</th>
+                <th title="Sum of Buchholz scores across leagues">Buchholz</th>
+                <th title="Average SOS across leagues">Avg SOS</th>
                 <th>Wins</th>
                 <th>Losses</th>
                 <th>Played</th>
@@ -413,11 +438,15 @@ export class StatisticsRenderer {
         : 0;
       const frameDiff = player.totalFramesWon - player.totalFramesLost;
       const pointsDiff = player.totalPointsScored - player.totalPointsConceded;
+      const avgSOS = player.leagueCount > 0 ? (player.totalSOS / player.leagueCount) : 0;
+      const avgSOSPercent = (avgSOS * 100).toFixed(1);
 
       html += `
         <tr>
           <td class="player-name">${escapeHtml(player.name)}</td>
           <td class="points">${player.totalMatchPoints}</td>
+          <td class="buchholz">${player.totalBuchholz}</td>
+          <td class="sos">${avgSOSPercent}%</td>
           <td class="wins">${player.totalMatchesWon}</td>
           <td class="losses">${player.totalMatchesLost}</td>
           <td>${player.totalMatchesPlayed}</td>

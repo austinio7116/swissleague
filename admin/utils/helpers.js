@@ -51,15 +51,23 @@ export function sortByStandings(players) {
     if (b.stats.points !== a.stats.points) {
       return b.stats.points - a.stats.points;
     }
-    // Secondary: Frame difference (descending)
+    // Secondary: Buchholz Score (descending) - sum of opponents' points
+    if (b.stats.buchholzScore !== a.stats.buchholzScore) {
+      return b.stats.buchholzScore - a.stats.buchholzScore;
+    }
+    // Tertiary: Strength of Schedule (descending) - average opponent win rate
+    if (b.stats.strengthOfSchedule !== a.stats.strengthOfSchedule) {
+      return b.stats.strengthOfSchedule - a.stats.strengthOfSchedule;
+    }
+    // Quaternary: Frame difference (descending)
     if (b.stats.frameDifference !== a.stats.frameDifference) {
       return b.stats.frameDifference - a.stats.frameDifference;
     }
-    // Tertiary: Frames won (descending)
+    // Quinary: Frames won (descending)
     if (b.stats.framesWon !== a.stats.framesWon) {
       return b.stats.framesWon - a.stats.framesWon;
     }
-    // Quaternary: Alphabetical by name
+    // Senary: Alphabetical by name
     return a.name.localeCompare(b.name);
   });
 }
