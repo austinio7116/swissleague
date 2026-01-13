@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Snooker League - Admin</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header class="app-header">
+      <h1>🎱 Swiss Snooker League - Admin</h1>
+      <p class="subtitle">Manage your league, players, and matches</p>
+    </header>
+
+    <nav class="main-nav" style="display: none;">
+      <button class="nav-btn" data-view="league-setup">League</button>
+      <button class="nav-btn active" data-view="players">Players</button>
+      <button class="nav-btn" data-view="rounds">Rounds</button>
+      <button class="nav-btn" data-view="scoring">Scoring</button>
+      <button class="nav-btn" data-view="data">Data</button>
+    </nav>
+
+    <main class="app-main">
+      <!-- League Setup View -->
+      <div id="league-setup-view" class="view">
+        <div id="league-setup-content"></div>
+      </div>
+
+      <!-- Players View -->
+      <div id="players-view" class="view" style="display: none;">
+        <div id="players-content"></div>
+      </div>
+
+      <!-- Rounds View -->
+      <div id="rounds-view" class="view" style="display: none;">
+        <div id="rounds-content"></div>
+      </div>
+
+      <!-- Scoring View -->
+      <div id="scoring-view" class="view" style="display: none;">
+        <div id="scoring-content"></div>
+      </div>
+
+      <!-- Data Management View -->
+      <div id="data-view" class="view" style="display: none;">
+        <div id="data-content"></div>
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <p>Swiss Snooker League Management System | <a href="../display/index.html" target="_blank">View Public Display</a></p>
+      <p class="keyboard-shortcuts">Shortcuts: Ctrl+S (Save) | Ctrl+E (Export)</p>
+    </footer>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

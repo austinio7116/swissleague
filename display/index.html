@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swiss Snooker League - Display</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Loading Indicator -->
+    <div id="loading-indicator" class="loading-overlay" style="display: none;">
+      <div class="spinner"></div>
+      <p>Loading league data...</p>
+    </div>
+
+    <!-- Configuration Section -->
+    <section id="config-section" class="config-section">
+      <div class="config-container">
+        <h1>🎱 Swiss Snooker League</h1>
+        <p class="subtitle">Enter the GitHub URL to your league data JSON file</p>
+        
+        <div class="config-form">
+          <div class="form-group">
+            <label for="github-url">GitHub Raw URL</label>
+            <input 
+              type="url" 
+              id="github-url" 
+              class="form-control" 
+              placeholder="https://raw.githubusercontent.com/username/repo/main/data/league-data.json"
+            >
+            <small class="form-text">
+              Example: https://raw.githubusercontent.com/username/swissleague/main/data/league-data.json
+            </small>
+          </div>
+          <button id="load-data-btn" class="btn btn-primary">Load League Data</button>
+        </div>
+
+        <div class="config-help">
+          <h3>How to get your GitHub URL:</h3>
+          <ol>
+            <li>Navigate to your league-data.json file on GitHub</li>
+            <li>Click the "Raw" button</li>
+            <li>Copy the URL from your browser</li>
+            <li>Paste it above and click "Load League Data"</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content -->
+    <div id="main-content" class="main-content" style="display: none;">
+      <!-- Header -->
+      <header class="app-header">
+        <div id="league-info"></div>
+        <div class="header-actions">
+          <button id="refresh-btn" class="btn btn-secondary">🔄 Refresh</button>
+          <p id="last-updated" class="last-updated"></p>
+        </div>
+      </header>
+
+      <!-- Navigation -->
+      <nav class="main-nav">
+        <button class="nav-btn active" data-view="standings">Standings</button>
+        <button class="nav-btn" data-view="matches">Outstanding Matches</button>
+        <button class="nav-btn" data-view="history">Match History</button>
+        <button class="nav-btn" data-view="statistics">Statistics</button>
+      </nav>
+
+      <!-- View Containers -->
+      <main class="app-main">
+        <!-- Standings View -->
+        <div id="standings-container" class="view-container">
+          <div id="league-stats-content"></div>
+          <div id="standings-content"></div>
+        </div>
+
+        <!-- Outstanding Matches View -->
+        <div id="matches-container" class="view-container" style="display: none;">
+          <div id="outstanding-content"></div>
+        </div>
+
+        <!-- Match History View -->
+        <div id="history-container" class="view-container" style="display: none;">
+          <div id="history-content"></div>
+        </div>
+
+        <!-- Statistics View -->
+        <div id="statistics-container" class="view-container" style="display: none;">
+          <div id="statistics-content"></div>
+        </div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <p>Swiss Snooker League Management System</p>
+        <p><a href="../admin/index.html">Admin Interface</a> | Refresh page to see latest updates</p>
+      </footer>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
