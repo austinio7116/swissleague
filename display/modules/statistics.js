@@ -523,7 +523,6 @@ export class StatisticsRenderer {
                 <th data-sort="totalPointsScored" class="${this.crossLeagueSort.column === 'totalPointsScored' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('totalPointsScored')">Points For</th>
                 <th data-sort="totalPointsConceded" class="${this.crossLeagueSort.column === 'totalPointsConceded' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('totalPointsConceded')">Points Against</th>
                 <th data-sort="pointsDiff" class="${this.crossLeagueSort.column === 'pointsDiff' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('pointsDiff')">Points Diff</th>
-                <th data-sort="leagueCount" class="${this.crossLeagueSort.column === 'leagueCount' ? 'sort-' + this.crossLeagueSort.direction : ''}" onclick="displayApp.sortCrossLeagueStats('leagueCount')">Leagues</th>
               </tr>
             </thead>
             <tbody>
@@ -558,7 +557,6 @@ export class StatisticsRenderer {
           <td class="points-diff ${pointsDiff >= 0 ? 'positive' : 'negative'}">
             ${pointsDiff > 0 ? '+' : ''}${pointsDiff}
           </td>
-          <td><span class="league-count">${player.leagues.length}</span></td>
         </tr>
       `;
     });
@@ -567,7 +565,7 @@ export class StatisticsRenderer {
             </tbody>
           </table>
         </div>
-        <div class="stats-note" style="margin-top: 1rem; padding: 1rem; background: #e7f3ff; border-radius: 4px;">
+        <div class="stats-note">
           <p><strong>Note:</strong> These statistics are aggregated across all leagues. Individual league statistics can be viewed by selecting a specific league.</p>
         </div>
       </div>
