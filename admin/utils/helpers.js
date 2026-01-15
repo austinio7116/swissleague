@@ -46,7 +46,13 @@ export function debounce(func, wait) {
 }
 
 export function sortByStandings(players) {
-  return [...players].sort((a, b) => {
+  // Add random tiebreaker values to each player for this sort operation
+  const playersWithRandom = players.map(p => ({
+    ...p,
+    _randomTiebreaker: Math.random()
+  }));
+  
+  return playersWithRandom.sort((a, b) => {
     // Primary: Points (descending)
     if (b.stats.points !== a.stats.points) {
       return b.stats.points - a.stats.points;
@@ -67,8 +73,12 @@ export function sortByStandings(players) {
     if (b.stats.framesWon !== a.stats.framesWon) {
       return b.stats.framesWon - a.stats.framesWon;
     }
-    // Senary: Alphabetical by name
-    return a.name.localeCompare(b.name);
+    // Senary: Random tiebreaker (for equal standings)
+    return a._randomTiebreaker - b._randomTiebreaker;
+  }).map(p => {
+    // Remove the temporary random property
+    const { _randomTiebreaker, ...player } = p;
+    return player;
   });
 }
 
