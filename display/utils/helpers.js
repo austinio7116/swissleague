@@ -26,20 +26,33 @@ export function escapeHtml(text) {
 }
 
 export function sortByStandings(players) {
+  // Must match admin/utils/helpers.js sortByStandings for consistency with pairing algorithm
   return [...players].sort((a, b) => {
     // Primary: Points (descending)
     if (b.stats.points !== a.stats.points) {
       return b.stats.points - a.stats.points;
     }
-    // Secondary: Frame difference (descending)
+    // Secondary: Buchholz Score (descending) - sum of opponents' points
+    const aBuchholz = a.stats.buchholzScore || 0;
+    const bBuchholz = b.stats.buchholzScore || 0;
+    if (bBuchholz !== aBuchholz) {
+      return bBuchholz - aBuchholz;
+    }
+    // Tertiary: Strength of Schedule (descending) - average opponent win rate
+    const aSOS = a.stats.strengthOfSchedule || 0;
+    const bSOS = b.stats.strengthOfSchedule || 0;
+    if (bSOS !== aSOS) {
+      return bSOS - aSOS;
+    }
+    // Quaternary: Frame difference (descending)
     if (b.stats.frameDifference !== a.stats.frameDifference) {
       return b.stats.frameDifference - a.stats.frameDifference;
     }
-    // Tertiary: Frames won (descending)
+    // Quinary: Frames won (descending)
     if (b.stats.framesWon !== a.stats.framesWon) {
       return b.stats.framesWon - a.stats.framesWon;
     }
-    // Quaternary: Alphabetical by name
+    // Final: Alphabetical by name (for stable display ordering)
     return a.name.localeCompare(b.name);
   });
 }

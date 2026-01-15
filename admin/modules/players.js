@@ -76,110 +76,134 @@ export class PlayerManager {
     };
   }
 
-  static recalculatePlayerStats(leagueData, playerId) {
-    const player = leagueData.players.find(p => p.id === playerId);
-    if (!player) return leagueData;
+  static recalculateAllPlayerStats(leagueData) {
+    /**
+     * Recalculate all player stats from match history using a two-pass approach.
+     *
+     * Pass 1: Calculate basic stats (matches, frames, points) for all players
+     * Pass 2: Calculate SOS and Buchholz using the freshly computed basic stats
+     *
+     * This ensures we never rely on stale/existing player stats.
+     */
+    const players = leagueData.players;
 
-    const stats = {
-      matchesPlayed: 0,
-      matchesWon: 0,
-      matchesLost: 0,
-      framesWon: 0,
-      framesLost: 0,
-      points: 0,
-      frameDifference: 0,
-      byesReceived: 0,
-      strengthOfSchedule: 0,
-      buchholzScore: 0
-    };
+    // Initialize fresh stats for all players
+    const freshStats = {};
+    const opponentMap = {}; // Track opponents for each player
 
-    const opponentIds = [];
+    for (const player of players) {
+      freshStats[player.id] = {
+        matchesPlayed: 0,
+        matchesWon: 0,
+        matchesLost: 0,
+        framesWon: 0,
+        framesLost: 0,
+        points: 0,
+        frameDifference: 0,
+        byesReceived: 0,
+        strengthOfSchedule: 0,
+        buchholzScore: 0
+      };
+      opponentMap[player.id] = [];
+    }
 
-    // Calculate stats from all completed matches
+    // Pass 1: Calculate basic stats from match history
     for (const round of leagueData.rounds) {
       for (const match of round.matches) {
         if (match.status !== 'completed') continue;
 
-        // Check if this is a bye match
-        if (match.isBye && match.player1Id === playerId) {
-          stats.byesReceived++;
-          stats.matchesWon++;
-          stats.matchesPlayed++;
-          stats.points += POINTS.BYE;
-          stats.framesWon += match.player1FramesWon || 0;
+        const player1Id = match.player1Id;
+        const player2Id = match.player2Id;
+        const winnerId = match.winnerId;
+        const isBye = match.isBye || false;
+
+        // Handle bye matches
+        if (isBye) {
+          if (freshStats[player1Id]) {
+            freshStats[player1Id].matchesPlayed++;
+            freshStats[player1Id].matchesWon++;
+            freshStats[player1Id].points += POINTS.BYE;
+            freshStats[player1Id].byesReceived++;
+          }
           continue;
         }
 
-        // Regular match
-        if (match.player1Id === playerId) {
-          stats.matchesPlayed++;
-          stats.framesWon += match.player1FramesWon;
-          stats.framesLost += match.player2FramesWon;
-          opponentIds.push(match.player2Id);
-          
-          if (match.winnerId === playerId) {
-            stats.matchesWon++;
-            stats.points += POINTS.WIN;
+        // Regular match - update both players
+        if (freshStats[player1Id]) {
+          freshStats[player1Id].matchesPlayed++;
+          freshStats[player1Id].framesWon += match.player1FramesWon || 0;
+          freshStats[player1Id].framesLost += match.player2FramesWon || 0;
+          opponentMap[player1Id].push(player2Id);
+          if (winnerId === player1Id) {
+            freshStats[player1Id].matchesWon++;
+            freshStats[player1Id].points += POINTS.WIN;
           } else {
-            stats.matchesLost++;
-            stats.points += POINTS.LOSS;
+            freshStats[player1Id].matchesLost++;
+            freshStats[player1Id].points += POINTS.LOSS;
           }
-        } else if (match.player2Id === playerId) {
-          stats.matchesPlayed++;
-          stats.framesWon += match.player2FramesWon;
-          stats.framesLost += match.player1FramesWon;
-          opponentIds.push(match.player1Id);
-          
-          if (match.winnerId === playerId) {
-            stats.matchesWon++;
-            stats.points += POINTS.WIN;
+        }
+
+        if (freshStats[player2Id]) {
+          freshStats[player2Id].matchesPlayed++;
+          freshStats[player2Id].framesWon += match.player2FramesWon || 0;
+          freshStats[player2Id].framesLost += match.player1FramesWon || 0;
+          opponentMap[player2Id].push(player1Id);
+          if (winnerId === player2Id) {
+            freshStats[player2Id].matchesWon++;
+            freshStats[player2Id].points += POINTS.WIN;
           } else {
-            stats.matchesLost++;
-            stats.points += POINTS.LOSS;
+            freshStats[player2Id].matchesLost++;
+            freshStats[player2Id].points += POINTS.LOSS;
           }
         }
       }
     }
 
-    stats.frameDifference = stats.framesWon - stats.framesLost;
+    // Calculate frame difference for all players
+    for (const playerId in freshStats) {
+      const stats = freshStats[playerId];
+      stats.frameDifference = stats.framesWon - stats.framesLost;
+    }
 
-    // Calculate Strength of Schedule (SOS) and Buchholz Score
-    if (opponentIds.length > 0) {
+    // Pass 2: Calculate SOS and Buchholz using freshly computed stats
+    for (const playerId in freshStats) {
+      const opponents = opponentMap[playerId];
+      if (!opponents || opponents.length === 0) continue;
+
       let totalOpponentWinRate = 0;
       let totalOpponentPoints = 0;
 
-      for (const opponentId of opponentIds) {
-        const opponent = leagueData.players.find(p => p.id === opponentId);
-        if (opponent && opponent.stats) {
-          // Calculate opponent's win rate
-          const opponentWinRate = opponent.stats.matchesPlayed > 0
-            ? (opponent.stats.matchesWon / opponent.stats.matchesPlayed)
-            : 0;
-          totalOpponentWinRate += opponentWinRate;
-          
-          // Sum opponent's points for Buchholz
-          totalOpponentPoints += opponent.stats.points;
+      for (const oppId of opponents) {
+        if (!freshStats[oppId]) continue;
+        const oppStats = freshStats[oppId];
+        const oppPlayed = oppStats.matchesPlayed;
+        if (oppPlayed > 0) {
+          totalOpponentWinRate += oppStats.matchesWon / oppPlayed;
         }
+        totalOpponentPoints += oppStats.points;
       }
 
-      // SOS is the average win rate of all opponents
-      stats.strengthOfSchedule = totalOpponentWinRate / opponentIds.length;
-      
-      // Buchholz is the sum of all opponents' points
-      stats.buchholzScore = totalOpponentPoints;
+      if (opponents.length > 0) {
+        freshStats[playerId].strengthOfSchedule = totalOpponentWinRate / opponents.length;
+      }
+      freshStats[playerId].buchholzScore = totalOpponentPoints;
     }
 
-    return this.updatePlayer(leagueData, playerId, { stats });
+    // Apply fresh stats to all players
+    const updatedPlayers = players.map(player => ({
+      ...player,
+      stats: freshStats[player.id]
+    }));
+
+    return {
+      ...leagueData,
+      players: updatedPlayers
+    };
   }
 
-  static recalculateAllPlayerStats(leagueData) {
-    let updatedData = leagueData;
-    
-    for (const player of leagueData.players) {
-      updatedData = this.recalculatePlayerStats(updatedData, player.id);
-    }
-
-    return updatedData;
+  // Keep single-player version for backward compatibility, but it just calls the full recalc
+  static recalculatePlayerStats(leagueData, playerId) {
+    return this.recalculateAllPlayerStats(leagueData);
   }
 
   static getPlayerStats(leagueData, playerId) {

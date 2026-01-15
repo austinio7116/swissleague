@@ -1,6 +1,16 @@
 import { calculateStandings, escapeHtml, calculateWinRate, calculateAvgFrames } from '../utils/helpers.js';
+import { PlayerModal } from './player-modal.js';
 
 export class StandingsRenderer {
+  static arePlayersTied(a, b) {
+    // Check if two players are tied on all tiebreakers (excluding name)
+    if (a.stats.points !== b.stats.points) return false;
+    if ((a.stats.buchholzScore || 0) !== (b.stats.buchholzScore || 0)) return false;
+    if ((a.stats.strengthOfSchedule || 0) !== (b.stats.strengthOfSchedule || 0)) return false;
+    if (a.stats.frameDifference !== b.stats.frameDifference) return false;
+    if (a.stats.framesWon !== b.stats.framesWon) return false;
+    return true;
+  }
   static calculateSnookerPoints(leagueData, playerId) {
     let pointsScored = 0;
     let pointsConceded = 0;
@@ -36,6 +46,9 @@ export class StandingsRenderer {
   static render(leagueData, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
+
+    // Initialize modal with league data
+    PlayerModal.init(leagueData);
 
     const standings = calculateStandings(leagueData);
 
@@ -73,18 +86,39 @@ export class StandingsRenderer {
           <tbody>
     `;
 
+    // Calculate ranks with ties
+    const ranks = [];
+    let currentRank = 1;
+    standings.forEach((player, index) => {
+      if (index === 0) {
+        ranks.push(currentRank);
+      } else if (this.arePlayersTied(standings[index - 1], player)) {
+        // Tied with previous player, same rank
+        ranks.push(currentRank);
+      } else {
+        // Not tied, rank = position + 1
+        currentRank = index + 1;
+        ranks.push(currentRank);
+      }
+    });
+
     standings.forEach((player, index) => {
       const winRate = calculateWinRate(player.stats);
       const snookerPoints = this.calculateSnookerPoints(leagueData, player.id);
-      const rankClass = index < 3 ? `rank-${index + 1}` : '';
+      const rank = ranks[index];
+      const rankClass = rank <= 3 ? `rank-${rank}` : '';
       const buchholz = player.stats.buchholzScore || 0;
       const sos = player.stats.strengthOfSchedule || 0;
       const sosPercent = (sos * 100).toFixed(1);
-      
+      // Show "T" prefix for tied ranks (when next or previous player has same rank)
+      const isTied = (index > 0 && ranks[index - 1] === rank) ||
+                     (index < ranks.length - 1 && ranks[index + 1] === rank);
+      const rankDisplay = isTied ? `T${rank}` : rank;
+
       html += `
         <tr class="${rankClass}" data-player-id="${player.id}">
-          <td class="rank">${index + 1}</td>
-          <td class="player-name">${escapeHtml(player.name)}</td>
+          <td class="rank">${rankDisplay}</td>
+          <td class="player-name clickable" data-player-id="${player.id}">${escapeHtml(player.name)}</td>
           <td class="points"><strong>${player.stats.points}</strong></td>
           <td class="buchholz">${buchholz}</td>
           <td class="sos">${sosPercent}%</td>
@@ -116,6 +150,21 @@ export class StandingsRenderer {
 
     // Add sorting functionality
     this.addSortingListeners();
+
+    // Add click handlers for player names
+    this.addPlayerClickListeners();
+  }
+
+  static addPlayerClickListeners() {
+    const playerNames = document.querySelectorAll('.player-name.clickable');
+    playerNames.forEach(cell => {
+      cell.addEventListener('click', (e) => {
+        const playerId = e.target.dataset.playerId;
+        if (playerId) {
+          PlayerModal.open(playerId);
+        }
+      });
+    });
   }
 
   static addSortingListeners() {

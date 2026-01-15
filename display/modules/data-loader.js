@@ -2,10 +2,16 @@ import { STORAGE_KEYS } from '../../shared/constants.js';
 import { convertGitHubUrl } from '../utils/helpers.js';
 
 const DEFAULT_GITHUB_URL = 'https://raw.githubusercontent.com/austinio7116/swissleague/refs/heads/main/data/league.json';
+const LOCAL_DATA_URL = '/data/league.json';
+
+function isDevMode() {
+  return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+}
 
 export class DataLoader {
   constructor() {
-    this.dataUrl = this.loadSavedUrl();
+    this.devMode = isDevMode();
+    this.dataUrl = this.devMode ? LOCAL_DATA_URL : this.loadSavedUrl();
     this.lastFetchTime = null;
     this.cachedData = null;
   }
@@ -33,12 +39,13 @@ export class DataLoader {
 
   async fetchLeagueData(url = null) {
     const fetchUrl = url || this.dataUrl;
-    
+
     if (!fetchUrl) {
       throw new Error('No data URL configured');
     }
 
-    const rawUrl = convertGitHubUrl(fetchUrl);
+    // Skip GitHub URL conversion in dev mode (loading from local file)
+    const rawUrl = this.devMode ? fetchUrl : convertGitHubUrl(fetchUrl);
 
     try {
       const response = await fetch(rawUrl, {

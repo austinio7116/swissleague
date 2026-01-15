@@ -2,11 +2,17 @@ import { generateId } from '../utils/helpers.js';
 import { MATCH_STATUS, ROUND_STATUS, ERROR_TYPES } from '../../shared/constants.js';
 import { SwissPairing } from './swiss-pairing.js';
 import { LeagueError } from './storage.js';
+import { PlayerManager } from './players.js';
 
 export class RoundManager {
   static generateRound(leagueData) {
+    // Recalculate all player stats before generating pairings
+    // This ensures buchholz/SOS tiebreakers are accurate regardless of
+    // the order results were entered during the previous round
+    leagueData = PlayerManager.recalculateAllPlayerStats(leagueData);
+
     const { league, rounds } = leagueData;
-    
+
     // Generate pairings using Swiss algorithm
     const pairings = SwissPairing.generatePairings(leagueData);
     
