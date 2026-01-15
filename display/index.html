@@ -15,10 +15,23 @@
     </div>
 
     <!-- Configuration Section -->
-    <section id="config-section" class="config-section">
-      <div class="config-container">
-        <h1>🎱 Swiss Snooker League</h1>
-        <p class="subtitle">Choose a data source for your league</p>
+    <section id="config-section" class="config-section minimized">
+      <button class="config-toggle" aria-expanded="false">
+        <span class="config-info">
+          <svg class="config-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span id="config-status-text">Data Source: Not configured</span>
+        </span>
+        <svg class="toggle-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="config-details">
+        <div class="config-container">
+          <h1>🎱 Swiss Snooker League</h1>
+          <p class="subtitle">Choose a data source for your league</p>
         
         <div class="config-tabs">
           <button class="tab-btn active" data-tab="github">GitHub URL</button>
@@ -58,6 +71,7 @@
           <p class="tab-description">View leagues from your local admin interface</p>
           <div id="local-leagues-list"></div>
         </div>
+        </div>
       </div>
     </section>
 
@@ -65,10 +79,22 @@
     <div id="main-content" class="main-content" style="display: none;">
       <!-- Header -->
       <header class="app-header">
-        <div id="league-info"></div>
-        <div class="header-actions">
-          <button id="refresh-btn" class="btn btn-secondary">🔄 Refresh</button>
-          <p id="last-updated" class="last-updated"></p>
+        <div class="header-scan-lines"></div>
+        <div class="header-content">
+          <div class="header-main">
+            <div id="league-info" class="league-info-broadcast"></div>
+            <div id="league-meta" class="league-meta"></div>
+          </div>
+          <div class="header-actions">
+            <button id="refresh-btn" class="btn-refresh">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C9.84871 2 11.5058 2.84886 12.6 4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                <path d="M12 1V4.5H8.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Refresh</span>
+            </button>
+            <p id="last-updated" class="last-updated"></p>
+          </div>
         </div>
       </header>
 

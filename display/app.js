@@ -32,6 +32,16 @@ class DisplayApp {
   }
 
   setupEventListeners() {
+    // Config toggle for minimized state
+    const configToggle = document.querySelector('.config-toggle');
+    if (configToggle) {
+      configToggle.addEventListener('click', () => {
+        const details = document.querySelector('.config-details');
+        const isExpanded = details.classList.toggle('expanded');
+        configToggle.setAttribute('aria-expanded', isExpanded);
+      });
+    }
+
     // Configuration tabs
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
