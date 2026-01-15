@@ -1,83 +1,389 @@
 {
   "leagues": {
-    "21bb4ab4-d0c7-4709-9c97-b7c13c5d665e": {
+    "d471bea8-b962-4df9-91ea-35d3e71ba8df": {
       "league": {
-        "id": "21bb4ab4-d0c7-4709-9c97-b7c13c5d665e",
-        "name": "Test",
+        "id": "d471bea8-b962-4df9-91ea-35d3e71ba8df",
+        "name": "Unlimited Snooker Swiss League 2026",
         "format": "swiss",
         "bestOfFrames": 3,
-        "createdAt": "2026-01-13T10:12:14.811Z",
-        "updatedAt": "2026-01-13T12:43:34.003Z",
-        "currentRound": 3,
+        "createdAt": "2026-01-15T07:00:18.660Z",
+        "updatedAt": "2026-01-15T07:00:38.777Z",
+        "currentRound": 1,
         "totalRounds": 7
       },
       "players": [
         {
-          "id": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f",
-          "name": "Mark",
+          "id": "60fa57eb-fad6-4e78-a11e-763db945f76c",
+          "name": "000naris000",
           "active": true,
           "stats": {
-            "matchesPlayed": 2,
-            "matchesWon": 1,
-            "matchesLost": 1,
-            "framesWon": 2,
-            "framesLost": 2,
-            "points": 1,
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
             "frameDifference": 0,
             "byesReceived": 0,
-            "strengthOfSchedule": 0.25,
-            "buchholzScore": 1
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
           }
         },
         {
-          "id": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
-          "name": "Frank",
+          "id": "f847daf1-1052-41cd-a4d4-8178118d6aa9",
+          "name": "austinio7116",
           "active": true,
           "stats": {
-            "matchesPlayed": 2,
-            "matchesWon": 2,
-            "matchesLost": 0,
-            "framesWon": 4,
-            "framesLost": 1,
-            "points": 2,
-            "frameDifference": 3,
-            "byesReceived": 0,
-            "strengthOfSchedule": 0.25,
-            "buchholzScore": 1
-          }
-        },
-        {
-          "id": "081db25b-4d57-4c89-9007-80a7f1a856ef",
-          "name": "Bill",
-          "active": true,
-          "stats": {
-            "matchesPlayed": 2,
+            "matchesPlayed": 0,
             "matchesWon": 0,
-            "matchesLost": 2,
+            "matchesLost": 0,
             "framesWon": 0,
-            "framesLost": 4,
+            "framesLost": 0,
             "points": 0,
-            "frameDifference": -4,
+            "frameDifference": 0,
             "byesReceived": 0,
-            "strengthOfSchedule": 0.75,
-            "buchholzScore": 3
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
           }
         },
         {
-          "id": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
-          "name": "John",
+          "id": "5d4baae4-5762-4c27-a429-596f0f3e286c",
+          "name": "brandonio45",
           "active": true,
           "stats": {
-            "matchesPlayed": 2,
-            "matchesWon": 1,
-            "matchesLost": 1,
-            "framesWon": 3,
-            "framesLost": 2,
-            "points": 1,
-            "frameDifference": 1,
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
             "byesReceived": 0,
-            "strengthOfSchedule": 0.75,
-            "buchholzScore": 3
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "b2092568-8d0c-4797-8b19-5dcc211282ff",
+          "name": "dan105hughes",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "61dd2ea8-7158-468a-96f4-944a53110d47",
+          "name": "deedon2624",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "50b9053b-8b2c-49b3-b19f-8fbdf3f8efd6",
+          "name": "deucejuice",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "8c064afb-f496-44c6-ad35-8925befce1c4",
+          "name": "fret1308",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "8b5d1a17-f81b-46bf-ac31-13b4c93b24f5",
+          "name": "jimmyo76",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "5fc54c3a-00d2-4627-8e0e-deefccefc34d",
+          "name": "joethe147",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "3228fca4-08e9-4533-a007-85bdcf2cab7a",
+          "name": "jumper0967",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "3e16cdd9-81a5-4ee0-a45f-efec6134dba2",
+          "name": "kidbrush52.",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "3a17fb70-44b5-4def-9175-25d3005bb19e",
+          "name": "lle9endd",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "bd5a55fd-fbe4-472d-a2e5-264d57526bf5",
+          "name": "mumbles247",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "337629e3-1e29-4dbc-82d2-25782f07092a",
+          "name": "naedangerpawl",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "b129dde5-d108-4429-b16a-4181c16b3f77",
+          "name": "oops62",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "ac3c10e6-26a0-4a45-8949-2819a11012a0",
+          "name": "orms16",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "8b112374-a5f1-4451-9826-b91fa7a24eee",
+          "name": "questvr111",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "9e2f9958-3ed7-41e7-966f-af175a987c97",
+          "name": "red_dead_steve",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "59fa6ac1-fc45-4cf1-810c-e6a32fe39c51",
+          "name": "redeyeknightuk",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "bfc7ec64-32a6-4f73-a39f-31f8d677470e",
+          "name": "relisys196",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "42653a93-1fc0-474c-bf3a-fd208aa24a97",
+          "name": "spsoftprod8654",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          }
+        },
+        {
+          "id": "83812a0c-2c64-4b6d-b09a-bb5a5b23af63",
+          "name": "strbxz",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
           }
         }
       ],
@@ -87,129 +393,9 @@
           "status": "pending",
           "matches": [
             {
-              "id": "daa8f7e2-b3f1-42a4-b0c0-6bca809e7f3a",
-              "player1Id": "081db25b-4d57-4c89-9007-80a7f1a856ef",
-              "player2Id": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
-              "status": "completed",
-              "frames": [
-                {
-                  "frameNumber": 1,
-                  "player1Score": 24,
-                  "player2Score": 52,
-                  "winnerId": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f"
-                },
-                {
-                  "frameNumber": 2,
-                  "player1Score": 12,
-                  "player2Score": 45,
-                  "winnerId": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f"
-                }
-              ],
-              "player1FramesWon": 0,
-              "player2FramesWon": 2,
-              "winnerId": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
-              "isBye": false,
-              "completedAt": "2026-01-13T10:12:43.060Z"
-            },
-            {
-              "id": "0de22405-ae47-4107-a8ec-4676d14a4ca9",
-              "player1Id": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
-              "player2Id": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f",
-              "status": "completed",
-              "frames": [
-                {
-                  "frameNumber": 1,
-                  "player1Score": 76,
-                  "player2Score": 12,
-                  "winnerId": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44"
-                },
-                {
-                  "frameNumber": 2,
-                  "player1Score": 56,
-                  "player2Score": 45,
-                  "winnerId": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44"
-                }
-              ],
-              "player1FramesWon": 2,
-              "player2FramesWon": 0,
-              "winnerId": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
-              "isBye": false,
-              "completedAt": "2026-01-13T10:12:53.986Z"
-            }
-          ],
-          "generatedAt": "2026-01-13T10:12:31.428Z"
-        },
-        {
-          "roundNumber": 2,
-          "status": "pending",
-          "matches": [
-            {
-              "id": "fb1f2fc3-d040-4ee1-9c69-507eedec8966",
-              "player1Id": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
-              "player2Id": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
-              "status": "completed",
-              "frames": [
-                {
-                  "frameNumber": 1,
-                  "player1Score": 11,
-                  "player2Score": 56,
-                  "winnerId": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44"
-                },
-                {
-                  "frameNumber": 2,
-                  "player1Score": 51,
-                  "player2Score": 12,
-                  "winnerId": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f"
-                },
-                {
-                  "frameNumber": 3,
-                  "player1Score": 76,
-                  "player2Score": 66,
-                  "winnerId": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f"
-                }
-              ],
-              "player1FramesWon": 2,
-              "player2FramesWon": 1,
-              "winnerId": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
-              "isBye": false,
-              "completedAt": "2026-01-13T10:13:27.315Z"
-            },
-            {
-              "id": "2e3a37d0-2051-4530-99e7-4008d81cc49e",
-              "player1Id": "081db25b-4d57-4c89-9007-80a7f1a856ef",
-              "player2Id": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f",
-              "status": "completed",
-              "frames": [
-                {
-                  "frameNumber": 1,
-                  "player1Score": 12,
-                  "player2Score": 67,
-                  "winnerId": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f"
-                },
-                {
-                  "frameNumber": 2,
-                  "player1Score": 12,
-                  "player2Score": 78,
-                  "winnerId": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f"
-                }
-              ],
-              "player1FramesWon": 0,
-              "player2FramesWon": 2,
-              "winnerId": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f",
-              "isBye": false,
-              "completedAt": "2026-01-13T10:13:39.599Z"
-            }
-          ],
-          "generatedAt": "2026-01-13T10:13:00.307Z"
-        },
-        {
-          "roundNumber": 3,
-          "status": "pending",
-          "matches": [
-            {
-              "id": "62111d3d-8d5f-4698-8d46-796500b62a72",
-              "player1Id": "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
-              "player2Id": "54879c7d-2e7a-4ec7-a2f4-5a509244d90f",
+              "id": "4fedf576-82b6-417c-9a36-481787a4d1ab",
+              "player1Id": "ac3c10e6-26a0-4a45-8949-2819a11012a0",
+              "player2Id": "5d4baae4-5762-4c27-a429-596f0f3e286c",
               "status": "pending",
               "frames": [],
               "player1FramesWon": 0,
@@ -218,9 +404,108 @@
               "isBye": false
             },
             {
-              "id": "c25d2781-8a75-4ed6-bc27-95f0df903575",
-              "player1Id": "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
-              "player2Id": "081db25b-4d57-4c89-9007-80a7f1a856ef",
+              "id": "bede698e-793d-4862-b649-eb1cabd8ad67",
+              "player1Id": "60fa57eb-fad6-4e78-a11e-763db945f76c",
+              "player2Id": "3228fca4-08e9-4533-a007-85bdcf2cab7a",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "23941ba2-df26-4637-a5c4-50ac741c8213",
+              "player1Id": "b129dde5-d108-4429-b16a-4181c16b3f77",
+              "player2Id": "3e16cdd9-81a5-4ee0-a45f-efec6134dba2",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "63d88734-e953-4b74-a85c-303eb91bf74d",
+              "player1Id": "337629e3-1e29-4dbc-82d2-25782f07092a",
+              "player2Id": "3a17fb70-44b5-4def-9175-25d3005bb19e",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "808650b3-eb6e-4cd4-b068-14e7fcfc7f34",
+              "player1Id": "8b5d1a17-f81b-46bf-ac31-13b4c93b24f5",
+              "player2Id": "50b9053b-8b2c-49b3-b19f-8fbdf3f8efd6",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "917f09b5-7c01-43a0-b400-326088a50afe",
+              "player1Id": "f847daf1-1052-41cd-a4d4-8178118d6aa9",
+              "player2Id": "61dd2ea8-7158-468a-96f4-944a53110d47",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "15c5756a-8389-4af9-a6cd-f85dbd629234",
+              "player1Id": "8c064afb-f496-44c6-ad35-8925befce1c4",
+              "player2Id": "bfc7ec64-32a6-4f73-a39f-31f8d677470e",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "82e44546-8b09-40cf-b3d5-480acc83aefa",
+              "player1Id": "9e2f9958-3ed7-41e7-966f-af175a987c97",
+              "player2Id": "bd5a55fd-fbe4-472d-a2e5-264d57526bf5",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "9ea18863-a073-4f6e-bf9a-ce0944672fea",
+              "player1Id": "83812a0c-2c64-4b6d-b09a-bb5a5b23af63",
+              "player2Id": "59fa6ac1-fc45-4cf1-810c-e6a32fe39c51",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "7074636b-0b5d-44d6-9660-59ebf77c9c1e",
+              "player1Id": "b2092568-8d0c-4797-8b19-5dcc211282ff",
+              "player2Id": "42653a93-1fc0-474c-bf3a-fd208aa24a97",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "6efdb22e-bd0c-416e-8af7-1db0fd90fd44",
+              "player1Id": "5fc54c3a-00d2-4627-8e0e-deefccefc34d",
+              "player2Id": "8b112374-a5f1-4451-9826-b91fa7a24eee",
               "status": "pending",
               "frames": [],
               "player1FramesWon": 0,
@@ -229,221 +514,61 @@
               "isBye": false
             }
           ],
-          "generatedAt": "2026-01-13T10:16:10.587Z"
+          "generatedAt": "2026-01-15T07:00:38.776Z"
         }
       ],
       "pairingHistory": [
         [
-          "081db25b-4d57-4c89-9007-80a7f1a856ef",
-          "bb06130c-ce6d-40fb-ba9e-b84caf025a8f"
+          "ac3c10e6-26a0-4a45-8949-2819a11012a0",
+          "5d4baae4-5762-4c27-a429-596f0f3e286c"
         ],
         [
-          "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
-          "54879c7d-2e7a-4ec7-a2f4-5a509244d90f"
+          "60fa57eb-fad6-4e78-a11e-763db945f76c",
+          "3228fca4-08e9-4533-a007-85bdcf2cab7a"
         ],
         [
-          "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
-          "4739a50b-b72c-41fb-bd87-dfd9e68a3a44"
+          "b129dde5-d108-4429-b16a-4181c16b3f77",
+          "3e16cdd9-81a5-4ee0-a45f-efec6134dba2"
         ],
         [
-          "081db25b-4d57-4c89-9007-80a7f1a856ef",
-          "54879c7d-2e7a-4ec7-a2f4-5a509244d90f"
+          "337629e3-1e29-4dbc-82d2-25782f07092a",
+          "3a17fb70-44b5-4def-9175-25d3005bb19e"
         ],
         [
-          "bb06130c-ce6d-40fb-ba9e-b84caf025a8f",
-          "54879c7d-2e7a-4ec7-a2f4-5a509244d90f"
+          "8b5d1a17-f81b-46bf-ac31-13b4c93b24f5",
+          "50b9053b-8b2c-49b3-b19f-8fbdf3f8efd6"
         ],
         [
-          "4739a50b-b72c-41fb-bd87-dfd9e68a3a44",
-          "081db25b-4d57-4c89-9007-80a7f1a856ef"
-        ]
-      ]
-    },
-    "1a2c1c34-f448-49c6-96f5-49552f7d8ceb": {
-      "league": {
-        "id": "1a2c1c34-f448-49c6-96f5-49552f7d8ceb",
-        "name": "Second League",
-        "format": "swiss",
-        "bestOfFrames": 3,
-        "createdAt": "2026-01-13T12:55:20.729Z",
-        "updatedAt": "2026-01-13T14:15:26.637Z",
-        "currentRound": 1,
-        "totalRounds": 5
-      },
-      "players": [
-        {
-          "id": "bc065318-9d69-479c-9f8a-cfc5b3f5395c",
-          "name": "Bill",
-          "active": true,
-          "stats": {
-            "matchesPlayed": 1,
-            "matchesWon": 0,
-            "matchesLost": 1,
-            "framesWon": 0,
-            "framesLost": 2,
-            "points": 0,
-            "frameDifference": -2,
-            "byesReceived": 0,
-            "strengthOfSchedule": 1,
-            "buchholzScore": 1
-          }
-        },
-        {
-          "id": "e744ce30-2737-42d7-abe5-8abcfc5f493b",
-          "name": "John",
-          "active": true,
-          "stats": {
-            "matchesPlayed": 1,
-            "matchesWon": 1,
-            "matchesLost": 0,
-            "framesWon": 2,
-            "framesLost": 0,
-            "points": 1,
-            "frameDifference": 2,
-            "byesReceived": 0,
-            "strengthOfSchedule": 0,
-            "buchholzScore": 0
-          }
-        },
-        {
-          "id": "b3d1237f-e41f-4a0d-b423-9d8f3cb6f9fb",
-          "name": "Frank",
-          "active": true,
-          "stats": {
-            "matchesPlayed": 1,
-            "matchesWon": 1,
-            "matchesLost": 0,
-            "framesWon": 2,
-            "framesLost": 0,
-            "points": 1,
-            "frameDifference": 2,
-            "byesReceived": 0,
-            "strengthOfSchedule": 0,
-            "buchholzScore": 0
-          }
-        },
-        {
-          "id": "e0aee073-228e-41a6-8aba-95ba26678771",
-          "name": "Mark",
-          "active": true,
-          "stats": {
-            "matchesPlayed": 1,
-            "matchesWon": 1,
-            "matchesLost": 0,
-            "framesWon": 2,
-            "framesLost": 0,
-            "points": 1,
-            "frameDifference": 2,
-            "byesReceived": 1,
-            "strengthOfSchedule": 0,
-            "buchholzScore": 0
-          }
-        },
-        {
-          "id": "6b0f4917-787c-4826-a569-4bc28b1abc48",
-          "name": "James",
-          "active": true,
-          "stats": {
-            "matchesPlayed": 1,
-            "matchesWon": 0,
-            "matchesLost": 1,
-            "framesWon": 0,
-            "framesLost": 2,
-            "points": 0,
-            "frameDifference": -2,
-            "byesReceived": 0,
-            "strengthOfSchedule": 1,
-            "buchholzScore": 1
-          }
-        }
-      ],
-      "rounds": [
-        {
-          "roundNumber": 1,
-          "status": "completed",
-          "matches": [
-            {
-              "id": "5d6ebd8e-4d96-4308-b4e0-9c87436cdb5e",
-              "player1Id": "bc065318-9d69-479c-9f8a-cfc5b3f5395c",
-              "player2Id": "b3d1237f-e41f-4a0d-b423-9d8f3cb6f9fb",
-              "status": "completed",
-              "frames": [
-                {
-                  "frameNumber": 1,
-                  "player1Score": 21,
-                  "player2Score": 56,
-                  "winnerId": "b3d1237f-e41f-4a0d-b423-9d8f3cb6f9fb"
-                },
-                {
-                  "frameNumber": 2,
-                  "player1Score": 24,
-                  "player2Score": 67,
-                  "winnerId": "b3d1237f-e41f-4a0d-b423-9d8f3cb6f9fb"
-                }
-              ],
-              "player1FramesWon": 0,
-              "player2FramesWon": 2,
-              "winnerId": "b3d1237f-e41f-4a0d-b423-9d8f3cb6f9fb",
-              "isBye": false,
-              "completedAt": "2026-01-13T14:15:15.725Z"
-            },
-            {
-              "id": "708e70ad-294f-45e2-ac3e-1fb551d5286b",
-              "player1Id": "6b0f4917-787c-4826-a569-4bc28b1abc48",
-              "player2Id": "e744ce30-2737-42d7-abe5-8abcfc5f493b",
-              "status": "completed",
-              "frames": [
-                {
-                  "frameNumber": 1,
-                  "player1Score": 56,
-                  "player2Score": 76,
-                  "winnerId": "e744ce30-2737-42d7-abe5-8abcfc5f493b"
-                },
-                {
-                  "frameNumber": 2,
-                  "player1Score": 21,
-                  "player2Score": 67,
-                  "winnerId": "e744ce30-2737-42d7-abe5-8abcfc5f493b"
-                }
-              ],
-              "player1FramesWon": 0,
-              "player2FramesWon": 2,
-              "winnerId": "e744ce30-2737-42d7-abe5-8abcfc5f493b",
-              "isBye": false,
-              "completedAt": "2026-01-13T14:15:26.636Z"
-            },
-            {
-              "id": "42fb885d-7fd8-4557-977e-93899b3e1749",
-              "player1Id": "e0aee073-228e-41a6-8aba-95ba26678771",
-              "player2Id": null,
-              "status": "completed",
-              "frames": [],
-              "player1FramesWon": 2,
-              "player2FramesWon": 0,
-              "winnerId": "e0aee073-228e-41a6-8aba-95ba26678771",
-              "isBye": true,
-              "completedAt": "2026-01-13T14:14:57.601Z"
-            }
-          ],
-          "generatedAt": "2026-01-13T14:14:57.601Z"
-        }
-      ],
-      "pairingHistory": [
-        [
-          "bc065318-9d69-479c-9f8a-cfc5b3f5395c",
-          "b3d1237f-e41f-4a0d-b423-9d8f3cb6f9fb"
+          "f847daf1-1052-41cd-a4d4-8178118d6aa9",
+          "61dd2ea8-7158-468a-96f4-944a53110d47"
         ],
         [
-          "6b0f4917-787c-4826-a569-4bc28b1abc48",
-          "e744ce30-2737-42d7-abe5-8abcfc5f493b"
+          "8c064afb-f496-44c6-ad35-8925befce1c4",
+          "bfc7ec64-32a6-4f73-a39f-31f8d677470e"
+        ],
+        [
+          "9e2f9958-3ed7-41e7-966f-af175a987c97",
+          "bd5a55fd-fbe4-472d-a2e5-264d57526bf5"
+        ],
+        [
+          "83812a0c-2c64-4b6d-b09a-bb5a5b23af63",
+          "59fa6ac1-fc45-4cf1-810c-e6a32fe39c51"
+        ],
+        [
+          "b2092568-8d0c-4797-8b19-5dcc211282ff",
+          "42653a93-1fc0-474c-bf3a-fd208aa24a97"
+        ],
+        [
+          "5fc54c3a-00d2-4627-8e0e-deefccefc34d",
+          "8b112374-a5f1-4451-9826-b91fa7a24eee"
         ]
       ]
     }
   },
-  "currentLeagueId": "1a2c1c34-f448-49c6-96f5-49552f7d8ceb",
+  "currentLeagueId": "d471bea8-b962-4df9-91ea-35d3e71ba8df",
   "metadata": {
     "version": "2.0",
-    "lastUpdated": "2026-01-13T14:16:13.157Z",
+    "lastUpdated": "2026-01-15T07:01:05.569Z",
     "exportedBy": "Swiss Snooker League Admin"
   }
 }
