@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-01-15T07:00:38.777Z",
+        "updatedAt": "2026-01-15T20:09:16.659Z",
         "currentRound": 1,
         "totalRounds": 7
       },
@@ -204,13 +204,13 @@
           "name": "lle9endd",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
-            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "matchesWon": 1,
             "matchesLost": 0,
-            "framesWon": 0,
-            "framesLost": 0,
-            "points": 0,
-            "frameDifference": 0,
+            "framesWon": 2,
+            "framesLost": 1,
+            "points": 1,
+            "frameDifference": 1,
             "byesReceived": 0,
             "strengthOfSchedule": 0,
             "buchholzScore": 0
@@ -238,13 +238,13 @@
           "name": "naedangerpawl",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "matchesWon": 0,
-            "matchesLost": 0,
-            "framesWon": 0,
-            "framesLost": 0,
+            "matchesLost": 1,
+            "framesWon": 1,
+            "framesLost": 2,
             "points": 0,
-            "frameDifference": 0,
+            "frameDifference": -1,
             "byesReceived": 0,
             "strengthOfSchedule": 0,
             "buchholzScore": 0
@@ -429,12 +429,32 @@
               "id": "63d88734-e953-4b74-a85c-303eb91bf74d",
               "player1Id": "337629e3-1e29-4dbc-82d2-25782f07092a",
               "player2Id": "3a17fb70-44b5-4def-9175-25d3005bb19e",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 63,
+                  "player2Score": 40,
+                  "winnerId": "337629e3-1e29-4dbc-82d2-25782f07092a"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 42,
+                  "player2Score": 66,
+                  "winnerId": "3a17fb70-44b5-4def-9175-25d3005bb19e"
+                },
+                {
+                  "frameNumber": 3,
+                  "player1Score": 60,
+                  "player2Score": 63,
+                  "winnerId": "3a17fb70-44b5-4def-9175-25d3005bb19e"
+                }
+              ],
+              "player1FramesWon": 1,
+              "player2FramesWon": 2,
+              "winnerId": "3a17fb70-44b5-4def-9175-25d3005bb19e",
+              "isBye": false,
+              "completedAt": "2026-01-15T20:09:16.659Z"
             },
             {
               "id": "808650b3-eb6e-4cd4-b068-14e7fcfc7f34",
@@ -568,7 +588,7 @@
   "currentLeagueId": "d471bea8-b962-4df9-91ea-35d3e71ba8df",
   "metadata": {
     "version": "2.0",
-    "lastUpdated": "2026-01-15T07:01:05.569Z",
+    "lastUpdated": "2026-01-15T20:09:39.938Z",
     "exportedBy": "Swiss Snooker League Admin"
   }
 }
