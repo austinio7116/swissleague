@@ -50,40 +50,24 @@ export class PlayerModal {
   static renderPlayerStats(player) {
     const stats = player.stats;
     const winRate = stats.matchesPlayed > 0
-      ? ((stats.matchesWon / stats.matchesPlayed) * 100).toFixed(1)
+      ? ((stats.matchesWon / stats.matchesPlayed) * 100).toFixed(0)
       : 0;
 
     return `
-      <div class="stats-grid">
-        <div class="stat-item">
-          <span class="stat-value">${stats.points}</span>
-          <span class="stat-label">Points</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value">${stats.matchesWon}-${stats.matchesLost}</span>
-          <span class="stat-label">W-L</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value">${stats.framesWon}-${stats.framesLost}</span>
-          <span class="stat-label">Frames</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value ${stats.frameDifference >= 0 ? 'positive' : 'negative'}">
-            ${stats.frameDifference > 0 ? '+' : ''}${stats.frameDifference}
-          </span>
-          <span class="stat-label">Frame Diff</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value">${winRate}%</span>
-          <span class="stat-label">Win Rate</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value">${stats.buchholzScore}</span>
-          <span class="stat-label">Buchholz</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value">${(stats.strengthOfSchedule * 100).toFixed(1)}%</span>
-          <span class="stat-label">SOS</span>
+      <div class="modal-stats-container">
+        <div class="stats-primary">
+          <div class="stat-highlight">
+            <span class="stat-value">${stats.points}</span>
+            <span class="stat-label">Points</span>
+          </div>
+          <div class="stat-highlight">
+            <span class="stat-value">${stats.matchesWon}-${stats.matchesLost}</span>
+            <span class="stat-label">Record</span>
+          </div>
+          <div class="stat-highlight">
+            <span class="stat-value">${winRate}%</span>
+            <span class="stat-label">Win Rate</span>
+          </div>
         </div>
       </div>
     `;
