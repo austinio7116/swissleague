@@ -11,7 +11,7 @@ import json
 import os
 
 from league import (
-    find_player_by_name,
+    find_player_by_name_exact,
     find_pending_match,
     find_pending_matches_for_player,
     apply_match_result,
@@ -146,21 +146,22 @@ async def submit_result(
 
         players = league_data.get("players", [])
 
-        # Find submitter by Discord display name
+        # Find submitter by Discord username (exact match only for security)
         submitter_name = interaction.user.name
-        submitter, _ = find_player_by_name(players, submitter_name)
+        submitter = find_player_by_name_exact(players, submitter_name)
         if not submitter:
             await interaction.followup.send(
                 f"Could not find player '{submitter_name}' in the league. "
-                f"Your Discord display name must match your league name exactly."
+                f"Your Discord username must match your league name exactly."
             )
             return
 
-        # Find opponent
-        opponent_player, _ = find_player_by_name(players, opponent)
+        # Find opponent (exact match only for security)
+        opponent_player = find_player_by_name_exact(players, opponent)
         if not opponent_player:
             await interaction.followup.send(
-                f"Could not find opponent '{opponent}' in the league."
+                f"Could not find opponent '{opponent}' in the league. "
+                f"Opponent name must match exactly (case-insensitive)."
             )
             return
 
@@ -333,10 +334,10 @@ async def my_matches(interaction: discord.Interaction):
 
         players = league_data.get("players", [])
 
-        # Find player
+        # Find player (exact match only)
         username = interaction.user.name
         display_name = interaction.user.display_name
-        player, _ = find_player_by_name(players, username)
+        player = find_player_by_name_exact(players, username)
         if not player:
             await interaction.followup.send(
                 f"Could not find player '{username}' in the league.\n"

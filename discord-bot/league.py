@@ -35,6 +35,20 @@ def find_player_by_name(players, search_name, threshold=0.6):
     return best_match, best_score
 
 
+def find_player_by_name_exact(players, search_name):
+    """
+    Find a player by exact name match (case-insensitive).
+    Returns player dict or None if not found.
+
+    This is the secure version for Discord bot use where we don't want
+    fuzzy matching that could match the wrong player.
+    """
+    for player in players:
+        if player["name"].lower() == search_name.lower():
+            return player
+    return None
+
+
 def find_pending_match(league_data, player1_id, player2_id):
     """
     Find a pending match between two players.
@@ -358,6 +372,9 @@ def get_standings(league_data, limit=None):
     return players
 
 
+MAX_FRAME_SCORE = 147  # Maximum possible break in snooker
+
+
 def validate_frame_scores(frame_scores, expected_total=None):
     """
     Validate frame scores.
@@ -376,7 +393,16 @@ def validate_frame_scores(frame_scores, expected_total=None):
         return False, f"Expected {expected_total} frames but got {len(frame_scores)}"
 
     for i, (s1, s2) in enumerate(frame_scores):
+        # Check for ties
         if s1 == s2:
             return False, f"Frame {i+1} is a tie ({s1}-{s2}), which is not allowed"
+
+        # Check score bounds (0 to 147)
+        if s1 < 0 or s2 < 0:
+            return False, f"Frame {i+1} has negative score ({s1}-{s2})"
+        if s1 > MAX_FRAME_SCORE:
+            return False, f"Frame {i+1} score {s1} exceeds maximum ({MAX_FRAME_SCORE})"
+        if s2 > MAX_FRAME_SCORE:
+            return False, f"Frame {i+1} score {s2} exceeds maximum ({MAX_FRAME_SCORE})"
 
     return True, None
