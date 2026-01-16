@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["python311"]
+
+[phases.install]
+cmds = ["cd discord-bot && pip install -r requirements.txt"]
+
+[start]
+cmd = "cd discord-bot && python bot.py"
