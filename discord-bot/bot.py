@@ -217,17 +217,36 @@ async def standings(interaction: discord.Interaction):
             await interaction.followup.send("No active league found.")
             return
 
-        players = get_standings(league_data, limit=10)
+        players = get_standings(league_data)  # Full league, no limit
+        league_name = league_data.get("league", {}).get("name", "League")
 
-        # Build standings message
-        lines = ['**League Standings**\n']
+        # Find max name length for padding
+        max_name = max(len(p['name']) for p in players) if players else 10
+
+        # Build table
+        header = f"{'#':<3} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'Frames':>7}  {'+/-':>4}"
+        separator = "-" * len(header)
+
+        lines = [
+            f"**{league_name} Standings**",
+            f"```",
+            header,
+            separator
+        ]
+
         for i, player in enumerate(players, 1):
             stats = player['stats']
+            wl = f"{stats['matchesWon']}-{stats['matchesLost']}"
+            frames = f"{stats['framesWon']}-{stats['framesLost']}"
+            diff = stats['frameDifference']
+            diff_str = f"+{diff}" if diff > 0 else str(diff)
+
             lines.append(
-                f"{i}. **{player['name']}** - {stats['points']} pts "
-                f"({stats['matchesWon']}-{stats['matchesLost']})"
+                f"{i:<3} {player['name']:<{max_name}}  {stats['points']:>3}  {wl:>5}  {frames:>7}  {diff_str:>4}"
             )
 
+        lines.append("```")
+        lines.append("\nFull standings: https://austinio7116.github.io/swissleague/display/")
         await interaction.followup.send('\n'.join(lines))
 
     except Exception as e:
@@ -249,22 +268,29 @@ async def my_matches(interaction: discord.Interaction):
         players = league_data.get("players", [])
 
         # Find player
-        player_name = interaction.user.name
-        player, _ = find_player_by_name(players, player_name)
+        username = interaction.user.name
+        display_name = interaction.user.display_name
+        player, _ = find_player_by_name(players, username)
         if not player:
             await interaction.followup.send(
-                f"Could not find player '{player_name}' in the league."
+                f"Could not find player '{username}' in the league.\n"
+                f"(Your display name: {display_name})"
             )
             return
 
         # Find pending matches
         pending = find_pending_matches_for_player(league_data, player['id'])
 
+        # Show both username and display name for clarity
+        name_display = f"{player['name']}"
+        if display_name != username:
+            name_display += f" ({display_name})"
+
         if not pending:
-            await interaction.followup.send(f"No pending matches for {player['name']}.")
+            await interaction.followup.send(f"No pending matches for {name_display}.")
             return
 
-        lines = [f"**Pending matches for {player['name']}**\n"]
+        lines = [f"**Pending matches for {name_display}**\n"]
         for m in pending:
             lines.append(f"Round {m['round']}: vs **{m['opponent']}**")
 
