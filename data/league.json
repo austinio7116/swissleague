@@ -212,7 +212,7 @@
             "points": 1,
             "frameDifference": 1,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -246,8 +246,8 @@
             "points": 0,
             "frameDifference": -1,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
-            "buchholzScore": 0
+            "strengthOfSchedule": 1.0,
+            "buchholzScore": 1
           }
         },
         {

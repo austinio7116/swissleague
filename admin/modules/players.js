@@ -170,7 +170,7 @@ export class PlayerManager {
       const opponents = opponentMap[playerId];
       if (!opponents || opponents.length === 0) continue;
 
-      let totalOpponentWinRate = 0;
+      const opponentWinRates = [];
       let totalOpponentPoints = 0;
 
       for (const oppId of opponents) {
@@ -178,13 +178,14 @@ export class PlayerManager {
         const oppStats = freshStats[oppId];
         const oppPlayed = oppStats.matchesPlayed;
         if (oppPlayed > 0) {
-          totalOpponentWinRate += oppStats.matchesWon / oppPlayed;
+          opponentWinRates.push(oppStats.matchesWon / oppPlayed);
         }
         totalOpponentPoints += oppStats.points;
       }
 
-      if (opponents.length > 0) {
-        freshStats[playerId].strengthOfSchedule = totalOpponentWinRate / opponents.length;
+      if (opponentWinRates.length > 0) {
+        const sumWinRates = opponentWinRates.reduce((a, b) => a + b, 0);
+        freshStats[playerId].strengthOfSchedule = sumWinRates / opponentWinRates.length;
       }
       freshStats[playerId].buchholzScore = totalOpponentPoints;
     }
