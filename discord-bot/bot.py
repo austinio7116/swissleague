@@ -90,6 +90,31 @@ def get_active_league(data):
     return None, None
 
 
+def get_display_name(guild, username):
+    """
+    Look up a Discord member's display name from their username.
+    Returns display name if different from username, otherwise None.
+    """
+    if not guild:
+        return None
+    # Find member by username (case-insensitive)
+    member = discord.utils.find(
+        lambda m: m.name.lower() == username.lower(),
+        guild.members
+    )
+    if member and member.display_name != member.name:
+        return member.display_name
+    return None
+
+
+def format_player_name(guild, username):
+    """Format player name with display name in brackets if different."""
+    display = get_display_name(guild, username)
+    if display:
+        return f"{username} ({display})"
+    return username
+
+
 @tree.command(name='result', description='Submit a match result')
 @app_commands.describe(
     opponent='Your opponent (their Discord username or display name)',
@@ -245,8 +270,14 @@ async def standings(interaction: discord.Interaction):
                 current_rank = i + 1  # Not tied, rank = position
                 ranks.append(current_rank)
 
+        # Build formatted names with display names
+        formatted_names = [
+            format_player_name(interaction.guild, p['name'])
+            for p in players
+        ]
+
         # Find max name length for padding
-        max_name = max(len(p['name']) for p in players) if players else 10
+        max_name = max(len(n) for n in formatted_names) if formatted_names else 10
 
         # Build table
         header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'Frames':>7}  {'+/-':>4}"
@@ -262,6 +293,7 @@ async def standings(interaction: discord.Interaction):
         for i, player in enumerate(players):
             stats = player['stats']
             rank = ranks[i]
+            name = formatted_names[i]
 
             # Show "T" prefix for tied ranks
             is_tied = (
@@ -276,7 +308,7 @@ async def standings(interaction: discord.Interaction):
             diff_str = f"+{diff}" if diff > 0 else str(diff)
 
             lines.append(
-                f"{rank_str:<4} {player['name']:<{max_name}}  {stats['points']:>3}  {wl:>5}  {frames:>7}  {diff_str:>4}"
+                f"{rank_str:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>5}  {frames:>7}  {diff_str:>4}"
             )
 
         lines.append("```")
@@ -326,7 +358,8 @@ async def my_matches(interaction: discord.Interaction):
 
         lines = [f"**Pending matches for {name_display}**\n"]
         for m in pending:
-            lines.append(f"Round {m['round']}: vs **{m['opponent']}**")
+            opponent_display = format_player_name(interaction.guild, m['opponent'])
+            lines.append(f"Round {m['round']}: vs **{opponent_display}**")
 
         await interaction.followup.send('\n'.join(lines))
 
