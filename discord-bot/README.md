@@ -1,8 +1,15 @@
-# Swiss League Discord Bot
+# Swiss League Tools
 
-A Discord bot that allows players to submit match results directly, which are then committed to the GitHub repository and automatically deployed via GitHub Pages.
+This folder contains both the Discord bot and CLI tool for managing league results.
+Both tools share the same core logic in `league.py` for consistent stats calculation.
 
-## Commands
+## Files
+
+- `bot.py` - Discord bot for player self-service result submission
+- `cli.py` - Command line tool for manual result entry
+- `league.py` - Shared logic (stats calculation, match updates, validation)
+
+## Discord Bot Commands
 
 - `/result @opponent 63-45 52-60 71-38` - Submit a match result (your scores first)
 - `/standings` - View current league standings
@@ -140,6 +147,20 @@ A Discord bot that allows players to submit match results directly, which are th
 **Commands not showing up**
 - Wait a few minutes for Discord to sync slash commands
 - Try kicking and re-inviting the bot
+
+## CLI Tool Usage
+
+For manual result entry (run from the repo root):
+
+```bash
+cd discord-bot
+python cli.py "player1 Vs player2 2-1 63-45 52-60 71-38"
+```
+
+Options:
+- `--dev` - Skip git commit (for testing)
+
+The CLI uses fuzzy matching for player names, shows a preview, and asks for confirmation before applying.
 
 ## Security
 
