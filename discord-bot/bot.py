@@ -122,7 +122,7 @@ async def submit_result(
         players = league_data.get("players", [])
 
         # Find submitter by Discord display name
-        submitter_name = interaction.user.display_name
+        submitter_name = interaction.user.name
         submitter, _ = find_player_by_name(players, submitter_name)
         if not submitter:
             await interaction.followup.send(
@@ -249,7 +249,7 @@ async def my_matches(interaction: discord.Interaction):
         players = league_data.get("players", [])
 
         # Find player
-        player_name = interaction.user.display_name
+        player_name = interaction.user.name
         player, _ = find_player_by_name(players, player_name)
         if not player:
             await interaction.followup.send(
