@@ -329,13 +329,28 @@ def get_standings(league_data, limit=None):
     """
     Get sorted standings for the league.
 
-    Returns list of players sorted by points (desc), then wins (desc).
+    Sorting matches display page:
+    1. Points (desc)
+    2. Buchholz Score (desc)
+    3. Strength of Schedule (desc)
+    4. Frame difference (desc)
+    5. Frames won (desc)
+    6. Name (alphabetical)
     """
-    players = sorted(
-        league_data.get("players", []),
-        key=lambda p: (p["stats"]["points"], p["stats"]["matchesWon"]),
-        reverse=True
-    )
+    def sort_key(p):
+        stats = p.get("stats", {})
+        return (
+            -stats.get("points", 0),
+            -stats.get("buchholzScore", 0),
+            -stats.get("strengthOfSchedule", 0),
+            -stats.get("frameDifference", 0),
+            -stats.get("framesWon", 0),
+            p.get("name", "").lower()
+        )
+
+    # Only include active players
+    active_players = [p for p in league_data.get("players", []) if p.get("active", True)]
+    players = sorted(active_players, key=sort_key)
 
     if limit:
         players = players[:limit]

@@ -205,6 +205,19 @@ async def submit_result(
         await interaction.followup.send(f"Error: {str(e)}")
 
 
+def are_players_tied(a, b):
+    """Check if two players are tied on all tiebreakers (excluding name)."""
+    a_stats = a.get('stats', {})
+    b_stats = b.get('stats', {})
+    return (
+        a_stats.get('points', 0) == b_stats.get('points', 0) and
+        a_stats.get('buchholzScore', 0) == b_stats.get('buchholzScore', 0) and
+        a_stats.get('strengthOfSchedule', 0) == b_stats.get('strengthOfSchedule', 0) and
+        a_stats.get('frameDifference', 0) == b_stats.get('frameDifference', 0) and
+        a_stats.get('framesWon', 0) == b_stats.get('framesWon', 0)
+    )
+
+
 @tree.command(name='standings', description='Show current league standings')
 async def standings(interaction: discord.Interaction):
     await interaction.response.defer()
@@ -220,11 +233,23 @@ async def standings(interaction: discord.Interaction):
         players = get_standings(league_data)  # Full league, no limit
         league_name = league_data.get("league", {}).get("name", "League")
 
+        # Calculate ranks with ties (matching display page logic)
+        ranks = []
+        current_rank = 1
+        for i, player in enumerate(players):
+            if i == 0:
+                ranks.append(current_rank)
+            elif are_players_tied(players[i - 1], player):
+                ranks.append(current_rank)  # Tied, same rank
+            else:
+                current_rank = i + 1  # Not tied, rank = position
+                ranks.append(current_rank)
+
         # Find max name length for padding
         max_name = max(len(p['name']) for p in players) if players else 10
 
         # Build table
-        header = f"{'#':<3} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'Frames':>7}  {'+/-':>4}"
+        header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'Frames':>7}  {'+/-':>4}"
         separator = "-" * len(header)
 
         lines = [
@@ -234,15 +259,24 @@ async def standings(interaction: discord.Interaction):
             separator
         ]
 
-        for i, player in enumerate(players, 1):
+        for i, player in enumerate(players):
             stats = player['stats']
+            rank = ranks[i]
+
+            # Show "T" prefix for tied ranks
+            is_tied = (
+                (i > 0 and ranks[i - 1] == rank) or
+                (i < len(ranks) - 1 and ranks[i + 1] == rank)
+            )
+            rank_str = f"T{rank}" if is_tied else str(rank)
+
             wl = f"{stats['matchesWon']}-{stats['matchesLost']}"
             frames = f"{stats['framesWon']}-{stats['framesLost']}"
             diff = stats['frameDifference']
             diff_str = f"+{diff}" if diff > 0 else str(diff)
 
             lines.append(
-                f"{i:<3} {player['name']:<{max_name}}  {stats['points']:>3}  {wl:>5}  {frames:>7}  {diff_str:>4}"
+                f"{rank_str:<4} {player['name']:<{max_name}}  {stats['points']:>3}  {wl:>5}  {frames:>7}  {diff_str:>4}"
             )
 
         lines.append("```")
