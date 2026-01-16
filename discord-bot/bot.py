@@ -7,8 +7,10 @@ import discord
 from discord import app_commands
 import aiohttp
 import base64
+import glob
 import json
 import os
+import random
 
 from league import (
     find_player_by_name_exact,
@@ -366,6 +368,22 @@ async def my_matches(interaction: discord.Interaction):
 
     except Exception as e:
         await interaction.followup.send(f"Error: {str(e)}")
+
+
+@tree.command(name='pizza', description='Get a random pizza image')
+async def pizza(interaction: discord.Interaction):
+    # Find all pizza images in the images folder
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    pattern = os.path.join(script_dir, 'images', 'pizza*.png')
+    pizza_images = glob.glob(pattern)
+
+    if not pizza_images:
+        await interaction.response.send_message("No pizza images found!")
+        return
+
+    # Select a random pizza image
+    chosen_pizza = random.choice(pizza_images)
+    await interaction.response.send_message(file=discord.File(chosen_pizza))
 
 
 @client.event
