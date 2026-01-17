@@ -408,11 +408,16 @@ async def cointoss(interaction: discord.Interaction, call: app_commands.Choice[s
 
     # Build result message
     outcome = "You win!" if won else "You lose!"
-    call_message = f"You called {user_call.capitalize()}..."
-    result_message = f"**{result.capitalize()} - {outcome}**"
 
-    await interaction.response.send_message(content=call_message, file=discord.File(image_path))
-    await interaction.followup.send(result_message)
+    # Create embed with thumbnail for smaller image
+    embed = discord.Embed(
+        title=f"You called {user_call.capitalize()}...",
+        description=f"**{result.capitalize()} - {outcome}**",
+        color=discord.Color.green() if won else discord.Color.red()
+    )
+    embed.set_thumbnail(url=f"attachment://{result}.png")
+
+    await interaction.response.send_message(embed=embed, file=discord.File(image_path, filename=f"{result}.png"))
 
 
 @client.event
