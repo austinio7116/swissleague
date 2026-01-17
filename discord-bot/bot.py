@@ -407,12 +407,8 @@ async def cointoss(interaction: discord.Interaction, call: app_commands.Choice[s
         return
 
     # Build result message
-    result_text = "**You win!**" if won else "**You lose!**"
-    message = (
-        f"You called **{user_call.capitalize()}**\n"
-        f"The coin landed on **{result.capitalize()}**\n\n"
-        f"{result_text}"
-    )
+    outcome = "You win!" if won else "You lose!"
+    message = f"**{result.capitalize()} - {outcome}**"
 
     await interaction.response.send_message(content=message, file=discord.File(image_path))
 
