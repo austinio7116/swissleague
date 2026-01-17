@@ -413,7 +413,7 @@ async def cointoss(interaction: discord.Interaction, call: app_commands.Choice[s
     # Create embed with thumbnail for smaller image
     embed = discord.Embed(
         title=f"You called {user_call}...",
-        description=f"**{result} - {outcome}**",
+        description=f"**{result.capitalize()} - {outcome}**",
         color=discord.Color.green() if won else discord.Color.red()
     )
     embed.set_thumbnail(url=f"attachment://{result}.png")
