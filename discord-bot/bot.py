@@ -11,6 +11,7 @@ import glob
 import json
 import os
 import random
+import secrets
 
 from league import (
     find_player_by_name_exact,
@@ -389,12 +390,12 @@ async def pizza(interaction: discord.Interaction):
 @tree.command(name='cointoss', description='Flip a coin and call it!')
 @app_commands.describe(call='Your call - heads or tails')
 @app_commands.choices(call=[
-    app_commands.Choice(name='Heads', value='heads'),
-    app_commands.Choice(name='Tails', value='tails'),
+    app_commands.Choice(name='heads', value='heads'),
+    app_commands.Choice(name='tails', value='tails'),
 ])
 async def cointoss(interaction: discord.Interaction, call: app_commands.Choice[str]):
-    # Flip the coin
-    result = random.choice(['heads', 'tails'])
+    # Flip the coin (using secrets for true randomness)
+    result = secrets.choice(['heads', 'tails'])
     user_call = call.value
     won = (user_call == result)
 
@@ -411,8 +412,8 @@ async def cointoss(interaction: discord.Interaction, call: app_commands.Choice[s
 
     # Create embed with thumbnail for smaller image
     embed = discord.Embed(
-        title=f"You called {user_call.capitalize()}...",
-        description=f"**{result.capitalize()} - {outcome}**",
+        title=f"You called {user_call}...",
+        description=f"**{result} - {outcome}**",
         color=discord.Color.green() if won else discord.Color.red()
     )
     embed.set_thumbnail(url=f"attachment://{result}.png")
