@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-01-18T00:22:00.105075Z",
+        "updatedAt": "2026-01-18T08:13:26.571458Z",
         "currentRound": 1,
         "totalRounds": 7
       },
@@ -68,16 +68,16 @@
           "name": "dan105hughes",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "matchesWon": 0,
-            "matchesLost": 0,
+            "matchesLost": 1,
             "framesWon": 0,
-            "framesLost": 0,
+            "framesLost": 2,
             "points": 0,
-            "frameDifference": 0,
+            "frameDifference": -2,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
-            "buchholzScore": 0
+            "strengthOfSchedule": 1.0,
+            "buchholzScore": 1
           }
         },
         {
@@ -357,15 +357,15 @@
           "name": "spsoftprod8654",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
-            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "matchesWon": 1,
             "matchesLost": 0,
-            "framesWon": 0,
+            "framesWon": 2,
             "framesLost": 0,
-            "points": 0,
-            "frameDifference": 0,
+            "points": 1,
+            "frameDifference": 2,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -549,12 +549,26 @@
               "id": "7074636b-0b5d-44d6-9660-59ebf77c9c1e",
               "player1Id": "b2092568-8d0c-4797-8b19-5dcc211282ff",
               "player2Id": "42653a93-1fc0-474c-bf3a-fd208aa24a97",
-              "status": "pending",
-              "frames": [],
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 20,
+                  "player2Score": 35,
+                  "winnerId": "42653a93-1fc0-474c-bf3a-fd208aa24a97"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 30,
+                  "player2Score": 42,
+                  "winnerId": "42653a93-1fc0-474c-bf3a-fd208aa24a97"
+                }
+              ],
               "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "player2FramesWon": 2,
+              "winnerId": "42653a93-1fc0-474c-bf3a-fd208aa24a97",
+              "isBye": false,
+              "completedAt": "2026-01-18T08:13:26.571433Z"
             },
             {
               "id": "6efdb22e-bd0c-416e-8af7-1db0fd90fd44",
