@@ -34,11 +34,43 @@ A lightweight, browser-based system for managing Snooker leagues using the Swiss
 - 🖨️ Print-friendly styling
 
 ### Swiss Pairing Algorithm
-- Pairs players with similar scores
-- Considers frame difference for tiebreaking
-- Avoids repeat pairings when possible
-- Handles bye assignment for odd player counts
+- Pairs players with similar standings (top vs second, third vs fourth, etc.)
+- Avoids repeat matchups when possible (allows them only if necessary)
+- Bye goes to lowest-ranked player who hasn't had one yet
 - Transparent pairing logic with explanations
+
+## How Standings & Pairing Work
+
+This section explains how player rankings are determined and how match pairings are generated. Understanding these helps you see why you're ranked where you are and who you might play next.
+
+### How Your Ranking is Calculated
+
+Players are ranked using six criteria, checked in order. If two players are tied on one criterion, the next one is used to break the tie:
+
+| Priority | Criterion | What It Means |
+|----------|-----------|---------------|
+| 1st | **Match Points** | 1 point for a win, 0 for a loss. The most important factor. |
+| 2nd | **Buchholz Score** | The total match points of all your opponents added together. If you played tougher opponents, this number is higher. |
+| 3rd | **Strength of Schedule (SOS)** | The average win rate of your opponents. Shown as a percentage (e.g., 66% means your opponents win 2/3 of their matches on average). |
+| 4th | **Frame Difference** | Frames won minus frames lost. Winning 3-0 is better than winning 3-2. |
+| 5th | **Frames Won** | Total frames won across all matches. |
+| 6th | **Alphabetical** | If still tied after all the above, sorted by name for display. |
+
+**Example:** Two players both have 4 match points. Player A faced opponents who have a combined 12 points (Buchholz = 12). Player B faced opponents with a combined 8 points (Buchholz = 8). Player A ranks higher because they played tougher competition.
+
+**Tied Rankings:** When players are equal on all five statistical criteria, they share the same rank (shown as "T1", "T2", etc. for tied positions).
+
+### How Match Pairings Work
+
+Each round, the system generates pairings using the **Swiss format**:
+
+1. **Sort by Standings** - All active players are ranked using the criteria above
+2. **Pair Top-to-Bottom** - The highest-ranked player plays the second-highest, third plays fourth, and so on
+3. **Avoid Repeat Matchups** - If two players have already played each other, the system tries to find a different opponent nearby in the standings
+4. **Allow Repeats if Necessary** - In later rounds or small leagues, repeat matchups may be unavoidable (marked with a warning)
+5. **Assign Bye** - If there's an odd number of players, the lowest-ranked player who hasn't had a bye yet receives one (automatic win, 1 point)
+
+**Why This Matters:** Swiss pairing ensures you play opponents of similar skill level. Early rounds may feel random (everyone starts at 0 points), but as the league progresses, you'll face players with similar records.
 
 ## Quick Start
 
@@ -202,20 +234,15 @@ See [`plans/architecture.md`](plans/architecture.md) for complete data model doc
 
 ## Swiss Format Rules
 
-### Pairing Algorithm
-
-1. **Sort by Standings**: Players ranked by points, then frame difference
-2. **Create Score Groups**: Group players with identical points
-3. **Pair Within Groups**: Match players of similar strength
-4. **Avoid Repeats**: Prevent players from facing each other twice
-5. **Handle Byes**: Assign bye to lowest-ranked player who hasn't had one
-
 ### Scoring System
 
-- **Match Win**: 2 points
+- **Match Win**: 1 point
 - **Match Loss**: 0 points
-- **Bye**: Automatic win (2 points + frames)
-- **Tiebreakers**: Frame difference, then frames won
+- **Bye**: 1 point (automatic win for odd-numbered leagues)
+
+### Tiebreakers
+
+See [How Your Ranking is Calculated](#how-your-ranking-is-calculated) above for the full tiebreaker order: Buchholz, Strength of Schedule, Frame Difference, Frames Won.
 
 ### Best-of-N Frames
 
