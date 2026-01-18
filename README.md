@@ -54,7 +54,7 @@ Players are ranked using six criteria, checked in order. If two players are tied
 | 3rd | **Strength of Schedule (SOS)** | The average win rate of your opponents. Shown as a percentage (e.g., 66% means your opponents win 2/3 of their matches on average). |
 | 4th | **Frame Difference** | Frames won minus frames lost. Winning 3-0 is better than winning 3-2. |
 | 5th | **Frames Won** | Total frames won across all matches. |
-| 6th | **Alphabetical** | If still tied after all the above, sorted by name for display. |
+| 6th | **Alphabetical** | If still tied after all the above, sorted by name for display - but NOT used when considering ranking - replaced with random for pairing next round. |
 
 **Example:** Two players both have 4 match points. Player A faced opponents who have a combined 12 points (Buchholz = 12). Player B faced opponents with a combined 8 points (Buchholz = 8). Player A ranks higher because they played tougher competition.
 
