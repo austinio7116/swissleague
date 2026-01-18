@@ -375,6 +375,68 @@ def get_standings(league_data, limit=None):
 MAX_FRAME_SCORE = 147  # Maximum possible break in snooker
 
 
+def validate_match_completion(frame_scores, best_of_frames):
+    """
+    Validate that frame scores represent a properly completed match.
+
+    Checks that:
+    1. The match wasn't already won before all frames were played
+    2. The match ended at the correct time (winner reached required frames)
+
+    Args:
+        frame_scores: List of (score1, score2) tuples
+        best_of_frames: The match format (3, 5, 7, etc.)
+
+    Returns:
+        (is_valid, error_message)
+    """
+    if not frame_scores:
+        return False, "No frame scores provided"
+
+    frames_to_win = (best_of_frames // 2) + 1  # e.g., 2 for best-of-3, 3 for best-of-5
+
+    p1_frames = 0
+    p2_frames = 0
+
+    for i, (s1, s2) in enumerate(frame_scores):
+        frame_num = i + 1
+        is_last_frame = (frame_num == len(frame_scores))
+
+        # Determine frame winner
+        if s1 > s2:
+            p1_frames += 1
+        else:
+            p2_frames += 1
+
+        # Check if match was already decided before this frame
+        if not is_last_frame:
+            # If someone already had enough wins, this frame shouldn't have been played
+            if p1_frames >= frames_to_win:
+                return False, (
+                    f"Match was already won after frame {frame_num} "
+                    f"(Player 1 had {p1_frames} frames, needed {frames_to_win}). "
+                    f"Frame {frame_num + 1} onwards shouldn't have been played. "
+                    f"Check your frame scores are in the correct order."
+                )
+            if p2_frames >= frames_to_win:
+                return False, (
+                    f"Match was already won after frame {frame_num} "
+                    f"(Player 2 had {p2_frames} frames, needed {frames_to_win}). "
+                    f"Frame {frame_num + 1} onwards shouldn't have been played. "
+                    f"Check your frame scores are in the correct order."
+                )
+
+    # After all frames, check that someone actually won
+    if p1_frames < frames_to_win and p2_frames < frames_to_win:
+        return False, (
+            f"Match not complete: score is {p1_frames}-{p2_frames} but "
+            f"need {frames_to_win} frames to win (best of {best_of_frames}). "
+            f"More frames are needed."
+        )
+
+    return True, None
+
+
 def validate_frame_scores(frame_scores, expected_total=None):
     """
     Validate frame scores.

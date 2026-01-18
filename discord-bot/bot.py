@@ -21,6 +21,7 @@ from league import (
     get_standings,
     parse_frame_score,
     validate_frame_scores,
+    validate_match_completion,
 )
 
 # Configuration from environment variables
@@ -195,10 +196,17 @@ async def submit_result(
                 return
             frames.append(parsed)
 
-        # Validate frame scores
+        # Validate individual frame scores (ties, bounds)
         is_valid, error = validate_frame_scores(frames)
         if not is_valid:
             await interaction.followup.send(f"Invalid frame scores: {error}")
+            return
+
+        # Validate match completion (not over too early, not incomplete)
+        best_of_frames = league_data.get("league", {}).get("bestOfFrames", 3)
+        is_valid, error = validate_match_completion(frames, best_of_frames)
+        if not is_valid:
+            await interaction.followup.send(f"Invalid match result: {error}")
             return
 
         # Apply the match result (this also recalculates all stats)

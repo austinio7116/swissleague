@@ -17,6 +17,8 @@ from league import (
     apply_match_result,
     parse_input_string,
     recalculate_all_player_stats,
+    validate_frame_scores,
+    validate_match_completion,
 )
 
 # Default data file path (relative to this script's parent directory)
@@ -179,12 +181,13 @@ def main():
     print(f"  Overall: {overall_frames[0]}-{overall_frames[1]}")
     print(f"  Frames: {frame_scores}")
 
-    # Validate frame count matches overall score
-    expected_frames = overall_frames[0] + overall_frames[1]
-    if len(frame_scores) != expected_frames:
-        print(f"\nWarning: Expected {expected_frames} frame scores but got {len(frame_scores)}")
+    # Validate individual frame scores (ties, bounds)
+    is_valid, error = validate_frame_scores(frame_scores)
+    if not is_valid:
+        print(f"\nError: {error}")
+        sys.exit(1)
 
-    # Validate frame scores match overall
+    # Validate frame scores match claimed overall score
     p1_wins = sum(1 for p1, p2 in frame_scores if p1 > p2)
     p2_wins = sum(1 for p1, p2 in frame_scores if p2 > p1)
     if (p1_wins, p2_wins) != overall_frames:
@@ -234,6 +237,17 @@ def main():
             except ValueError:
                 print("Please enter a number")
 
+    # Get best_of_frames from the league to validate match completion
+    league_id = selected_match["league_id"]
+    league_data = data["leagues"][league_id]
+    best_of_frames = league_data.get("league", {}).get("bestOfFrames", 3)
+
+    # Validate match completion (not over too early, not incomplete)
+    is_valid, error = validate_match_completion(frame_scores, best_of_frames)
+    if not is_valid:
+        print(f"\nError: {error}")
+        sys.exit(1)
+
     # Show preview
     preview = format_match_preview(selected_match, frame_scores, overall_frames,
                                    player1_name, player2_name)
@@ -246,9 +260,6 @@ def main():
         sys.exit(0)
 
     # Apply changes using shared module
-    league_id = selected_match["league_id"]
-    league_data = data["leagues"][league_id]
-
     league_data = apply_match_result(
         league_data,
         selected_match["match"],
