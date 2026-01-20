@@ -119,20 +119,17 @@ def format_player_name(guild, username):
     return username
 
 
-def get_username_from_display_name(guild, display_name):
+async def get_username_from_display_name(guild, display_name):
     """
     Look up a Discord member's username from their display name.
     Returns username if found, otherwise None.
     """
     if not guild:
         return None
-    # Find member by display name (case-insensitive)
-    member = discord.utils.find(
-        lambda m: m.display_name.lower() == display_name.lower(),
-        guild.members
-    )
-    if member:
-        return member.name
+    # Fetch all members to ensure cache is populated
+    async for member in guild.fetch_members(limit=None):
+        if member.display_name.lower() == display_name.lower():
+            return member.name
     return None
 
 
@@ -179,7 +176,7 @@ async def submit_result(
 
         # Find opponent - resolve display name to username first (more secure)
         # This ensures opponent is an actual guild member, not arbitrary input
-        resolved_username = get_username_from_display_name(interaction.guild, opponent)
+        resolved_username = await get_username_from_display_name(interaction.guild, opponent)
         if resolved_username:
             opponent_player = find_player_by_name_exact(players, resolved_username)
         else:
