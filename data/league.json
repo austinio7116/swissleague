@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-01-20T20:29:01.407278Z",
+        "updatedAt": "2026-01-20T20:34:35.907485Z",
         "currentRound": 1,
         "totalRounds": 7
       },
@@ -34,15 +34,15 @@
           "name": "austinio7116",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
-            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "matchesWon": 1,
             "matchesLost": 0,
-            "framesWon": 0,
+            "framesWon": 2,
             "framesLost": 0,
-            "points": 0,
-            "frameDifference": 0,
+            "points": 1,
+            "frameDifference": 2,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -85,16 +85,16 @@
           "name": "deedon2624",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "matchesWon": 0,
-            "matchesLost": 0,
+            "matchesLost": 1,
             "framesWon": 0,
-            "framesLost": 0,
+            "framesLost": 2,
             "points": 0,
-            "frameDifference": 0,
+            "frameDifference": -2,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
-            "buchholzScore": 0
+            "strengthOfSchedule": 1.0,
+            "buchholzScore": 1
           }
         },
         {
@@ -505,12 +505,26 @@
               "id": "917f09b5-7c01-43a0-b400-326088a50afe",
               "player1Id": "f847daf1-1052-41cd-a4d4-8178118d6aa9",
               "player2Id": "61dd2ea8-7158-468a-96f4-944a53110d47",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 53,
+                  "player2Score": 50,
+                  "winnerId": "f847daf1-1052-41cd-a4d4-8178118d6aa9"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 59,
+                  "player2Score": 6,
+                  "winnerId": "f847daf1-1052-41cd-a4d4-8178118d6aa9"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "f847daf1-1052-41cd-a4d4-8178118d6aa9",
+              "isBye": false,
+              "completedAt": "2026-01-20T20:34:35.907438Z"
             },
             {
               "id": "15c5756a-8389-4af9-a6cd-f85dbd629234",
