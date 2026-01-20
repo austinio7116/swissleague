@@ -177,16 +177,37 @@ async def submit_result(
         # Find opponent - resolve display name to username first (more secure)
         # This ensures opponent is an actual guild member, not arbitrary input
         resolved_username = await get_username_from_display_name(interaction.guild, opponent)
+
+        # Debug logging
+        debug_lines = [
+            f"**Debug Info:**",
+            f"- Opponent input: `{opponent}`",
+            f"- Resolved username: `{resolved_username}`",
+        ]
+
+        # Show guild members for debugging
+        if interaction.guild:
+            members_info = []
+            async for member in interaction.guild.fetch_members(limit=None):
+                members_info.append(f"`{member.name}` (display: `{member.display_name}`)")
+            debug_lines.append(f"- Guild members ({len(members_info)}): {', '.join(members_info)}")
+
+        # Show league players
+        player_names = [p['name'] for p in players]
+        debug_lines.append(f"- League players ({len(player_names)}): {', '.join(f'`{n}`' for n in player_names)}")
+
         if resolved_username:
             opponent_player = find_player_by_name_exact(players, resolved_username)
+            debug_lines.append(f"- Found by resolved username: `{opponent_player['name'] if opponent_player else None}`")
         else:
             # Fallback: try direct match (in case input is already a username)
             opponent_player = find_player_by_name_exact(players, opponent)
+            debug_lines.append(f"- Found by direct match: `{opponent_player['name'] if opponent_player else None}`")
 
         if not opponent_player:
             await interaction.followup.send(
-                f"Could not find opponent '{opponent}' in the league. "
-                f"Make sure they are a member of this server and in the league."
+                f"Could not find opponent '{opponent}' in the league.\n\n" +
+                "\n".join(debug_lines)
             )
             return
 
