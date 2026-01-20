@@ -119,6 +119,23 @@ def format_player_name(guild, username):
     return username
 
 
+def get_username_from_display_name(guild, display_name):
+    """
+    Look up a Discord member's username from their display name.
+    Returns username if found, otherwise None.
+    """
+    if not guild:
+        return None
+    # Find member by display name (case-insensitive)
+    member = discord.utils.find(
+        lambda m: m.display_name.lower() == display_name.lower(),
+        guild.members
+    )
+    if member:
+        return member.name
+    return None
+
+
 @tree.command(name='result', description='Submit a match result')
 @app_commands.describe(
     opponent='Your opponent (their Discord username or display name)',
@@ -160,12 +177,19 @@ async def submit_result(
             )
             return
 
-        # Find opponent (exact match only for security)
-        opponent_player = find_player_by_name_exact(players, opponent)
+        # Find opponent - resolve display name to username first (more secure)
+        # This ensures opponent is an actual guild member, not arbitrary input
+        resolved_username = get_username_from_display_name(interaction.guild, opponent)
+        if resolved_username:
+            opponent_player = find_player_by_name_exact(players, resolved_username)
+        else:
+            # Fallback: try direct match (in case input is already a username)
+            opponent_player = find_player_by_name_exact(players, opponent)
+
         if not opponent_player:
             await interaction.followup.send(
                 f"Could not find opponent '{opponent}' in the league. "
-                f"Opponent name must match exactly (case-insensitive)."
+                f"Make sure they are a member of this server and in the league."
             )
             return
 
