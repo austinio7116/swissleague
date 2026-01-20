@@ -207,8 +207,17 @@ async def submit_result(
         if not opponent_player:
             await interaction.followup.send(
                 f"Could not find opponent '{opponent}' in the league.\n\n" +
-                "\n".join(debug_lines)
+                "\n".join(debug_lines[:3])  # Basic info
             )
+            # Send guild members in separate message
+            if interaction.guild:
+                members_info = []
+                async for member in interaction.guild.fetch_members(limit=None):
+                    members_info.append(f"{member.name} -> {member.display_name}")
+                await interaction.followup.send(f"**Guild members:**\n```\n{chr(10).join(members_info)}\n```")
+            # Send league players in separate message
+            player_names = [p['name'] for p in players]
+            await interaction.followup.send(f"**League players:**\n```\n{chr(10).join(player_names)}\n```")
             return
 
         # Find pending match between these players
