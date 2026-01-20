@@ -124,7 +124,7 @@ def format_player_name(guild, username):
     opponent='Your opponent (their Discord username or display name)',
     frame1='Frame 1 score (your-score-opponent-score, e.g. 63-45)',
     frame2='Frame 2 score (e.g. 52-60)',
-    frame3='Frame 3 score (e.g. 71-38)',
+    frame3='Frame 3 score (optional, e.g. 71-38)',
     frame4='Frame 4 score (optional)',
     frame5='Frame 5 score (optional)'
 )
@@ -133,7 +133,7 @@ async def submit_result(
     opponent: str,
     frame1: str,
     frame2: str,
-    frame3: str,
+    frame3: str = None,
     frame4: str = None,
     frame5: str = None
 ):
@@ -180,7 +180,9 @@ async def submit_result(
             return
 
         # Parse frame scores
-        frame_strs = [frame1, frame2, frame3]
+        frame_strs = [frame1, frame2]
+        if frame3:
+            frame_strs.append(frame3)
         if frame4:
             frame_strs.append(frame4)
         if frame5:
