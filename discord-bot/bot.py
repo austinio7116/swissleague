@@ -11,6 +11,7 @@ import glob
 import json
 import os
 import random
+import re
 import secrets
 
 from league import (
@@ -119,16 +120,30 @@ def format_player_name(guild, username):
     return username
 
 
-async def get_username_from_display_name(guild, display_name):
+async def resolve_opponent_to_username(guild, opponent_input):
     """
-    Look up a Discord member's username from their display name.
+    Resolve opponent input to a Discord username.
+    Handles: user mentions (<@ID>), display names, and usernames.
     Returns username if found, otherwise None.
     """
     if not guild:
         return None
-    # Fetch all members to ensure cache is populated
+
+    # Check if it's a user mention like <@1013422262436774039>
+    mention_match = re.match(r'<@!?(\d+)>', opponent_input)
+    if mention_match:
+        user_id = int(mention_match.group(1))
+        try:
+            member = await guild.fetch_member(user_id)
+            if member:
+                return member.name
+        except discord.NotFound:
+            pass
+        return None
+
+    # Otherwise try to match by display name
     async for member in guild.fetch_members(limit=None):
-        if member.display_name.lower() == display_name.lower():
+        if member.display_name.lower() == opponent_input.lower():
             return member.name
     return None
 
@@ -174,50 +189,20 @@ async def submit_result(
             )
             return
 
-        # Find opponent - resolve display name to username first (more secure)
+        # Find opponent - resolve mention/display name to username (more secure)
         # This ensures opponent is an actual guild member, not arbitrary input
-        resolved_username = await get_username_from_display_name(interaction.guild, opponent)
-
-        # Debug logging
-        debug_lines = [
-            f"**Debug Info:**",
-            f"- Opponent input: `{opponent}`",
-            f"- Resolved username: `{resolved_username}`",
-        ]
-
-        # Show guild members for debugging
-        if interaction.guild:
-            members_info = []
-            async for member in interaction.guild.fetch_members(limit=None):
-                members_info.append(f"`{member.name}` (display: `{member.display_name}`)")
-            debug_lines.append(f"- Guild members ({len(members_info)}): {', '.join(members_info)}")
-
-        # Show league players
-        player_names = [p['name'] for p in players]
-        debug_lines.append(f"- League players ({len(player_names)}): {', '.join(f'`{n}`' for n in player_names)}")
-
+        resolved_username = await resolve_opponent_to_username(interaction.guild, opponent)
         if resolved_username:
             opponent_player = find_player_by_name_exact(players, resolved_username)
-            debug_lines.append(f"- Found by resolved username: `{opponent_player['name'] if opponent_player else None}`")
         else:
             # Fallback: try direct match (in case input is already a username)
             opponent_player = find_player_by_name_exact(players, opponent)
-            debug_lines.append(f"- Found by direct match: `{opponent_player['name'] if opponent_player else None}`")
 
         if not opponent_player:
             await interaction.followup.send(
-                f"Could not find opponent '{opponent}' in the league.\n\n" +
-                "\n".join(debug_lines[:3])  # Basic info
+                f"Could not find opponent '{opponent}' in the league. "
+                f"Make sure they are a member of this server and in the league."
             )
-            # Send guild members in separate message
-            if interaction.guild:
-                members_info = []
-                async for member in interaction.guild.fetch_members(limit=None):
-                    members_info.append(f"{member.name} -> {member.display_name}")
-                await interaction.followup.send(f"**Guild members:**\n```\n{chr(10).join(members_info)}\n```")
-            # Send league players in separate message
-            player_names = [p['name'] for p in players]
-            await interaction.followup.send(f"**League players:**\n```\n{chr(10).join(player_names)}\n```")
             return
 
         # Find pending match between these players
