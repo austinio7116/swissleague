@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-01-20T23:42:17.436946Z",
+        "updatedAt": "2026-01-22T21:22:36.781276Z",
         "currentRound": 1,
         "totalRounds": 7
       },
@@ -119,15 +119,15 @@
           "name": "fret1308",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
-            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "matchesWon": 1,
             "matchesLost": 0,
-            "framesWon": 0,
-            "framesLost": 0,
-            "points": 0,
-            "frameDifference": 0,
+            "framesWon": 2,
+            "framesLost": 1,
+            "points": 1,
+            "frameDifference": 1,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -340,16 +340,16 @@
           "name": "relisys196",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "matchesWon": 0,
-            "matchesLost": 0,
-            "framesWon": 0,
-            "framesLost": 0,
+            "matchesLost": 1,
+            "framesWon": 1,
+            "framesLost": 2,
             "points": 0,
-            "frameDifference": 0,
+            "frameDifference": -1,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
-            "buchholzScore": 0
+            "strengthOfSchedule": 1.0,
+            "buchholzScore": 1
           }
         },
         {
@@ -550,12 +550,32 @@
               "id": "15c5756a-8389-4af9-a6cd-f85dbd629234",
               "player1Id": "8c064afb-f496-44c6-ad35-8925befce1c4",
               "player2Id": "bfc7ec64-32a6-4f73-a39f-31f8d677470e",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 70,
+                  "player2Score": 60,
+                  "winnerId": "8c064afb-f496-44c6-ad35-8925befce1c4"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 47,
+                  "player2Score": 57,
+                  "winnerId": "bfc7ec64-32a6-4f73-a39f-31f8d677470e"
+                },
+                {
+                  "frameNumber": 3,
+                  "player1Score": 75,
+                  "player2Score": 24,
+                  "winnerId": "8c064afb-f496-44c6-ad35-8925befce1c4"
+                }
+              ],
+              "player1FramesWon": 2,
+              "player2FramesWon": 1,
+              "winnerId": "8c064afb-f496-44c6-ad35-8925befce1c4",
+              "isBye": false,
+              "completedAt": "2026-01-22T21:22:36.781245Z"
             },
             {
               "id": "82e44546-8b09-40cf-b3d5-480acc83aefa",
