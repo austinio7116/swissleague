@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-01-22T21:22:36.781276Z",
+        "updatedAt": "2026-01-23T23:43:08.216463Z",
         "currentRound": 1,
         "totalRounds": 7
       },
@@ -51,16 +51,16 @@
           "name": "brandonio45",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "matchesWon": 0,
-            "matchesLost": 0,
+            "matchesLost": 1,
             "framesWon": 0,
-            "framesLost": 0,
+            "framesLost": 2,
             "points": 0,
-            "frameDifference": 0,
+            "frameDifference": -2,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
-            "buchholzScore": 0
+            "strengthOfSchedule": 1.0,
+            "buchholzScore": 1
           }
         },
         {
@@ -272,15 +272,15 @@
           "name": "orms16",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
-            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "matchesWon": 1,
             "matchesLost": 0,
-            "framesWon": 0,
+            "framesWon": 2,
             "framesLost": 0,
-            "points": 0,
-            "frameDifference": 0,
+            "points": 1,
+            "frameDifference": 2,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -390,18 +390,32 @@
       "rounds": [
         {
           "roundNumber": 1,
-          "status": "pending",
+          "status": "completed",
           "matches": [
             {
               "id": "4fedf576-82b6-417c-9a36-481787a4d1ab",
               "player1Id": "ac3c10e6-26a0-4a45-8949-2819a11012a0",
               "player2Id": "5d4baae4-5762-4c27-a429-596f0f3e286c",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 76,
+                  "player2Score": 21,
+                  "winnerId": "ac3c10e6-26a0-4a45-8949-2819a11012a0"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 67,
+                  "player2Score": 27,
+                  "winnerId": "ac3c10e6-26a0-4a45-8949-2819a11012a0"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "ac3c10e6-26a0-4a45-8949-2819a11012a0",
+              "isBye": false,
+              "completedAt": "2026-01-23T23:43:08.216439Z"
             },
             {
               "id": "bede698e-793d-4862-b649-eb1cabd8ad67",
