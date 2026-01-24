@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-01-24T16:42:32.640350Z",
+        "updatedAt": "2026-01-24T19:52:59.905214Z",
         "currentRound": 2,
         "totalRounds": 7
       },
@@ -25,7 +25,7 @@
             "points": 0,
             "frameDifference": -2,
             "byesReceived": 0,
-            "strengthOfSchedule": 1.0,
+            "strengthOfSchedule": 0.5,
             "buchholzScore": 1
           }
         },
@@ -162,7 +162,7 @@
             "frameDifference": -2,
             "byesReceived": 0,
             "strengthOfSchedule": 1.0,
-            "buchholzScore": 1
+            "buchholzScore": 2
           }
         },
         {
@@ -170,16 +170,16 @@
           "name": "jumper0967",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "matchesWon": 1,
-            "matchesLost": 0,
+            "matchesLost": 1,
             "framesWon": 2,
-            "framesLost": 0,
+            "framesLost": 2,
             "points": 1,
-            "frameDifference": 2,
+            "frameDifference": 0,
             "byesReceived": 0,
-            "strengthOfSchedule": 0.0,
-            "buchholzScore": 0
+            "strengthOfSchedule": 0.5,
+            "buchholzScore": 2
           }
         },
         {
@@ -289,16 +289,16 @@
           "name": "questvr111",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
-            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "matchesWon": 2,
             "matchesLost": 0,
-            "framesWon": 2,
+            "framesWon": 4,
             "framesLost": 0,
-            "points": 1,
-            "frameDifference": 2,
+            "points": 2,
+            "frameDifference": 4,
             "byesReceived": 0,
-            "strengthOfSchedule": 0.0,
-            "buchholzScore": 0
+            "strengthOfSchedule": 0.25,
+            "buchholzScore": 1
           }
         },
         {
@@ -733,12 +733,26 @@
               "id": "53ab0246-4db9-4f27-b916-bb90ddd8f42b",
               "player1Id": "3228fca4-08e9-4533-a007-85bdcf2cab7a",
               "player2Id": "8b112374-a5f1-4451-9826-b91fa7a24eee",
-              "status": "pending",
-              "frames": [],
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 50,
+                  "player2Score": 60,
+                  "winnerId": "8b112374-a5f1-4451-9826-b91fa7a24eee"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 14,
+                  "player2Score": 68,
+                  "winnerId": "8b112374-a5f1-4451-9826-b91fa7a24eee"
+                }
+              ],
               "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "player2FramesWon": 2,
+              "winnerId": "8b112374-a5f1-4451-9826-b91fa7a24eee",
+              "isBye": false,
+              "completedAt": "2026-01-24T19:52:59.905180Z"
             },
             {
               "id": "554c6865-9744-4281-bf35-f74c17bbdf48",
