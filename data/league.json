@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-01-23T23:44:25.645Z",
+        "updatedAt": "2026-01-24T12:10:36.772774Z",
         "currentRound": 2,
         "totalRounds": 7
       },
@@ -25,7 +25,7 @@
             "points": 0,
             "frameDifference": -2,
             "byesReceived": 0,
-            "strengthOfSchedule": 1,
+            "strengthOfSchedule": 1.0,
             "buchholzScore": 1
           }
         },
@@ -34,16 +34,16 @@
           "name": "austinio7116",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
-            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "matchesWon": 2,
             "matchesLost": 0,
-            "framesWon": 2,
-            "framesLost": 0,
-            "points": 1,
-            "frameDifference": 2,
+            "framesWon": 4,
+            "framesLost": 1,
+            "points": 2,
+            "frameDifference": 3,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
-            "buchholzScore": 0
+            "strengthOfSchedule": 0.25,
+            "buchholzScore": 1
           }
         },
         {
@@ -59,7 +59,7 @@
             "points": 0,
             "frameDifference": -2,
             "byesReceived": 0,
-            "strengthOfSchedule": 1,
+            "strengthOfSchedule": 1.0,
             "buchholzScore": 1
           }
         },
@@ -76,7 +76,7 @@
             "points": 0,
             "frameDifference": -2,
             "byesReceived": 0,
-            "strengthOfSchedule": 1,
+            "strengthOfSchedule": 1.0,
             "buchholzScore": 1
           }
         },
@@ -93,8 +93,8 @@
             "points": 0,
             "frameDifference": -2,
             "byesReceived": 0,
-            "strengthOfSchedule": 1,
-            "buchholzScore": 1
+            "strengthOfSchedule": 1.0,
+            "buchholzScore": 2
           }
         },
         {
@@ -110,7 +110,7 @@
             "points": 0,
             "frameDifference": -1,
             "byesReceived": 0,
-            "strengthOfSchedule": 1,
+            "strengthOfSchedule": 1.0,
             "buchholzScore": 1
           }
         },
@@ -127,7 +127,7 @@
             "points": 1,
             "frameDifference": 1,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -144,7 +144,7 @@
             "points": 1,
             "frameDifference": 1,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -161,7 +161,7 @@
             "points": 0,
             "frameDifference": -2,
             "byesReceived": 0,
-            "strengthOfSchedule": 1,
+            "strengthOfSchedule": 1.0,
             "buchholzScore": 1
           }
         },
@@ -178,7 +178,7 @@
             "points": 1,
             "frameDifference": 2,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -195,7 +195,7 @@
             "points": 1,
             "frameDifference": 1,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -212,7 +212,7 @@
             "points": 1,
             "frameDifference": 1,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -221,16 +221,16 @@
           "name": "mumbles247",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "matchesWon": 1,
-            "matchesLost": 0,
-            "framesWon": 2,
-            "framesLost": 0,
+            "matchesLost": 1,
+            "framesWon": 3,
+            "framesLost": 2,
             "points": 1,
-            "frameDifference": 2,
+            "frameDifference": 1,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
-            "buchholzScore": 0
+            "strengthOfSchedule": 0.5,
+            "buchholzScore": 2
           }
         },
         {
@@ -246,7 +246,7 @@
             "points": 0,
             "frameDifference": -1,
             "byesReceived": 0,
-            "strengthOfSchedule": 1,
+            "strengthOfSchedule": 1.0,
             "buchholzScore": 1
           }
         },
@@ -263,7 +263,7 @@
             "points": 0,
             "frameDifference": -1,
             "byesReceived": 0,
-            "strengthOfSchedule": 1,
+            "strengthOfSchedule": 1.0,
             "buchholzScore": 1
           }
         },
@@ -280,7 +280,7 @@
             "points": 1,
             "frameDifference": 2,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -297,7 +297,7 @@
             "points": 1,
             "frameDifference": 2,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -314,7 +314,7 @@
             "points": 0,
             "frameDifference": -2,
             "byesReceived": 0,
-            "strengthOfSchedule": 1,
+            "strengthOfSchedule": 0.5,
             "buchholzScore": 1
           }
         },
@@ -331,7 +331,7 @@
             "points": 1,
             "frameDifference": 2,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -348,7 +348,7 @@
             "points": 0,
             "frameDifference": -1,
             "byesReceived": 0,
-            "strengthOfSchedule": 1,
+            "strengthOfSchedule": 1.0,
             "buchholzScore": 1
           }
         },
@@ -365,7 +365,7 @@
             "points": 1,
             "frameDifference": 2,
             "byesReceived": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         },
@@ -382,7 +382,7 @@
             "points": 0,
             "frameDifference": -2,
             "byesReceived": 0,
-            "strengthOfSchedule": 1,
+            "strengthOfSchedule": 1.0,
             "buchholzScore": 1
           }
         }
@@ -702,12 +702,32 @@
               "id": "743983a6-f1e3-4824-9ee2-4994ccf14026",
               "player1Id": "bd5a55fd-fbe4-472d-a2e5-264d57526bf5",
               "player2Id": "f847daf1-1052-41cd-a4d4-8178118d6aa9",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 71,
+                  "player2Score": 39,
+                  "winnerId": "bd5a55fd-fbe4-472d-a2e5-264d57526bf5"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 42,
+                  "player2Score": 61,
+                  "winnerId": "f847daf1-1052-41cd-a4d4-8178118d6aa9"
+                },
+                {
+                  "frameNumber": 3,
+                  "player1Score": 41,
+                  "player2Score": 66,
+                  "winnerId": "f847daf1-1052-41cd-a4d4-8178118d6aa9"
+                }
+              ],
+              "player1FramesWon": 1,
+              "player2FramesWon": 2,
+              "winnerId": "f847daf1-1052-41cd-a4d4-8178118d6aa9",
+              "isBye": false,
+              "completedAt": "2026-01-24T12:10:36.772746Z"
             },
             {
               "id": "53ab0246-4db9-4f27-b916-bb90ddd8f42b",
