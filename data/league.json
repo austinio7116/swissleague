@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-01-27T21:55:34.203886Z",
+        "updatedAt": "2026-01-27T22:26:15.533872Z",
         "currentRound": 2,
         "totalRounds": 7
       },
@@ -153,16 +153,16 @@
           "name": "joethe147",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "matchesWon": 0,
-            "matchesLost": 1,
-            "framesWon": 0,
-            "framesLost": 2,
+            "matchesLost": 2,
+            "framesWon": 1,
+            "framesLost": 4,
             "points": 0,
-            "frameDifference": -2,
+            "frameDifference": -3,
             "byesReceived": 0,
-            "strengthOfSchedule": 1.0,
-            "buchholzScore": 2
+            "strengthOfSchedule": 0.75,
+            "buchholzScore": 3
           }
         },
         {
@@ -229,8 +229,8 @@
             "points": 1,
             "frameDifference": 1,
             "byesReceived": 0,
-            "strengthOfSchedule": 0.5,
-            "buchholzScore": 2
+            "strengthOfSchedule": 0.75,
+            "buchholzScore": 3
           }
         },
         {
@@ -306,15 +306,15 @@
           "name": "red_dead_steve",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
-            "matchesWon": 0,
+            "matchesPlayed": 2,
+            "matchesWon": 1,
             "matchesLost": 1,
-            "framesWon": 0,
-            "framesLost": 2,
-            "points": 0,
-            "frameDifference": -2,
+            "framesWon": 2,
+            "framesLost": 3,
+            "points": 1,
+            "frameDifference": -1,
             "byesReceived": 0,
-            "strengthOfSchedule": 0.5,
+            "strengthOfSchedule": 0.25,
             "buchholzScore": 1
           }
         },
@@ -914,12 +914,32 @@
               "id": "26f528fa-9043-451d-8bc5-6635b773499b",
               "player1Id": "5fc54c3a-00d2-4627-8e0e-deefccefc34d",
               "player2Id": "9e2f9958-3ed7-41e7-966f-af175a987c97",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 26,
+                  "player2Score": 77,
+                  "winnerId": "9e2f9958-3ed7-41e7-966f-af175a987c97"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 52,
+                  "player2Score": 50,
+                  "winnerId": "5fc54c3a-00d2-4627-8e0e-deefccefc34d"
+                },
+                {
+                  "frameNumber": 3,
+                  "player1Score": 51,
+                  "player2Score": 64,
+                  "winnerId": "9e2f9958-3ed7-41e7-966f-af175a987c97"
+                }
+              ],
+              "player1FramesWon": 1,
+              "player2FramesWon": 2,
+              "winnerId": "9e2f9958-3ed7-41e7-966f-af175a987c97",
+              "isBye": false,
+              "completedAt": "2026-01-27T22:26:15.533837Z"
             },
             {
               "id": "ba4f7101-7c4d-4b46-bbee-35d017aaa0a3",
