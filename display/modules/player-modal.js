@@ -104,6 +104,32 @@ export class PlayerModal {
         continue;
       }
 
+      // Handle forfeit matches
+      if (match.isForfeit) {
+        const isDoubleForfeit = match.forfeitType === 'double';
+        const isWinner = match.winnerId === playerId;
+        const resultClass = isDoubleForfeit ? 'loss' : (isWinner ? 'win' : 'loss');
+        const resultLabel = isDoubleForfeit ? 'DBL FF' : (isWinner ? 'FF WIN' : 'FORFEIT');
+        const pointsText = isDoubleForfeit ? '0 pts' : (isWinner ? '+1 pt' : '0 pts');
+
+        html += `
+          <div class="match-card ${resultClass} forfeit">
+            <div class="match-left">
+              <span class="match-round">Round ${roundNumber}</span>
+              <span class="result-badge ${resultClass}">${resultLabel}</span>
+            </div>
+            <div class="match-center">
+              <span class="match-opponent">vs ${escapeHtml(opponent?.name || 'Unknown')}</span>
+              <span class="match-frames">${isDoubleForfeit ? 'Double forfeit' : (isWinner ? 'Opponent forfeited' : 'Forfeited')}</span>
+            </div>
+            <div class="match-right">
+              <span class="frames-score">${pointsText}</span>
+            </div>
+          </div>
+        `;
+        continue;
+      }
+
       const playerFrames = isPlayer1 ? match.player1FramesWon : match.player2FramesWon;
       const opponentFrames = isPlayer1 ? match.player2FramesWon : match.player1FramesWon;
       const isWinner = match.winnerId === playerId;

@@ -16,6 +16,8 @@ export class PlayerManager {
         points: 0,
         frameDifference: 0,
         byesReceived: 0,
+        forfeitsReceived: 0,
+        forfeitsGiven: 0,
         strengthOfSchedule: 0,
         buchholzScore: 0
       }
@@ -82,6 +84,7 @@ export class PlayerManager {
      *
      * Pass 1: Calculate basic stats (matches, frames, points) for all players
      * Pass 2: Calculate SOS and Buchholz using the freshly computed basic stats
+     *         (excluding forfeits, double forfeits, and byes from opponent calculations)
      *
      * This ensures we never rely on stale/existing player stats.
      */
@@ -89,7 +92,7 @@ export class PlayerManager {
 
     // Initialize fresh stats for all players
     const freshStats = {};
-    const opponentMap = {}; // Track opponents for each player
+    const opponentMap = {}; // Track opponents for each player (for SOS/Buchholz - played matches only)
 
     for (const player of players) {
       freshStats[player.id] = {
@@ -101,6 +104,8 @@ export class PlayerManager {
         points: 0,
         frameDifference: 0,
         byesReceived: 0,
+        forfeitsReceived: 0,
+        forfeitsGiven: 0,
         strengthOfSchedule: 0,
         buchholzScore: 0
       };
@@ -116,6 +121,8 @@ export class PlayerManager {
         const player2Id = match.player2Id;
         const winnerId = match.winnerId;
         const isBye = match.isBye || false;
+        const isForfeit = match.isForfeit || false;
+        const forfeitType = match.forfeitType; // 'single' or 'double'
 
         // Handle bye matches
         if (isBye) {
@@ -125,6 +132,52 @@ export class PlayerManager {
             freshStats[player1Id].points += POINTS.BYE;
             freshStats[player1Id].byesReceived++;
           }
+          // Byes are NOT added to opponentMap (excluded from SOS/Buchholz)
+          continue;
+        }
+
+        // Handle forfeit matches
+        if (isForfeit) {
+          if (forfeitType === 'double') {
+            // Double forfeit: both lose, 0 points each, no frames
+            if (freshStats[player1Id]) {
+              freshStats[player1Id].matchesPlayed++;
+              freshStats[player1Id].matchesLost++;
+              freshStats[player1Id].forfeitsGiven++;
+              // points stays 0 for double forfeit
+            }
+            if (freshStats[player2Id]) {
+              freshStats[player2Id].matchesPlayed++;
+              freshStats[player2Id].matchesLost++;
+              freshStats[player2Id].forfeitsGiven++;
+              // points stays 0 for double forfeit
+            }
+          } else {
+            // Single forfeit: winner gets point, forfeiter loses
+            if (freshStats[player1Id]) {
+              freshStats[player1Id].matchesPlayed++;
+              if (winnerId === player1Id) {
+                freshStats[player1Id].matchesWon++;
+                freshStats[player1Id].points += POINTS.WIN;
+                freshStats[player1Id].forfeitsReceived++;
+              } else {
+                freshStats[player1Id].matchesLost++;
+                freshStats[player1Id].forfeitsGiven++;
+              }
+            }
+            if (freshStats[player2Id]) {
+              freshStats[player2Id].matchesPlayed++;
+              if (winnerId === player2Id) {
+                freshStats[player2Id].matchesWon++;
+                freshStats[player2Id].points += POINTS.WIN;
+                freshStats[player2Id].forfeitsReceived++;
+              } else {
+                freshStats[player2Id].matchesLost++;
+                freshStats[player2Id].forfeitsGiven++;
+              }
+            }
+          }
+          // Forfeits are NOT added to opponentMap (excluded from SOS/Buchholz)
           continue;
         }
 
@@ -133,6 +186,7 @@ export class PlayerManager {
           freshStats[player1Id].matchesPlayed++;
           freshStats[player1Id].framesWon += match.player1FramesWon || 0;
           freshStats[player1Id].framesLost += match.player2FramesWon || 0;
+          // Only actually played matches count for SOS/Buchholz
           opponentMap[player1Id].push(player2Id);
           if (winnerId === player1Id) {
             freshStats[player1Id].matchesWon++;
@@ -147,6 +201,7 @@ export class PlayerManager {
           freshStats[player2Id].matchesPlayed++;
           freshStats[player2Id].framesWon += match.player2FramesWon || 0;
           freshStats[player2Id].framesLost += match.player1FramesWon || 0;
+          // Only actually played matches count for SOS/Buchholz
           opponentMap[player2Id].push(player1Id);
           if (winnerId === player2Id) {
             freshStats[player2Id].matchesWon++;
@@ -166,6 +221,8 @@ export class PlayerManager {
     }
 
     // Pass 2: Calculate SOS and Buchholz using freshly computed stats
+    // Note: opponentMap only contains opponents from actually played matches
+    // (forfeits, double forfeits, and byes are excluded)
     for (const playerId in freshStats) {
       const opponents = opponentMap[playerId];
       if (!opponents || opponents.length === 0) continue;

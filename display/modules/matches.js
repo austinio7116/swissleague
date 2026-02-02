@@ -125,7 +125,7 @@ export class MatchesRenderer {
     completedMatches.forEach(match => {
       const player1 = getPlayerById(leagueData, match.player1Id);
       const player2 = match.player2Id ? getPlayerById(leagueData, match.player2Id) : null;
-      const winner = getPlayerById(leagueData, match.winnerId);
+      const winner = match.winnerId ? getPlayerById(leagueData, match.winnerId) : null;
 
       if (match.isBye) {
         html += `
@@ -137,6 +137,27 @@ export class MatchesRenderer {
             <div class="match-summary">
               <span class="player winner">${escapeHtml(player1.name)}</span>
               <span class="bye-label">BYE (Auto Win)</span>
+            </div>
+          </div>
+        `;
+      } else if (match.isForfeit) {
+        // Forfeit match display
+        const isDoubleForfeit = match.forfeitType === 'double';
+        html += `
+          <div class="match-item forfeit-match ${isDoubleForfeit ? 'double-forfeit' : ''}">
+            <div class="match-header">
+              <span class="round-badge">Round ${match.roundNumber}</span>
+              <span class="match-date">${formatDateShort(match.completedAt)}</span>
+            </div>
+            <div class="match-summary">
+              <span class="player ${!isDoubleForfeit && match.winnerId === player1.id ? 'winner' : ''}">${escapeHtml(player1.name)}</span>
+              <span class="forfeit-label">${isDoubleForfeit ? 'DOUBLE FORFEIT' : 'FORFEIT'}</span>
+              <span class="player ${!isDoubleForfeit && match.winnerId === player2.id ? 'winner' : ''}">${escapeHtml(player2.name)}</span>
+            </div>
+            <div class="forfeit-info">
+              ${isDoubleForfeit
+                ? 'Both players forfeit - no points awarded'
+                : `${escapeHtml(winner.name)} wins by forfeit`}
             </div>
           </div>
         `;
@@ -244,6 +265,18 @@ export class MatchesRenderer {
         html += `
           <div class="match-card bye-match">
             <span>${escapeHtml(player1.name)} - BYE</span>
+          </div>
+        `;
+      } else if (match.isForfeit) {
+        const isDoubleForfeit = match.forfeitType === 'double';
+        html += `
+          <div class="match-card forfeit-match ${isDoubleForfeit ? 'double-forfeit' : ''}">
+            <div class="match-players">
+              <span class="${!isDoubleForfeit && match.winnerId === player1.id ? 'winner' : ''}">${escapeHtml(player1.name)}</span>
+              <span class="vs">vs</span>
+              <span class="${!isDoubleForfeit && match.winnerId === player2.id ? 'winner' : ''}">${escapeHtml(player2.name)}</span>
+            </div>
+            <div class="match-score forfeit-label">${isDoubleForfeit ? 'DBL FORFEIT' : 'FORFEIT'}</div>
           </div>
         `;
       } else {

@@ -25,7 +25,15 @@ export const ROUND_STATUS = {
 export const POINTS = {
   WIN: 1,
   LOSS: 0,
-  BYE: 1
+  BYE: 1,
+  FORFEIT_WIN: 1,
+  FORFEIT_LOSS: 0,
+  DOUBLE_FORFEIT: 0
+};
+
+export const FORFEIT_TYPE = {
+  SINGLE: 'single',    // One player forfeits, other wins
+  DOUBLE: 'double'     // Both players forfeit, neither wins
 };
 
 export const BEST_OF_OPTIONS = [3, 5, 7, 9, 11];

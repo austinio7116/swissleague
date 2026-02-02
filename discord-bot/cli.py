@@ -15,6 +15,7 @@ from league import (
     find_player_by_name,
     find_pending_match,
     apply_match_result,
+    apply_forfeit_result,
     parse_input_string,
     recalculate_all_player_stats,
     validate_frame_scores,
@@ -133,6 +134,95 @@ def format_match_preview(match_info, frame_scores, overall_frames, input_player1
     return "\n".join(lines)
 
 
+def parse_forfeit_input(input_str):
+    """
+    Parse forfeit input string.
+
+    Formats:
+      "player1 Vs player2 forfeit player1"      - player1 forfeited (player2 wins)
+      "player1 Vs player2 forfeit player2"      - player2 forfeited (player1 wins)
+      "player1 Vs player2 double-forfeit"       - both forfeited (both lose)
+
+    Returns: (player1_name, player2_name, forfeit_type, forfeiting_player_name_or_none)
+    Raises ValueError if parsing fails.
+    """
+    import re
+
+    # Check for double forfeit first
+    double_forfeit_match = re.search(r'\s+double[_-]?forfeit\s*$', input_str, re.IGNORECASE)
+    if double_forfeit_match:
+        # Extract player names
+        prefix = input_str[:double_forfeit_match.start()]
+        parts = re.split(r'\s+[Vv][Ss]\s+', prefix, maxsplit=1)
+        if len(parts) != 2:
+            raise ValueError("Input must contain 'Vs' separator between player names")
+        player1_name = parts[0].strip()
+        player2_name = parts[1].strip()
+        return player1_name, player2_name, "double", None
+
+    # Check for single forfeit
+    single_forfeit_match = re.search(r'\s+forfeit\s+(.+?)\s*$', input_str, re.IGNORECASE)
+    if single_forfeit_match:
+        forfeiting_name = single_forfeit_match.group(1).strip()
+        prefix = input_str[:single_forfeit_match.start()]
+        parts = re.split(r'\s+[Vv][Ss]\s+', prefix, maxsplit=1)
+        if len(parts) != 2:
+            raise ValueError("Input must contain 'Vs' separator between player names")
+        player1_name = parts[0].strip()
+        player2_name = parts[1].strip()
+        return player1_name, player2_name, "single", forfeiting_name
+
+    raise ValueError("Could not parse forfeit format. Use 'forfeit <player>' or 'double-forfeit'")
+
+
+def is_forfeit_input(input_str):
+    """Check if input string is a forfeit command."""
+    import re
+    return bool(re.search(r'\s+(forfeit|double[_-]?forfeit)\b', input_str, re.IGNORECASE))
+
+
+def format_forfeit_preview(match_info, forfeit_type, forfeiting_player_name=None):
+    """Format a preview of the forfeit match."""
+    match = match_info["match"]
+    player1 = match_info["player1"]
+    player2 = match_info["player2"]
+
+    lines = []
+    lines.append("\n" + "=" * 60)
+    lines.append(f"League: {match_info['league_name']}")
+    lines.append(f"Round: {match_info['round_number']}")
+    lines.append(f"Match ID: {match['id']}")
+    lines.append("-" * 60)
+    lines.append(f"Match: {player1['name']} vs {player2['name']}")
+    lines.append("-" * 60)
+
+    if forfeit_type == "double":
+        lines.append("DOUBLE FORFEIT")
+        lines.append(f"  Both players forfeit")
+        lines.append(f"  {player1['name']}: 0 points (loss)")
+        lines.append(f"  {player2['name']}: 0 points (loss)")
+        lines.append(f"  No frames recorded")
+    else:
+        # Single forfeit - determine winner
+        if forfeiting_player_name.lower() == player1['name'].lower():
+            forfeiter = player1
+            winner = player2
+        else:
+            forfeiter = player2
+            winner = player1
+        lines.append("SINGLE FORFEIT")
+        lines.append(f"  {forfeiter['name']} forfeits")
+        lines.append(f"  {winner['name']}: 1 point (win by forfeit)")
+        lines.append(f"  {forfeiter['name']}: 0 points (loss by forfeit)")
+        lines.append(f"  No frames recorded")
+
+    lines.append("-" * 60)
+    lines.append("NOTE: Forfeits are excluded from SOS and Buchholz calculations")
+    lines.append("=" * 60)
+
+    return "\n".join(lines)
+
+
 def create_git_commit(message):
     """Create a git commit with the data file changes."""
     try:
@@ -158,9 +248,16 @@ def main():
 
     if len(args) < 1:
         print("Usage: python cli.py \"player1 Vs player2 1-2 63-40 42-66 60-63\" [--dev]")
-        print("\nFormat: player1 Vs player2 frames1-frames2 score1-score2 score1-score2 ...")
+        print("\nFormats:")
+        print("  Regular match:   player1 Vs player2 frames1-frames2 score1-score2 score1-score2 ...")
+        print("  Single forfeit:  player1 Vs player2 forfeit <forfeiting_player>")
+        print("  Double forfeit:  player1 Vs player2 double-forfeit")
         print("\nFlags:")
         print("  --dev    Skip git commit (for testing)")
+        print("\nExamples:")
+        print('  python cli.py "john Vs jane 2-1 63-40 42-66 60-63"')
+        print('  python cli.py "john Vs jane forfeit john"        # john forfeits, jane wins')
+        print('  python cli.py "john Vs jane double-forfeit"      # both forfeit, both lose')
         sys.exit(1)
 
     if dev_mode:
@@ -168,6 +265,150 @@ def main():
 
     input_str = args[0]
 
+    # Check if this is a forfeit command
+    if is_forfeit_input(input_str):
+        handle_forfeit(input_str, dev_mode)
+    else:
+        handle_regular_result(input_str, dev_mode)
+
+
+def handle_forfeit(input_str, dev_mode):
+    """Handle forfeit match result."""
+    # Parse forfeit input
+    try:
+        player1_name, player2_name, forfeit_type, forfeiting_name = parse_forfeit_input(input_str)
+    except ValueError as e:
+        print(f"Error parsing forfeit input: {e}")
+        sys.exit(1)
+
+    print(f"\nParsed forfeit input:")
+    print(f"  Player 1: {player1_name}")
+    print(f"  Player 2: {player2_name}")
+    print(f"  Forfeit type: {forfeit_type}")
+    if forfeiting_name:
+        print(f"  Forfeiting player: {forfeiting_name}")
+
+    # Load data
+    try:
+        data = load_league_data()
+    except FileNotFoundError:
+        print(f"Error: Could not find {DATA_FILE}")
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"Error: Invalid JSON in {DATA_FILE}: {e}")
+        sys.exit(1)
+
+    # Find matching matches
+    matches = find_all_matching_matches(data, player1_name, player2_name)
+
+    if not matches:
+        print(f"\nError: No pending matches found between '{player1_name}' and '{player2_name}'")
+        print("\nPossible reasons:")
+        print("  - Player names don't match (check spelling)")
+        print("  - Match is already completed")
+        print("  - Match doesn't exist in any active round")
+        sys.exit(1)
+
+    # Select match if multiple
+    selected_match = None
+    if len(matches) == 1:
+        selected_match = matches[0]
+    else:
+        print(f"\nFound {len(matches)} matches for these players:")
+        for i, m in enumerate(matches, 1):
+            print(f"  {i}. {m['league_name']} - Round {m['round_number']}")
+
+        while selected_match is None:
+            try:
+                choice = input("\nSelect match number (or 'q' to quit): ").strip()
+                if choice.lower() == 'q':
+                    sys.exit(0)
+                idx = int(choice) - 1
+                if 0 <= idx < len(matches):
+                    selected_match = matches[idx]
+                else:
+                    print("Invalid selection")
+            except ValueError:
+                print("Please enter a number")
+
+    # For single forfeit, verify the forfeiting player name matches one of the players
+    forfeiting_player_id = None
+    if forfeit_type == "single":
+        p1 = selected_match["player1"]
+        p2 = selected_match["player2"]
+
+        # Check if forfeiting_name matches either player
+        if forfeiting_name.lower() == p1["name"].lower():
+            forfeiting_player_id = p1["id"]
+        elif forfeiting_name.lower() == p2["name"].lower():
+            forfeiting_player_id = p2["id"]
+        else:
+            # Try fuzzy match
+            from league import fuzzy_match_score
+            score1 = fuzzy_match_score(forfeiting_name, p1["name"])
+            score2 = fuzzy_match_score(forfeiting_name, p2["name"])
+
+            if score1 > score2 and score1 >= 0.6:
+                forfeiting_player_id = p1["id"]
+                print(f"  Note: '{forfeiting_name}' matched to '{p1['name']}' (score: {score1:.2f})")
+            elif score2 > score1 and score2 >= 0.6:
+                forfeiting_player_id = p2["id"]
+                print(f"  Note: '{forfeiting_name}' matched to '{p2['name']}' (score: {score2:.2f})")
+            else:
+                print(f"\nError: Could not match forfeiting player '{forfeiting_name}'")
+                print(f"  Expected one of: {p1['name']}, {p2['name']}")
+                sys.exit(1)
+
+    # Show preview
+    forfeiting_display_name = None
+    if forfeit_type == "single":
+        forfeiting_display_name = (selected_match["player1"]["name"]
+                                   if forfeiting_player_id == selected_match["player1"]["id"]
+                                   else selected_match["player2"]["name"])
+
+    preview = format_forfeit_preview(selected_match, forfeit_type, forfeiting_display_name)
+    print(preview)
+
+    # Confirm
+    confirm = input("\nApply this forfeit result? (y/n): ").strip().lower()
+    if confirm != 'y':
+        print("Cancelled")
+        sys.exit(0)
+
+    # Apply forfeit
+    league_id = selected_match["league_id"]
+    league_data = data["leagues"][league_id]
+
+    league_data = apply_forfeit_result(
+        league_data,
+        selected_match["match"],
+        forfeit_type,
+        forfeiting_player_id
+    )
+
+    data["leagues"][league_id] = league_data
+
+    # Save
+    save_league_data(data)
+    print("\nData saved successfully!")
+
+    # Git commit (skip in dev mode)
+    if dev_mode:
+        print("[DEV MODE] Skipping git commit")
+    else:
+        commit_confirm = input("Create git commit? (y/n): ").strip().lower()
+        if commit_confirm == 'y':
+            success, output = create_git_commit(input_str)
+            if success:
+                print(f"Git commit created: {input_str}")
+            else:
+                print(f"Git commit failed: {output}")
+
+    print("\nDone!")
+
+
+def handle_regular_result(input_str, dev_mode):
+    """Handle regular (non-forfeit) match result."""
     # Parse input
     try:
         player1_name, player2_name, overall_frames, frame_scores = parse_input_string(input_str)

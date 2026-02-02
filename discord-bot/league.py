@@ -161,6 +161,7 @@ def recalculate_all_player_stats(league_data):
 
     Pass 1: Calculate basic stats (matches, frames, points) for all players
     Pass 2: Calculate SOS and Buchholz using the freshly computed basic stats
+            (excluding forfeits, double forfeits, and byes from opponent calculations)
 
     This ensures we never rely on stale/existing player stats.
     """
@@ -168,7 +169,8 @@ def recalculate_all_player_stats(league_data):
 
     # Initialize fresh stats for all players
     fresh_stats = {}
-    opponent_map = {}  # Track opponents for each player
+    opponent_map = {}  # Track opponents for each player (for SOS/Buchholz - played matches only)
+    forfeit_counts = {}  # Track forfeit stats
 
     for player in players:
         fresh_stats[player["id"]] = {
@@ -180,10 +182,13 @@ def recalculate_all_player_stats(league_data):
             "points": 0,
             "frameDifference": 0,
             "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
             "strengthOfSchedule": 0,
             "buchholzScore": 0
         }
         opponent_map[player["id"]] = []
+        forfeit_counts[player["id"]] = {"received": 0, "given": 0}
 
     # Pass 1: Calculate basic stats from match history
     for round_data in league_data.get("rounds", []):
@@ -195,6 +200,8 @@ def recalculate_all_player_stats(league_data):
             player2_id = match.get("player2Id")
             winner_id = match.get("winnerId")
             is_bye = match.get("isBye", False)
+            is_forfeit = match.get("isForfeit", False)
+            forfeit_type = match.get("forfeitType")  # 'single' or 'double'
 
             # Handle bye matches
             if is_bye:
@@ -203,6 +210,45 @@ def recalculate_all_player_stats(league_data):
                     fresh_stats[player1_id]["matchesWon"] += 1
                     fresh_stats[player1_id]["points"] += 1
                     fresh_stats[player1_id]["byesReceived"] += 1
+                # Byes are NOT added to opponent_map (excluded from SOS/Buchholz)
+                continue
+
+            # Handle forfeit matches
+            if is_forfeit:
+                if forfeit_type == "double":
+                    # Double forfeit: both lose, 0 points each, no frames
+                    if player1_id in fresh_stats:
+                        fresh_stats[player1_id]["matchesPlayed"] += 1
+                        fresh_stats[player1_id]["matchesLost"] += 1
+                        fresh_stats[player1_id]["forfeitsGiven"] += 1
+                        # points stays 0 for double forfeit
+                    if player2_id in fresh_stats:
+                        fresh_stats[player2_id]["matchesPlayed"] += 1
+                        fresh_stats[player2_id]["matchesLost"] += 1
+                        fresh_stats[player2_id]["forfeitsGiven"] += 1
+                        # points stays 0 for double forfeit
+                else:
+                    # Single forfeit: winner gets point, forfeiter loses
+                    forfeiting_player_id = match.get("forfeitingPlayerId")
+                    if player1_id in fresh_stats:
+                        fresh_stats[player1_id]["matchesPlayed"] += 1
+                        if winner_id == player1_id:
+                            fresh_stats[player1_id]["matchesWon"] += 1
+                            fresh_stats[player1_id]["points"] += 1
+                            fresh_stats[player1_id]["forfeitsReceived"] += 1
+                        else:
+                            fresh_stats[player1_id]["matchesLost"] += 1
+                            fresh_stats[player1_id]["forfeitsGiven"] += 1
+                    if player2_id in fresh_stats:
+                        fresh_stats[player2_id]["matchesPlayed"] += 1
+                        if winner_id == player2_id:
+                            fresh_stats[player2_id]["matchesWon"] += 1
+                            fresh_stats[player2_id]["points"] += 1
+                            fresh_stats[player2_id]["forfeitsReceived"] += 1
+                        else:
+                            fresh_stats[player2_id]["matchesLost"] += 1
+                            fresh_stats[player2_id]["forfeitsGiven"] += 1
+                # Forfeits are NOT added to opponent_map (excluded from SOS/Buchholz)
                 continue
 
             # Regular match - update both players
@@ -210,6 +256,7 @@ def recalculate_all_player_stats(league_data):
                 fresh_stats[player1_id]["matchesPlayed"] += 1
                 fresh_stats[player1_id]["framesWon"] += match.get("player1FramesWon", 0)
                 fresh_stats[player1_id]["framesLost"] += match.get("player2FramesWon", 0)
+                # Only actually played matches count for SOS/Buchholz
                 opponent_map[player1_id].append(player2_id)
                 if winner_id == player1_id:
                     fresh_stats[player1_id]["matchesWon"] += 1
@@ -221,6 +268,7 @@ def recalculate_all_player_stats(league_data):
                 fresh_stats[player2_id]["matchesPlayed"] += 1
                 fresh_stats[player2_id]["framesWon"] += match.get("player2FramesWon", 0)
                 fresh_stats[player2_id]["framesLost"] += match.get("player1FramesWon", 0)
+                # Only actually played matches count for SOS/Buchholz
                 opponent_map[player2_id].append(player1_id)
                 if winner_id == player2_id:
                     fresh_stats[player2_id]["matchesWon"] += 1
@@ -234,6 +282,8 @@ def recalculate_all_player_stats(league_data):
         stats["frameDifference"] = stats["framesWon"] - stats["framesLost"]
 
     # Pass 2: Calculate SOS and Buchholz using freshly computed stats
+    # Note: opponent_map only contains opponents from actually played matches
+    # (forfeits, double forfeits, and byes are excluded)
     for player_id in fresh_stats:
         opponents = opponent_map[player_id]
         if not opponents:
@@ -317,6 +367,67 @@ def apply_match_result(league_data, match, submitter_id, opponent_id, frame_scor
     match["status"] = "completed"
     match["winnerId"] = match_winner_id
     match["completedAt"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+    # Update round status if all matches complete
+    for round_data in league_data.get("rounds", []):
+        if match in round_data.get("matches", []):
+            all_complete = all(
+                m.get("status") == "completed"
+                for m in round_data.get("matches", [])
+            )
+            if all_complete:
+                round_data["status"] = "completed"
+            break
+
+    # Update league timestamp
+    if "league" in league_data:
+        league_data["league"]["updatedAt"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+    # Recalculate all player stats
+    league_data = recalculate_all_player_stats(league_data)
+
+    return league_data
+
+
+def apply_forfeit_result(league_data, match, forfeit_type, forfeiting_player_id=None):
+    """
+    Apply a forfeit result to the league data.
+
+    Args:
+        league_data: The league data dict
+        match: The match dict to update
+        forfeit_type: 'single' or 'double'
+        forfeiting_player_id: ID of player who forfeited (required for single forfeit)
+
+    For single forfeit: non-forfeiting player wins with 1 point, no frames recorded
+    For double forfeit: both players lose with 0 points, no frames recorded
+
+    Returns:
+        Updated league_data with recalculated stats
+    """
+    match_p1_id = match["player1Id"]
+    match_p2_id = match["player2Id"]
+
+    # Set forfeit flags
+    match["isForfeit"] = True
+    match["forfeitType"] = forfeit_type
+    match["frames"] = []  # No frames in forfeit
+    match["player1FramesWon"] = 0
+    match["player2FramesWon"] = 0
+    match["status"] = "completed"
+    match["completedAt"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+    if forfeit_type == "double":
+        # Double forfeit: no winner, both lose
+        match["winnerId"] = None
+        match["forfeitingPlayerId"] = None
+    else:
+        # Single forfeit: determine winner (non-forfeiting player)
+        if forfeiting_player_id == match_p1_id:
+            match["winnerId"] = match_p2_id
+        else:
+            match["winnerId"] = match_p1_id
+        match["forfeitingPlayerId"] = forfeiting_player_id
 
     # Update round status if all matches complete
     for round_data in league_data.get("rounds", []):

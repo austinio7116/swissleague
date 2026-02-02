@@ -496,6 +496,27 @@ class AdminApp {
       `;
     }
 
+    // Handle forfeit matches
+    if (match.isForfeit) {
+      const isDoubleForfeit = match.forfeitType === 'double';
+      const winner = match.winnerId ? this.leagueData.players.find(p => p.id === match.winnerId) : null;
+      return `
+        <div class="match-card match-completed forfeit-match ${isDoubleForfeit ? 'double-forfeit' : ''}">
+          <div class="match-players">
+            <span>${escapeHtml(player1.name)}</span>
+            <span class="vs">vs</span>
+            <span>${escapeHtml(player2.name)}</span>
+          </div>
+          <div class="match-score">
+            <span class="score forfeit-label">${isDoubleForfeit ? 'DOUBLE FORFEIT' : 'FORFEIT'}</span>
+          </div>
+          <div class="forfeit-info">
+            ${isDoubleForfeit ? 'Both forfeit (0 pts each)' : `${escapeHtml(winner?.name || 'Unknown')} wins by forfeit`}
+          </div>
+        </div>
+      `;
+    }
+
     return `
       <div class="match-card match-${match.status}">
         <div class="match-players">
@@ -539,12 +560,54 @@ class AdminApp {
       return;
     }
 
+    // Handle forfeit matches
+    if (matchData.isForfeit) {
+      const isDoubleForfeit = matchData.forfeitType === 'double';
+      const winner = matchData.winnerId ? (matchData.player1.id === matchData.winnerId ? matchData.player1 : matchData.player2) : null;
+      const forfeiter = matchData.forfeitingPlayerId ? (matchData.player1.id === matchData.forfeitingPlayerId ? matchData.player1 : matchData.player2) : null;
+
+      container.innerHTML = `
+        <div class="scoring-section">
+          <h2>Match Details</h2>
+
+          <div class="match-header">
+            <h3>${escapeHtml(matchData.player1.name)} vs ${escapeHtml(matchData.player2.name)}</h3>
+          </div>
+
+          <div class="alert ${isDoubleForfeit ? 'alert-warning' : 'alert-info'}" style="margin: 1.5rem 0; padding: 1.5rem; border-radius: 8px; background: ${isDoubleForfeit ? '#fff3cd' : '#cce5ff'}; border: 1px solid ${isDoubleForfeit ? '#ffc107' : '#b8daff'};">
+            <h4 style="margin: 0 0 0.5rem 0; color: ${isDoubleForfeit ? '#856404' : '#004085'};">
+              ${isDoubleForfeit ? 'DOUBLE FORFEIT' : 'FORFEIT'}
+            </h4>
+            ${isDoubleForfeit ? `
+              <p style="margin: 0; color: #856404;">Both players forfeited this match.</p>
+              <ul style="margin: 0.5rem 0 0 1.5rem; color: #856404;">
+                <li>${escapeHtml(matchData.player1.name)}: 0 points (loss)</li>
+                <li>${escapeHtml(matchData.player2.name)}: 0 points (loss)</li>
+              </ul>
+            ` : `
+              <p style="margin: 0; color: #004085;">${escapeHtml(forfeiter?.name || 'Unknown')} forfeited this match.</p>
+              <ul style="margin: 0.5rem 0 0 1.5rem; color: #004085;">
+                <li>${escapeHtml(winner?.name || 'Unknown')}: 1 point (win by forfeit)</li>
+                <li>${escapeHtml(forfeiter?.name || 'Unknown')}: 0 points (forfeit)</li>
+              </ul>
+            `}
+            <p style="margin: 0.75rem 0 0 0; font-size: 0.875rem; color: #6c757d;">
+              <em>No frames recorded. This match is excluded from SOS and Buchholz calculations.</em>
+            </p>
+          </div>
+
+          <button class="btn btn-secondary" onclick="app.switchView('${VIEWS.ROUNDS}')">Back to Rounds</button>
+        </div>
+      `;
+      return;
+    }
+
     const progress = ScoringManager.getMatchProgress(matchData, this.leagueData.league.bestOfFrames);
 
     container.innerHTML = `
       <div class="scoring-section">
         <h2>Score Entry</h2>
-        
+
         <div class="match-header">
           <h3>${escapeHtml(matchData.player1.name)} vs ${escapeHtml(matchData.player2.name)}</h3>
           <p>Best of ${this.leagueData.league.bestOfFrames} (First to ${progress.framesToWin})</p>

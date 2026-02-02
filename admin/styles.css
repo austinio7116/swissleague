@@ -546,6 +546,42 @@ body {
   background: #e7f5ff;
 }
 
+/* Forfeit Match Styles */
+.match-card.forfeit-match {
+  border-left-color: var(--warning-color);
+  background: rgba(255, 167, 38, 0.1);
+}
+
+.match-card.forfeit-match.double-forfeit {
+  border-left-color: var(--danger-color);
+  background: rgba(255, 51, 102, 0.1);
+}
+
+.match-card .forfeit-label {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: rgba(255, 167, 38, 0.2);
+  border: 1px solid var(--warning-color);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--warning-color);
+}
+
+.match-card.double-forfeit .forfeit-label {
+  background: rgba(255, 51, 102, 0.2);
+  border-color: var(--danger-color);
+  color: var(--danger-color);
+}
+
+.match-card .forfeit-info {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin-top: 0.5rem;
+}
+
 .match-players {
   display: flex;
   align-items: center;
