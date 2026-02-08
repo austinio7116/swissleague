@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-02-07T22:34:07.620981Z",
+        "updatedAt": "2026-02-08T21:47:28.033332Z",
         "currentRound": 3,
         "totalRounds": 7
       },
@@ -27,8 +27,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.16666666666666666,
-            "buchholzScore": 1
+            "strengthOfSchedule": 0.3333333333333333,
+            "buchholzScore": 2
           }
         },
         {
@@ -46,8 +46,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.3333333333333333,
-            "buchholzScore": 3
+            "strengthOfSchedule": 0.4444444444444444,
+            "buchholzScore": 4
           }
         },
         {
@@ -74,16 +74,16 @@
           "name": "dan105hughes",
           "active": true,
           "stats": {
-            "matchesPlayed": 2,
+            "matchesPlayed": 3,
             "matchesWon": 0,
-            "matchesLost": 2,
+            "matchesLost": 3,
             "framesWon": 0,
             "framesLost": 2,
             "points": 0,
             "frameDifference": -2,
             "byesReceived": 0,
             "forfeitsReceived": 0,
-            "forfeitsGiven": 1,
+            "forfeitsGiven": 2,
             "strengthOfSchedule": 0.3333333333333333,
             "buchholzScore": 1
           }
@@ -93,15 +93,15 @@
           "name": "deedon2624",
           "active": true,
           "stats": {
-            "matchesPlayed": 2,
-            "matchesWon": 0,
+            "matchesPlayed": 3,
+            "matchesWon": 1,
             "matchesLost": 2,
             "framesWon": 0,
             "framesLost": 4,
-            "points": 0,
+            "points": 1,
             "frameDifference": -4,
             "byesReceived": 0,
-            "forfeitsReceived": 0,
+            "forfeitsReceived": 1,
             "forfeitsGiven": 0,
             "strengthOfSchedule": 0.75,
             "buchholzScore": 4
@@ -112,16 +112,16 @@
           "name": "deucejuice",
           "active": true,
           "stats": {
-            "matchesPlayed": 2,
+            "matchesPlayed": 3,
             "matchesWon": 0,
-            "matchesLost": 2,
+            "matchesLost": 3,
             "framesWon": 1,
             "framesLost": 4,
             "points": 0,
             "frameDifference": -3,
             "byesReceived": 0,
             "forfeitsReceived": 0,
-            "forfeitsGiven": 0,
+            "forfeitsGiven": 1,
             "strengthOfSchedule": 0.5,
             "buchholzScore": 3
           }
@@ -369,8 +369,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.3333333333333333,
-            "buchholzScore": 3
+            "strengthOfSchedule": 0.4444444444444444,
+            "buchholzScore": 4
           }
         },
         {
@@ -388,7 +388,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.7777777777777777,
+            "strengthOfSchedule": 0.7777777777777778,
             "buchholzScore": 7
           }
         },
@@ -416,15 +416,15 @@
           "name": "strbxz",
           "active": true,
           "stats": {
-            "matchesPlayed": 2,
-            "matchesWon": 0,
+            "matchesPlayed": 3,
+            "matchesWon": 1,
             "matchesLost": 2,
             "framesWon": 0,
             "framesLost": 2,
-            "points": 0,
+            "points": 1,
             "frameDifference": -2,
             "byesReceived": 0,
-            "forfeitsReceived": 0,
+            "forfeitsReceived": 1,
             "forfeitsGiven": 1,
             "strengthOfSchedule": 0.6666666666666666,
             "buchholzScore": 2
@@ -1271,23 +1271,31 @@
               "id": "d645f3b5-b2ee-4696-ab39-817b8b9356a0",
               "player1Id": "61dd2ea8-7158-468a-96f4-944a53110d47",
               "player2Id": "50b9053b-8b2c-49b3-b19f-8fbdf3f8efd6",
-              "status": "pending",
+              "status": "completed",
               "frames": [],
               "player1FramesWon": 0,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "61dd2ea8-7158-468a-96f4-944a53110d47",
+              "isBye": false,
+              "isForfeit": true,
+              "forfeitType": "single",
+              "completedAt": "2026-02-08T21:47:28.033303Z",
+              "forfeitingPlayerId": "50b9053b-8b2c-49b3-b19f-8fbdf3f8efd6"
             },
             {
               "id": "4ce142c0-a2b7-4b9a-9be5-285ab71bb79c",
               "player1Id": "b2092568-8d0c-4797-8b19-5dcc211282ff",
               "player2Id": "83812a0c-2c64-4b6d-b09a-bb5a5b23af63",
-              "status": "pending",
+              "status": "completed",
               "frames": [],
               "player1FramesWon": 0,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "83812a0c-2c64-4b6d-b09a-bb5a5b23af63",
+              "isBye": false,
+              "isForfeit": true,
+              "forfeitType": "single",
+              "completedAt": "2026-02-08T21:41:53.234570Z",
+              "forfeitingPlayerId": "b2092568-8d0c-4797-8b19-5dcc211282ff"
             }
           ],
           "generatedAt": "2026-02-01T20:34:44.051Z"
