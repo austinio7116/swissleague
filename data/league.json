@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-02-11T21:23:58.671967Z",
+        "updatedAt": "2026-02-12T20:52:26.801953Z",
         "currentRound": 4,
         "totalRounds": 7
       },
@@ -122,8 +122,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 1,
-            "strengthOfSchedule": 0.5,
-            "buchholzScore": 3
+            "strengthOfSchedule": 0.5416666666666666,
+            "buchholzScore": 4
           }
         },
         {
@@ -217,8 +217,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.7777777777777777,
-            "buchholzScore": 8
+            "strengthOfSchedule": 0.8055555555555555,
+            "buchholzScore": 9
           }
         },
         {
@@ -236,8 +236,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.6388888888888888,
-            "buchholzScore": 7
+            "strengthOfSchedule": 0.6666666666666666,
+            "buchholzScore": 8
           }
         },
         {
@@ -264,18 +264,18 @@
           "name": "naedangerpawl",
           "active": true,
           "stats": {
-            "matchesPlayed": 3,
-            "matchesWon": 2,
+            "matchesPlayed": 4,
+            "matchesWon": 3,
             "matchesLost": 1,
-            "framesWon": 5,
+            "framesWon": 7,
             "framesLost": 3,
-            "points": 2,
-            "frameDifference": 2,
+            "points": 3,
+            "frameDifference": 4,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.3333333333333333,
-            "buchholzScore": 3
+            "strengthOfSchedule": 0.375,
+            "buchholzScore": 5
           }
         },
         {
@@ -312,7 +312,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5555555555555555,
+            "strengthOfSchedule": 0.5,
             "buchholzScore": 5
           }
         },
@@ -359,18 +359,18 @@
           "name": "redeyeknightuk",
           "active": true,
           "stats": {
-            "matchesPlayed": 3,
+            "matchesPlayed": 4,
             "matchesWon": 2,
-            "matchesLost": 1,
+            "matchesLost": 2,
             "framesWon": 4,
-            "framesLost": 3,
+            "framesLost": 5,
             "points": 2,
-            "frameDifference": 1,
+            "frameDifference": -1,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.4166666666666667,
-            "buchholzScore": 4
+            "strengthOfSchedule": 0.5,
+            "buchholzScore": 7
           }
         },
         {
@@ -388,7 +388,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.7777777777777777,
+            "strengthOfSchedule": 0.7777777777777778,
             "buchholzScore": 8
           }
         },
@@ -407,7 +407,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.4583333333333333,
+            "strengthOfSchedule": 0.41666666666666663,
             "buchholzScore": 6
           }
         },
@@ -426,7 +426,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 1,
             "forfeitsGiven": 1,
-            "strengthOfSchedule": 0.6666666666666666,
+            "strengthOfSchedule": 0.5,
             "buchholzScore": 2
           }
         },
@@ -1397,12 +1397,26 @@
               "id": "24476592-e37c-447f-be61-371298e259fc",
               "player1Id": "59fa6ac1-fc45-4cf1-810c-e6a32fe39c51",
               "player2Id": "337629e3-1e29-4dbc-82d2-25782f07092a",
-              "status": "pending",
-              "frames": [],
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 21,
+                  "player2Score": 54,
+                  "winnerId": "337629e3-1e29-4dbc-82d2-25782f07092a"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 39,
+                  "player2Score": 49,
+                  "winnerId": "337629e3-1e29-4dbc-82d2-25782f07092a"
+                }
+              ],
               "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "player2FramesWon": 2,
+              "winnerId": "337629e3-1e29-4dbc-82d2-25782f07092a",
+              "isBye": false,
+              "completedAt": "2026-02-12T20:52:26.801921Z"
             },
             {
               "id": "335b44c6-5536-4b3f-b279-b86823d40f4c",
