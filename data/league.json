@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-02-12T21:00:47.773719Z",
+        "updatedAt": "2026-02-13T22:23:23.282677Z",
         "currentRound": 4,
         "totalRounds": 7
       },
@@ -46,8 +46,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.38888888888888884,
-            "buchholzScore": 4
+            "strengthOfSchedule": 0.4444444444444444,
+            "buchholzScore": 5
           }
         },
         {
@@ -141,8 +141,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.4583333333333333,
-            "buchholzScore": 6
+            "strengthOfSchedule": 0.47916666666666663,
+            "buchholzScore": 7
           }
         },
         {
@@ -160,8 +160,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.3125,
-            "buchholzScore": 4
+            "strengthOfSchedule": 0.35416666666666663,
+            "buchholzScore": 5
           }
         },
         {
@@ -207,18 +207,18 @@
           "name": "kidbrush52.",
           "active": true,
           "stats": {
-            "matchesPlayed": 3,
+            "matchesPlayed": 4,
             "matchesWon": 1,
-            "matchesLost": 2,
+            "matchesLost": 3,
             "framesWon": 3,
-            "framesLost": 5,
+            "framesLost": 7,
             "points": 1,
-            "frameDifference": -2,
+            "frameDifference": -4,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.8055555555555555,
-            "buchholzScore": 9
+            "strengthOfSchedule": 0.7291666666666666,
+            "buchholzScore": 11
           }
         },
         {
@@ -274,7 +274,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.375,
+            "strengthOfSchedule": 0.35416666666666663,
             "buchholzScore": 5
           }
         },
@@ -293,7 +293,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.27777777777777773,
+            "strengthOfSchedule": 0.25,
             "buchholzScore": 3
           }
         },
@@ -378,18 +378,18 @@
           "name": "relisys196",
           "active": true,
           "stats": {
-            "matchesPlayed": 3,
-            "matchesWon": 1,
+            "matchesPlayed": 4,
+            "matchesWon": 2,
             "matchesLost": 2,
-            "framesWon": 3,
+            "framesWon": 5,
             "framesLost": 5,
-            "points": 1,
-            "frameDifference": -2,
+            "points": 2,
+            "frameDifference": 0,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.8333333333333334,
-            "buchholzScore": 9
+            "strengthOfSchedule": 0.6875,
+            "buchholzScore": 10
           }
         },
         {
@@ -1433,12 +1433,26 @@
               "id": "ca2cfa3d-a15a-4274-9619-e548cb7e706c",
               "player1Id": "bfc7ec64-32a6-4f73-a39f-31f8d677470e",
               "player2Id": "3e16cdd9-81a5-4ee0-a45f-efec6134dba2",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 70,
+                  "player2Score": 45,
+                  "winnerId": "bfc7ec64-32a6-4f73-a39f-31f8d677470e"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 83,
+                  "player2Score": 67,
+                  "winnerId": "bfc7ec64-32a6-4f73-a39f-31f8d677470e"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "bfc7ec64-32a6-4f73-a39f-31f8d677470e",
+              "isBye": false,
+              "completedAt": "2026-02-13T22:23:23.282644Z"
             },
             {
               "id": "c5062b99-80fb-4e31-94f8-c4d3eaf23ff4",
