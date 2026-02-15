@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-02-14T21:02:10.077936Z",
+        "updatedAt": "2026-02-15T12:01:10.953861Z",
         "currentRound": 4,
         "totalRounds": 7
       },
@@ -46,7 +46,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5208333333333334,
+            "strengthOfSchedule": 0.5208333333333333,
             "buchholzScore": 8
           }
         },
@@ -255,7 +255,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.6458333333333334,
+            "strengthOfSchedule": 0.6458333333333333,
             "buchholzScore": 10
           }
         },
@@ -331,7 +331,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.6458333333333334,
+            "strengthOfSchedule": 0.6458333333333333,
             "buchholzScore": 10
           }
         },
@@ -369,7 +369,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5208333333333334,
+            "strengthOfSchedule": 0.5208333333333333,
             "buchholzScore": 8
           }
         },
@@ -435,18 +435,18 @@
           "name": "nathan1045.",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "matchesWon": 0,
-            "matchesLost": 0,
+            "matchesLost": 1,
             "framesWon": 0,
-            "framesLost": 0,
+            "framesLost": 2,
             "points": 0,
-            "frameDifference": 0,
+            "frameDifference": -2,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0,
-            "buchholzScore": 0
+            "strengthOfSchedule": 1.0,
+            "buchholzScore": 1
           }
         },
         {
@@ -454,17 +454,17 @@
           "name": "kin3pin",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
-            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "matchesWon": 1,
             "matchesLost": 0,
-            "framesWon": 0,
+            "framesWon": 2,
             "framesLost": 0,
-            "points": 0,
-            "frameDifference": 0,
+            "points": 1,
+            "frameDifference": 2,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         }
@@ -1584,12 +1584,26 @@
               "id": "98d5639d-67d1-4bc7-8680-ddbf83af9bd7",
               "player1Id": "cb364849-48d9-4dac-b2ce-228445e6f509",
               "player2Id": "9b466cc2-348c-4fb7-ae26-dc086c795aad",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 60,
+                  "player2Score": 33,
+                  "winnerId": "cb364849-48d9-4dac-b2ce-228445e6f509"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 54,
+                  "player2Score": 8,
+                  "winnerId": "cb364849-48d9-4dac-b2ce-228445e6f509"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "cb364849-48d9-4dac-b2ce-228445e6f509",
+              "isBye": false,
+              "completedAt": "2026-02-15T12:01:10.953836Z"
             }
           ],
           "generatedAt": "2026-02-09T21:57:35.788Z"
