@@ -7,8 +7,8 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-02-16T20:46:53.461231Z",
-        "currentRound": 4,
+        "updatedAt": "2026-02-16T20:48:08.140Z",
+        "currentRound": 5,
         "totalRounds": 7
       },
       "players": [
@@ -445,7 +445,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 1.0,
+            "strengthOfSchedule": 1,
             "buchholzScore": 1
           }
         },
@@ -464,7 +464,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.0,
+            "strengthOfSchedule": 0,
             "buchholzScore": 0
           }
         }
@@ -1635,6 +1635,134 @@
             }
           ],
           "generatedAt": "2026-02-09T21:57:35.788Z"
+        },
+        {
+          "roundNumber": 5,
+          "status": "pending",
+          "matches": [
+            {
+              "id": "9e4bfa6e-66f6-4d0d-b1b8-f650903bc270",
+              "player1Id": "f847daf1-1052-41cd-a4d4-8178118d6aa9",
+              "player2Id": "8c064afb-f496-44c6-ad35-8925befce1c4",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "56a10948-9049-4d4b-95b0-8b7e36253539",
+              "player1Id": "8b112374-a5f1-4451-9826-b91fa7a24eee",
+              "player2Id": "60fa57eb-fad6-4e78-a11e-763db945f76c",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "231e200a-cea3-4719-b72b-a3362abbd4b6",
+              "player1Id": "ac3c10e6-26a0-4a45-8949-2819a11012a0",
+              "player2Id": "337629e3-1e29-4dbc-82d2-25782f07092a",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "a0cb3d2e-f454-4b78-bdfc-671a3dbed342",
+              "player1Id": "bd5a55fd-fbe4-472d-a2e5-264d57526bf5",
+              "player2Id": "bfc7ec64-32a6-4f73-a39f-31f8d677470e",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "b61dc40a-1d0e-4816-b852-d2a20b357d1e",
+              "player1Id": "3a17fb70-44b5-4def-9175-25d3005bb19e",
+              "player2Id": "3228fca4-08e9-4533-a007-85bdcf2cab7a",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "81cc1a03-ec0c-4384-b4ee-4d65659493b7",
+              "player1Id": "59fa6ac1-fc45-4cf1-810c-e6a32fe39c51",
+              "player2Id": "b129dde5-d108-4429-b16a-4181c16b3f77",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "1b32e5f9-4949-41bb-9f3f-80c5798ab037",
+              "player1Id": "5fc54c3a-00d2-4627-8e0e-deefccefc34d",
+              "player2Id": "8b5d1a17-f81b-46bf-ac31-13b4c93b24f5",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "48e7fd7a-0627-4315-b469-76a749e1bf9a",
+              "player1Id": "3e16cdd9-81a5-4ee0-a45f-efec6134dba2",
+              "player2Id": "61dd2ea8-7158-468a-96f4-944a53110d47",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "9fa39b86-9dca-4572-babd-6857c32490e3",
+              "player1Id": "5d4baae4-5762-4c27-a429-596f0f3e286c",
+              "player2Id": "9e2f9958-3ed7-41e7-966f-af175a987c97",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "66f6eea7-77f7-4d36-a158-aac994f9b800",
+              "player1Id": "42653a93-1fc0-474c-bf3a-fd208aa24a97",
+              "player2Id": "83812a0c-2c64-4b6d-b09a-bb5a5b23af63",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "550b49a0-488b-4b3c-bc89-4b835bf44e08",
+              "player1Id": "cb364849-48d9-4dac-b2ce-228445e6f509",
+              "player2Id": "9b466cc2-348c-4fb7-ae26-dc086c795aad",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            }
+          ],
+          "generatedAt": "2026-02-16T20:48:08.140Z"
         }
       ],
       "pairingHistory": [
@@ -1813,6 +1941,50 @@
         [
           "cb364849-48d9-4dac-b2ce-228445e6f509",
           "9b466cc2-348c-4fb7-ae26-dc086c795aad"
+        ],
+        [
+          "f847daf1-1052-41cd-a4d4-8178118d6aa9",
+          "8c064afb-f496-44c6-ad35-8925befce1c4"
+        ],
+        [
+          "8b112374-a5f1-4451-9826-b91fa7a24eee",
+          "60fa57eb-fad6-4e78-a11e-763db945f76c"
+        ],
+        [
+          "ac3c10e6-26a0-4a45-8949-2819a11012a0",
+          "337629e3-1e29-4dbc-82d2-25782f07092a"
+        ],
+        [
+          "bd5a55fd-fbe4-472d-a2e5-264d57526bf5",
+          "bfc7ec64-32a6-4f73-a39f-31f8d677470e"
+        ],
+        [
+          "3a17fb70-44b5-4def-9175-25d3005bb19e",
+          "3228fca4-08e9-4533-a007-85bdcf2cab7a"
+        ],
+        [
+          "59fa6ac1-fc45-4cf1-810c-e6a32fe39c51",
+          "b129dde5-d108-4429-b16a-4181c16b3f77"
+        ],
+        [
+          "5fc54c3a-00d2-4627-8e0e-deefccefc34d",
+          "8b5d1a17-f81b-46bf-ac31-13b4c93b24f5"
+        ],
+        [
+          "3e16cdd9-81a5-4ee0-a45f-efec6134dba2",
+          "61dd2ea8-7158-468a-96f4-944a53110d47"
+        ],
+        [
+          "5d4baae4-5762-4c27-a429-596f0f3e286c",
+          "9e2f9958-3ed7-41e7-966f-af175a987c97"
+        ],
+        [
+          "42653a93-1fc0-474c-bf3a-fd208aa24a97",
+          "83812a0c-2c64-4b6d-b09a-bb5a5b23af63"
+        ],
+        [
+          "cb364849-48d9-4dac-b2ce-228445e6f509",
+          "9b466cc2-348c-4fb7-ae26-dc086c795aad"
         ]
       ]
     }
@@ -1820,7 +1992,7 @@
   "currentLeagueId": "d471bea8-b962-4df9-91ea-35d3e71ba8df",
   "metadata": {
     "version": "2.0",
-    "lastUpdated": "2026-02-09T21:57:48.261Z",
+    "lastUpdated": "2026-02-16T20:48:14.389Z",
     "exportedBy": "Swiss Snooker League Admin"
   }
 }
