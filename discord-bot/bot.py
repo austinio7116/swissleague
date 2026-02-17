@@ -330,7 +330,7 @@ async def standings(interaction: discord.Interaction):
         max_name = max(len(n) for n in formatted_names) if formatted_names else 10
 
         # Build table
-        header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'Frames':>7}  {'+/-':>4}"
+        header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'Frames':>7}"
         separator = "-" * len(header)
 
         lines = [
@@ -358,7 +358,7 @@ async def standings(interaction: discord.Interaction):
             diff_str = f"+{diff}" if diff > 0 else str(diff)
 
             lines.append(
-                f"{rank_str:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>5}  {frames:>7}  {diff_str:>4}"
+                f"{rank_str:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>5}  {frames:>7}"
             )
 
         lines.append("```")
