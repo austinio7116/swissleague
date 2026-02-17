@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-02-16T20:48:08.140Z",
+        "updatedAt": "2026-02-17T20:23:12.865069Z",
         "currentRound": 5,
         "totalRounds": 7
       },
@@ -435,18 +435,18 @@
           "name": "nathan1045.",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "matchesWon": 0,
-            "matchesLost": 1,
+            "matchesLost": 2,
             "framesWon": 0,
-            "framesLost": 2,
+            "framesLost": 4,
             "points": 0,
-            "frameDifference": -2,
+            "frameDifference": -4,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 1,
-            "buchholzScore": 1
+            "strengthOfSchedule": 1.0,
+            "buchholzScore": 4
           }
         },
         {
@@ -454,17 +454,17 @@
           "name": "kin3pin",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
-            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "matchesWon": 2,
             "matchesLost": 0,
-            "framesWon": 2,
+            "framesWon": 4,
             "framesLost": 0,
-            "points": 1,
-            "frameDifference": 2,
+            "points": 2,
+            "frameDifference": 4,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0,
+            "strengthOfSchedule": 0.0,
             "buchholzScore": 0
           }
         }
@@ -1754,12 +1754,26 @@
               "id": "550b49a0-488b-4b3c-bc89-4b835bf44e08",
               "player1Id": "cb364849-48d9-4dac-b2ce-228445e6f509",
               "player2Id": "9b466cc2-348c-4fb7-ae26-dc086c795aad",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 68,
+                  "player2Score": 1,
+                  "winnerId": "cb364849-48d9-4dac-b2ce-228445e6f509"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 66,
+                  "player2Score": 12,
+                  "winnerId": "cb364849-48d9-4dac-b2ce-228445e6f509"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "cb364849-48d9-4dac-b2ce-228445e6f509",
+              "isBye": false,
+              "completedAt": "2026-02-17T20:23:12.865047Z"
             }
           ],
           "generatedAt": "2026-02-16T20:48:08.140Z"
