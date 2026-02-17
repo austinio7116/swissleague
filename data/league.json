@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-02-17T20:23:12.865069Z",
+        "updatedAt": "2026-02-17T20:26:01.547981Z",
         "currentRound": 5,
         "totalRounds": 7
       },
@@ -47,7 +47,7 @@
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
             "strengthOfSchedule": 0.5,
-            "buchholzScore": 8
+            "buchholzScore": 9
           }
         },
         {
@@ -142,7 +142,7 @@
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
             "strengthOfSchedule": 0.4375,
-            "buchholzScore": 7
+            "buchholzScore": 8
           }
         },
         {
@@ -160,7 +160,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.3125,
+            "strengthOfSchedule": 0.2875,
             "buchholzScore": 5
           }
         },
@@ -198,8 +198,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5625,
-            "buchholzScore": 9
+            "strengthOfSchedule": 0.5875,
+            "buchholzScore": 10
           }
         },
         {
@@ -217,7 +217,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.6875,
+            "strengthOfSchedule": 0.6625,
             "buchholzScore": 11
           }
         },
@@ -245,18 +245,18 @@
           "name": "mumbles247",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
-            "matchesWon": 2,
+            "matchesPlayed": 5,
+            "matchesWon": 3,
             "matchesLost": 2,
-            "framesWon": 5,
+            "framesWon": 7,
             "framesLost": 4,
-            "points": 2,
-            "frameDifference": 1,
+            "points": 3,
+            "frameDifference": 3,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.6875,
-            "buchholzScore": 11
+            "strengthOfSchedule": 0.63,
+            "buchholzScore": 13
           }
         },
         {
@@ -350,8 +350,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 1,
-            "strengthOfSchedule": 0.5,
-            "buchholzScore": 6
+            "strengthOfSchedule": 0.5333333333333333,
+            "buchholzScore": 7
           }
         },
         {
@@ -378,18 +378,18 @@
           "name": "relisys196",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
+            "matchesPlayed": 5,
             "matchesWon": 2,
-            "matchesLost": 2,
+            "matchesLost": 3,
             "framesWon": 5,
-            "framesLost": 5,
+            "framesLost": 7,
             "points": 2,
-            "frameDifference": 0,
+            "frameDifference": -2,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.6875,
-            "buchholzScore": 11
+            "strengthOfSchedule": 0.67,
+            "buchholzScore": 14
           }
         },
         {
@@ -1677,12 +1677,26 @@
               "id": "a0cb3d2e-f454-4b78-bdfc-671a3dbed342",
               "player1Id": "bd5a55fd-fbe4-472d-a2e5-264d57526bf5",
               "player2Id": "bfc7ec64-32a6-4f73-a39f-31f8d677470e",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 67,
+                  "player2Score": 40,
+                  "winnerId": "bd5a55fd-fbe4-472d-a2e5-264d57526bf5"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 54,
+                  "player2Score": 34,
+                  "winnerId": "bd5a55fd-fbe4-472d-a2e5-264d57526bf5"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "bd5a55fd-fbe4-472d-a2e5-264d57526bf5",
+              "isBye": false,
+              "completedAt": "2026-02-17T20:26:01.547900Z"
             },
             {
               "id": "b61dc40a-1d0e-4816-b852-d2a20b357d1e",
