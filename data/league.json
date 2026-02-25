@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-02-24T14:21:24.783479Z",
+        "updatedAt": "2026-02-25T23:04:36.691821Z",
         "currentRound": 5,
         "totalRounds": 7
       },
@@ -27,7 +27,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 1,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5125,
+            "strengthOfSchedule": 0.5,
             "buchholzScore": 10
           }
         },
@@ -46,7 +46,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.57,
+            "strengthOfSchedule": 0.56,
             "buchholzScore": 14
           }
         },
@@ -93,16 +93,16 @@
           "name": "deedon2624",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
+            "matchesPlayed": 5,
             "matchesWon": 1,
-            "matchesLost": 3,
+            "matchesLost": 4,
             "framesWon": 0,
             "framesLost": 6,
             "points": 1,
             "frameDifference": -6,
             "byesReceived": 0,
             "forfeitsReceived": 1,
-            "forfeitsGiven": 0,
+            "forfeitsGiven": 1,
             "strengthOfSchedule": 0.6666666666666666,
             "buchholzScore": 10
           }
@@ -141,8 +141,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5700000000000001,
-            "buchholzScore": 14
+            "strengthOfSchedule": 0.6,
+            "buchholzScore": 15
           }
         },
         {
@@ -198,7 +198,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5700000000000001,
+            "strengthOfSchedule": 0.5599999999999999,
             "buchholzScore": 14
           }
         },
@@ -207,15 +207,15 @@
           "name": "kidbrush52.",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
-            "matchesWon": 1,
+            "matchesPlayed": 5,
+            "matchesWon": 2,
             "matchesLost": 3,
             "framesWon": 3,
             "framesLost": 7,
-            "points": 1,
+            "points": 2,
             "frameDifference": -4,
             "byesReceived": 0,
-            "forfeitsReceived": 0,
+            "forfeitsReceived": 1,
             "forfeitsGiven": 0,
             "strengthOfSchedule": 0.6,
             "buchholzScore": 12
@@ -274,8 +274,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.41,
-            "buchholzScore": 10
+            "strengthOfSchedule": 0.44000000000000006,
+            "buchholzScore": 11
           }
         },
         {
@@ -293,8 +293,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.38,
-            "buchholzScore": 9
+            "strengthOfSchedule": 0.41,
+            "buchholzScore": 10
           }
         },
         {
@@ -388,8 +388,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.6100000000000001,
-            "buchholzScore": 15
+            "strengthOfSchedule": 0.64,
+            "buchholzScore": 16
           }
         },
         {
@@ -1837,12 +1837,16 @@
               "id": "48e7fd7a-0627-4315-b469-76a749e1bf9a",
               "player1Id": "3e16cdd9-81a5-4ee0-a45f-efec6134dba2",
               "player2Id": "61dd2ea8-7158-468a-96f4-944a53110d47",
-              "status": "pending",
+              "status": "completed",
               "frames": [],
               "player1FramesWon": 0,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "3e16cdd9-81a5-4ee0-a45f-efec6134dba2",
+              "isBye": false,
+              "isForfeit": true,
+              "forfeitType": "single",
+              "completedAt": "2026-02-25T23:04:36.691744Z",
+              "forfeitingPlayerId": "61dd2ea8-7158-468a-96f4-944a53110d47"
             },
             {
               "id": "9fa39b86-9dca-4572-babd-6857c32490e3",
