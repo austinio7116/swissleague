@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-02-28T16:14:36.189766Z",
+        "updatedAt": "2026-02-28T22:37:01.418670Z",
         "currentRound": 6,
         "totalRounds": 7
       },
@@ -27,8 +27,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 1,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5083333333333334,
-            "buchholzScore": 11
+            "strengthOfSchedule": 0.525,
+            "buchholzScore": 12
           }
         },
         {
@@ -46,7 +46,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.54,
+            "strengthOfSchedule": 0.5266666666666666,
             "buchholzScore": 15
           }
         },
@@ -65,8 +65,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5833333333333334,
-            "buchholzScore": 16
+            "strengthOfSchedule": 0.5944444444444444,
+            "buchholzScore": 17
           }
         },
         {
@@ -141,7 +141,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.65,
+            "strengthOfSchedule": 0.638888888888889,
             "buchholzScore": 21
           }
         },
@@ -161,7 +161,7 @@
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
             "strengthOfSchedule": 0.38,
-            "buchholzScore": 10
+            "buchholzScore": 11
           }
         },
         {
@@ -218,7 +218,7 @@
             "forfeitsReceived": 1,
             "forfeitsGiven": 0,
             "strengthOfSchedule": 0.5666666666666667,
-            "buchholzScore": 12
+            "buchholzScore": 13
           }
         },
         {
@@ -255,7 +255,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5733333333333333,
+            "strengthOfSchedule": 0.5599999999999999,
             "buchholzScore": 15
           }
         },
@@ -283,18 +283,18 @@
           "name": "oops62",
           "active": true,
           "stats": {
-            "matchesPlayed": 5,
-            "matchesWon": 3,
+            "matchesPlayed": 6,
+            "matchesWon": 4,
             "matchesLost": 2,
-            "framesWon": 7,
-            "framesLost": 5,
-            "points": 3,
-            "frameDifference": 2,
+            "framesWon": 9,
+            "framesLost": 6,
+            "points": 4,
+            "frameDifference": 3,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.39333333333333337,
-            "buchholzScore": 10
+            "strengthOfSchedule": 0.38333333333333336,
+            "buchholzScore": 12
           }
         },
         {
@@ -369,8 +369,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.52,
-            "buchholzScore": 13
+            "strengthOfSchedule": 0.5333333333333333,
+            "buchholzScore": 14
           }
         },
         {
@@ -378,18 +378,18 @@
           "name": "relisys196",
           "active": true,
           "stats": {
-            "matchesPlayed": 5,
+            "matchesPlayed": 6,
             "matchesWon": 2,
-            "matchesLost": 3,
-            "framesWon": 5,
-            "framesLost": 7,
+            "matchesLost": 4,
+            "framesWon": 6,
+            "framesLost": 9,
             "points": 2,
-            "frameDifference": -2,
+            "frameDifference": -3,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.6133333333333333,
-            "buchholzScore": 16
+            "strengthOfSchedule": 0.6222222222222221,
+            "buchholzScore": 20
           }
         },
         {
@@ -2006,12 +2006,32 @@
               "id": "c88e91e4-ffbd-44e3-8a31-8be3db429c27",
               "player1Id": "b129dde5-d108-4429-b16a-4181c16b3f77",
               "player2Id": "bfc7ec64-32a6-4f73-a39f-31f8d677470e",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 61,
+                  "player2Score": 33,
+                  "winnerId": "b129dde5-d108-4429-b16a-4181c16b3f77"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 17,
+                  "player2Score": 72,
+                  "winnerId": "bfc7ec64-32a6-4f73-a39f-31f8d677470e"
+                },
+                {
+                  "frameNumber": 3,
+                  "player1Score": 74,
+                  "player2Score": 57,
+                  "winnerId": "b129dde5-d108-4429-b16a-4181c16b3f77"
+                }
+              ],
+              "player1FramesWon": 2,
+              "player2FramesWon": 1,
+              "winnerId": "b129dde5-d108-4429-b16a-4181c16b3f77",
+              "isBye": false,
+              "completedAt": "2026-02-28T22:37:01.418646Z"
             },
             {
               "id": "47759d26-1652-49b2-a2eb-6e658be1dc2a",
