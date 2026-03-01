@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-02-28T22:37:01.418670Z",
+        "updatedAt": "2026-03-01T20:53:25.265888Z",
         "currentRound": 6,
         "totalRounds": 7
       },
@@ -17,18 +17,18 @@
           "name": "000naris000",
           "active": true,
           "stats": {
-            "matchesPlayed": 5,
+            "matchesPlayed": 6,
             "matchesWon": 3,
-            "matchesLost": 2,
+            "matchesLost": 3,
             "framesWon": 4,
-            "framesLost": 4,
+            "framesLost": 6,
             "points": 3,
-            "frameDifference": 0,
+            "frameDifference": -2,
             "byesReceived": 0,
             "forfeitsReceived": 1,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.525,
-            "buchholzScore": 12
+            "strengthOfSchedule": 0.5533333333333333,
+            "buchholzScore": 16
           }
         },
         {
@@ -103,7 +103,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 1,
             "forfeitsGiven": 1,
-            "strengthOfSchedule": 0.6666666666666666,
+            "strengthOfSchedule": 0.6333333333333333,
             "buchholzScore": 10
           }
         },
@@ -122,8 +122,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 1,
-            "strengthOfSchedule": 0.5,
-            "buchholzScore": 5
+            "strengthOfSchedule": 0.5333333333333333,
+            "buchholzScore": 6
           }
         },
         {
@@ -198,7 +198,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.58,
+            "strengthOfSchedule": 0.5599999999999999,
             "buchholzScore": 16
           }
         },
@@ -217,8 +217,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 1,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5666666666666667,
-            "buchholzScore": 13
+            "strengthOfSchedule": 0.5833333333333333,
+            "buchholzScore": 14
           }
         },
         {
@@ -236,8 +236,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5611111111111111,
-            "buchholzScore": 18
+            "strengthOfSchedule": 0.5722222222222223,
+            "buchholzScore": 19
           }
         },
         {
@@ -264,18 +264,18 @@
           "name": "naedangerpawl",
           "active": true,
           "stats": {
-            "matchesPlayed": 5,
-            "matchesWon": 3,
+            "matchesPlayed": 6,
+            "matchesWon": 4,
             "matchesLost": 2,
-            "framesWon": 8,
+            "framesWon": 10,
             "framesLost": 5,
-            "points": 3,
-            "frameDifference": 3,
+            "points": 4,
+            "frameDifference": 5,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.4533333333333333,
-            "buchholzScore": 12
+            "strengthOfSchedule": 0.4611111111111111,
+            "buchholzScore": 15
           }
         },
         {
@@ -293,7 +293,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.38333333333333336,
+            "strengthOfSchedule": 0.3666666666666667,
             "buchholzScore": 12
           }
         },
@@ -312,8 +312,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5333333333333333,
-            "buchholzScore": 15
+            "strengthOfSchedule": 0.5466666666666666,
+            "buchholzScore": 16
           }
         },
         {
@@ -331,7 +331,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.6611111111111111,
+            "strengthOfSchedule": 0.6444444444444445,
             "buchholzScore": 21
           }
         },
@@ -369,8 +369,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5333333333333333,
-            "buchholzScore": 14
+            "strengthOfSchedule": 0.5466666666666666,
+            "buchholzScore": 15
           }
         },
         {
@@ -388,7 +388,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.6222222222222221,
+            "strengthOfSchedule": 0.6222222222222222,
             "buchholzScore": 20
           }
         },
@@ -1995,12 +1995,26 @@
               "id": "3cb46630-c7fa-4aa8-a561-d03e29171c66",
               "player1Id": "337629e3-1e29-4dbc-82d2-25782f07092a",
               "player2Id": "60fa57eb-fad6-4e78-a11e-763db945f76c",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 85,
+                  "player2Score": 41,
+                  "winnerId": "337629e3-1e29-4dbc-82d2-25782f07092a"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 64,
+                  "player2Score": 55,
+                  "winnerId": "337629e3-1e29-4dbc-82d2-25782f07092a"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "337629e3-1e29-4dbc-82d2-25782f07092a",
+              "isBye": false,
+              "completedAt": "2026-03-01T20:53:25.265857Z"
             },
             {
               "id": "c88e91e4-ffbd-44e3-8a31-8be3db429c27",
