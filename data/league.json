@@ -7,7 +7,7 @@
         "format": "swiss",
         "bestOfFrames": 3,
         "createdAt": "2026-01-15T07:00:18.660Z",
-        "updatedAt": "2026-03-07T17:00:11.618513Z",
+        "updatedAt": "2026-03-07T22:46:26.670074Z",
         "currentRound": 7,
         "totalRounds": 7
       },
@@ -27,8 +27,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 1,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5095238095238095,
-            "buchholzScore": 16
+            "strengthOfSchedule": 0.5190476190476191,
+            "buchholzScore": 17
           }
         },
         {
@@ -65,8 +65,8 @@
             "byesReceived": 1,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.6111111111111112,
-            "buchholzScore": 19
+            "strengthOfSchedule": 0.6071428571428572,
+            "buchholzScore": 20
           }
         },
         {
@@ -160,8 +160,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.37074829931972786,
-            "buchholzScore": 16
+            "strengthOfSchedule": 0.36734693877551017,
+            "buchholzScore": 17
           }
         },
         {
@@ -169,18 +169,18 @@
           "name": "joethe147",
           "active": true,
           "stats": {
-            "matchesPlayed": 6,
+            "matchesPlayed": 7,
             "matchesWon": 3,
-            "matchesLost": 3,
+            "matchesLost": 4,
             "framesWon": 7,
-            "framesLost": 8,
+            "framesLost": 10,
             "points": 3,
-            "frameDifference": -1,
+            "frameDifference": -3,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.507936507936508,
-            "buchholzScore": 21
+            "strengthOfSchedule": 0.5374149659863946,
+            "buchholzScore": 26
           }
         },
         {
@@ -217,8 +217,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 1,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.580952380952381,
-            "buchholzScore": 18
+            "strengthOfSchedule": 0.5904761904761905,
+            "buchholzScore": 19
           }
         },
         {
@@ -236,7 +236,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5918367346938777,
+            "strengthOfSchedule": 0.5816326530612245,
             "buchholzScore": 26
           }
         },
@@ -283,18 +283,18 @@
           "name": "oops62",
           "active": true,
           "stats": {
-            "matchesPlayed": 6,
-            "matchesWon": 4,
+            "matchesPlayed": 7,
+            "matchesWon": 5,
             "matchesLost": 2,
-            "framesWon": 9,
+            "framesWon": 11,
             "framesLost": 6,
-            "points": 4,
-            "frameDifference": 3,
+            "points": 5,
+            "frameDifference": 5,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.4206349206349207,
-            "buchholzScore": 16
+            "strengthOfSchedule": 0.4217687074829932,
+            "buchholzScore": 19
           }
         },
         {
@@ -331,7 +331,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.6258503401360543,
+            "strengthOfSchedule": 0.6156462585034014,
             "buchholzScore": 27
           }
         },
@@ -350,7 +350,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 1,
-            "strengthOfSchedule": 0.47714285714285715,
+            "strengthOfSchedule": 0.4628571428571428,
             "buchholzScore": 15
           }
         },
@@ -369,8 +369,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 1,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.5857142857142856,
-            "buchholzScore": 18
+            "strengthOfSchedule": 0.5952380952380952,
+            "buchholzScore": 19
           }
         },
         {
@@ -388,8 +388,8 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.611904761904762,
-            "buchholzScore": 22
+            "strengthOfSchedule": 0.61984126984127,
+            "buchholzScore": 23
           }
         },
         {
@@ -407,7 +407,7 @@
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
-            "strengthOfSchedule": 0.4217687074829932,
+            "strengthOfSchedule": 0.4115646258503402,
             "buchholzScore": 19
           }
         },
@@ -2254,12 +2254,26 @@
               "id": "ef9a121c-17fc-4b51-bef9-4c699ace659d",
               "player1Id": "b129dde5-d108-4429-b16a-4181c16b3f77",
               "player2Id": "5fc54c3a-00d2-4627-8e0e-deefccefc34d",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "player1Score": 69,
+                  "player2Score": 41,
+                  "winnerId": "b129dde5-d108-4429-b16a-4181c16b3f77"
+                },
+                {
+                  "frameNumber": 2,
+                  "player1Score": 84,
+                  "player2Score": 44,
+                  "winnerId": "b129dde5-d108-4429-b16a-4181c16b3f77"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "b129dde5-d108-4429-b16a-4181c16b3f77",
+              "isBye": false,
+              "completedAt": "2026-03-07T22:46:26.670029Z"
             },
             {
               "id": "f91100ed-3194-4f10-8e64-925f90df60d9",
