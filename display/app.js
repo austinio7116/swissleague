@@ -3,7 +3,7 @@ import { StandingsRenderer } from './modules/standings.js';
 import { MatchesRenderer } from './modules/matches.js';
 import { StatisticsRenderer } from './modules/statistics.js';
 import { formatDate, escapeHtml } from './utils/helpers.js';
-import { STORAGE_KEYS } from '../shared/constants.js';
+import { STORAGE_KEYS, LEAGUE_FORMATS } from '../shared/constants.js';
 
 class DisplayApp {
   constructor() {
@@ -394,11 +394,19 @@ class DisplayApp {
 
     const { league } = this.leagueData;
 
+    const isTiered = league.format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN;
+    const formatLabel = isTiered
+      ? `Tiered Round-Robin - Season ${league.currentSeason} - Best of ${league.bestOfFrames}`
+      : `Swiss Format - Best of ${league.bestOfFrames}`;
+    const roundsLabel = isTiered
+      ? `Season ${league.currentSeason} - Round ${league.currentRound} of ${league.totalRounds}`
+      : `Round ${league.currentRound} of ${league.totalRounds}`;
+
     container.innerHTML = `
       <div class="league-header">
-        <h1>🎱 ${escapeHtml(league.name)}</h1>
-        <p class="league-format">Swiss Format - Best of ${league.bestOfFrames}</p>
-        <p class="league-rounds">Round ${league.currentRound} of ${league.totalRounds}</p>
+        <h1>${escapeHtml(league.name)}</h1>
+        <p class="league-format">${formatLabel}</p>
+        <p class="league-rounds">${roundsLabel}</p>
       </div>
     `;
   }

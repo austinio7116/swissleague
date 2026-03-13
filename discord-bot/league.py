@@ -282,6 +282,13 @@ def recalculate_all_player_stats(league_data):
         stats["frameDifference"] = stats["framesWon"] - stats["framesLost"]
 
     # Pass 2: Calculate SOS and Buchholz using freshly computed stats
+    # Skip for tiered round-robin (these tiebreakers aren't meaningful in round-robin)
+    league_format = league_data.get("league", {}).get("format", "swiss")
+    if league_format == "tiered-round-robin":
+        for player in players:
+            player["stats"] = fresh_stats[player["id"]]
+        return league_data
+
     # Note: opponent_map only contains opponents from actually played matches
     # (forfeits, double forfeits, and byes are excluded)
     for player_id in fresh_stats:
@@ -450,37 +457,80 @@ def apply_forfeit_result(league_data, match, forfeit_type, forfeiting_player_id=
     return league_data
 
 
-def get_standings(league_data, limit=None):
+def get_standings(league_data, limit=None, tier=None):
     """
     Get sorted standings for the league.
 
-    Sorting matches display page:
-    1. Points (desc)
-    2. Buchholz Score (desc)
-    3. Strength of Schedule (desc)
-    4. Frame difference (desc)
-    5. Frames won (desc)
-    6. Name (alphabetical)
+    For Swiss:
+      1. Points (desc), 2. Buchholz (desc), 3. SOS (desc),
+      4. Frame diff (desc), 5. Frames won (desc), 6. Name (asc)
+
+    For Tiered Round-Robin:
+      1. Points (desc), 2. Frame diff (desc), 3. Frames won (desc), 4. Name (asc)
     """
-    def sort_key(p):
-        stats = p.get("stats", {})
-        return (
-            -stats.get("points", 0),
-            -stats.get("buchholzScore", 0),
-            -stats.get("strengthOfSchedule", 0),
-            -stats.get("frameDifference", 0),
-            -stats.get("framesWon", 0),
-            p.get("name", "").lower()
-        )
+    league_format = league_data.get("league", {}).get("format", "swiss")
+    is_tiered = league_format == "tiered-round-robin"
+
+    if is_tiered:
+        def sort_key(p):
+            stats = p.get("stats", {})
+            return (
+                -stats.get("points", 0),
+                -stats.get("frameDifference", 0),
+                -stats.get("framesWon", 0),
+                p.get("name", "").lower()
+            )
+    else:
+        def sort_key(p):
+            stats = p.get("stats", {})
+            return (
+                -stats.get("points", 0),
+                -stats.get("buchholzScore", 0),
+                -stats.get("strengthOfSchedule", 0),
+                -stats.get("frameDifference", 0),
+                -stats.get("framesWon", 0),
+                p.get("name", "").lower()
+            )
 
     # Only include active players
     active_players = [p for p in league_data.get("players", []) if p.get("active", True)]
+
+    # Filter by tier if specified
+    if tier:
+        active_players = [p for p in active_players if p.get("tier") == tier]
+
     players = sorted(active_players, key=sort_key)
 
     if limit:
         players = players[:limit]
 
     return players
+
+
+def get_tier_for_player(league_data, player_id):
+    """Get the tier name for a player."""
+    for player in league_data.get("players", []):
+        if player["id"] == player_id:
+            return player.get("tier")
+    return None
+
+
+def get_all_tier_standings(league_data):
+    """
+    Get standings grouped by tier for a tiered league.
+    Returns dict: { tier_name: [sorted_players] }
+    """
+    tier_config = league_data.get("league", {}).get("tierConfig", {})
+    tiers = tier_config.get("tiers", [])
+    result = {}
+    for tier_name in tiers:
+        result[tier_name] = get_standings(league_data, tier=tier_name)
+    return result
+
+
+def is_tiered_league(league_data):
+    """Check if a league uses tiered round-robin format."""
+    return league_data.get("league", {}).get("format") == "tiered-round-robin"
 
 
 MAX_FRAME_SCORE = 147  # Maximum possible break in snooker

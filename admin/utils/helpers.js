@@ -82,6 +82,15 @@ export function sortByStandings(players) {
   });
 }
 
+export function sortByTierStandings(players) {
+  return [...players].sort((a, b) => {
+    if (b.stats.points !== a.stats.points) return b.stats.points - a.stats.points;
+    if (b.stats.frameDifference !== a.stats.frameDifference) return b.stats.frameDifference - a.stats.frameDifference;
+    if (b.stats.framesWon !== a.stats.framesWon) return b.stats.framesWon - a.stats.framesWon;
+    return a.name.localeCompare(b.name);
+  });
+}
+
 export function calculateStandings(leagueData) {
   const { players } = leagueData;
   return sortByStandings(players.filter(p => p.active));

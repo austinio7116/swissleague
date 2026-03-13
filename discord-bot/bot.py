@@ -20,6 +20,9 @@ from league import (
     find_pending_matches_for_player,
     apply_match_result,
     get_standings,
+    get_all_tier_standings,
+    get_tier_for_player,
+    is_tiered_league,
     parse_frame_score,
     validate_frame_scores,
     validate_match_completion,
@@ -268,8 +271,14 @@ async def submit_result(
 
         # Send confirmation
         frame_summary = ' '.join(frame_strs)
+        tier_info = ""
+        if is_tiered_league(league_data):
+            player_tier = submitter.get("tier", "")
+            if player_tier:
+                tier_info = f" [{player_tier}]"
+
         await interaction.followup.send(
-            f"**Match Result Recorded**\n"
+            f"**Match Result Recorded**{tier_info}\n"
             f"Round {round_num}: **{submitter['name']}** vs **{opponent_player['name']}**\n"
             f"Frames: {frame_summary}\n"
             f"Result: **{submitter_frames}-{opponent_frames}** - {winner} wins!\n\n"
@@ -294,7 +303,8 @@ def are_players_tied(a, b):
 
 
 @tree.command(name='standings', description='Show current league standings')
-async def standings(interaction: discord.Interaction):
+@app_commands.describe(tier='Tier to show (for tiered leagues only)')
+async def standings(interaction: discord.Interaction, tier: str = None):
     await interaction.response.defer()
 
     try:
@@ -305,68 +315,136 @@ async def standings(interaction: discord.Interaction):
             await interaction.followup.send("No active league found.")
             return
 
-        players = get_standings(league_data)  # Full league, no limit
         league_name = league_data.get("league", {}).get("name", "League")
 
-        # Calculate ranks with ties (matching display page logic)
-        ranks = []
-        current_rank = 1
-        for i, player in enumerate(players):
-            if i == 0:
-                ranks.append(current_rank)
-            elif are_players_tied(players[i - 1], player):
-                ranks.append(current_rank)  # Tied, same rank
-            else:
-                current_rank = i + 1  # Not tied, rank = position
-                ranks.append(current_rank)
+        if is_tiered_league(league_data):
+            await send_tiered_standings(interaction, league_data, league_name, tier)
+        else:
+            await send_swiss_standings(interaction, league_data, league_name)
 
-        # Build formatted names with display names
+    except Exception as e:
+        await interaction.followup.send(f"Error: {str(e)}")
+
+
+async def send_swiss_standings(interaction, league_data, league_name):
+    """Send Swiss format standings."""
+    players = get_standings(league_data)
+
+    ranks = []
+    current_rank = 1
+    for i, player in enumerate(players):
+        if i == 0:
+            ranks.append(current_rank)
+        elif are_players_tied(players[i - 1], player):
+            ranks.append(current_rank)
+        else:
+            current_rank = i + 1
+            ranks.append(current_rank)
+
+    formatted_names = [
+        format_player_name(interaction.guild, p['name'])
+        for p in players
+    ]
+
+    max_name = max(len(n) for n in formatted_names) if formatted_names else 10
+
+    header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'Frames':>7}"
+    separator = "-" * len(header)
+
+    lines = [
+        f"**{league_name} Standings**",
+        f"```",
+        header,
+        separator
+    ]
+
+    for i, player in enumerate(players):
+        stats = player['stats']
+        rank = ranks[i]
+        name = formatted_names[i]
+        is_tied = (
+            (i > 0 and ranks[i - 1] == rank) or
+            (i < len(ranks) - 1 and ranks[i + 1] == rank)
+        )
+        rank_str = f"T{rank}" if is_tied else str(rank)
+        wl = f"{stats['matchesWon']}-{stats['matchesLost']}"
+        frames = f"{stats['framesWon']}-{stats['framesLost']}"
+
+        lines.append(
+            f"{rank_str:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>5}  {frames:>7}"
+        )
+
+    lines.append("```")
+    lines.append("\nFull standings: https://austinio7116.github.io/swissleague/display/")
+    await interaction.followup.send('\n'.join(lines))
+
+
+async def send_tiered_standings(interaction, league_data, league_name, tier_filter=None):
+    """Send tiered round-robin standings."""
+    tier_config = league_data.get("league", {}).get("tierConfig", {})
+    tiers = tier_config.get("tiers", [])
+    promotion_count = tier_config.get("promotionCount", 2)
+    season = league_data.get("league", {}).get("currentSeason", 1)
+
+    all_standings = get_all_tier_standings(league_data)
+
+    # Filter to specific tier if requested
+    if tier_filter:
+        matching = [t for t in tiers if t.lower() == tier_filter.lower()]
+        if not matching:
+            await interaction.followup.send(
+                f"Tier '{tier_filter}' not found. Available tiers: {', '.join(tiers)}"
+            )
+            return
+        tiers = matching
+
+    lines = [f"**{league_name} - Season {season} Standings**\n"]
+
+    for t_idx, tier_name in enumerate(tiers):
+        players = all_standings.get(tier_name, [])
+        if not players:
+            continue
+
         formatted_names = [
             format_player_name(interaction.guild, p['name'])
             for p in players
         ]
-
-        # Find max name length for padding
         max_name = max(len(n) for n in formatted_names) if formatted_names else 10
 
-        # Build table
-        header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'Frames':>7}"
+        header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'F+/-':>4}"
         separator = "-" * len(header)
 
-        lines = [
-            f"**{league_name} Standings**",
-            f"```",
-            header,
-            separator
-        ]
+        lines.append(f"**{tier_name}**")
+        lines.append("```")
+        lines.append(header)
+        lines.append(separator)
+
+        is_top_tier = tier_name == tier_config.get("tiers", [None])[0]
+        is_bottom_tier = tier_name == tier_config.get("tiers", [None])[-1]
 
         for i, player in enumerate(players):
             stats = player['stats']
-            rank = ranks[i]
             name = formatted_names[i]
-
-            # Show "T" prefix for tied ranks
-            is_tied = (
-                (i > 0 and ranks[i - 1] == rank) or
-                (i < len(ranks) - 1 and ranks[i + 1] == rank)
-            )
-            rank_str = f"T{rank}" if is_tied else str(rank)
-
             wl = f"{stats['matchesWon']}-{stats['matchesLost']}"
-            frames = f"{stats['framesWon']}-{stats['framesLost']}"
             diff = stats['frameDifference']
             diff_str = f"+{diff}" if diff > 0 else str(diff)
 
+            # Mark promotion/relegation zones
+            marker = " "
+            if not is_top_tier and i < promotion_count:
+                marker = "^"  # promotion
+            elif not is_bottom_tier and i >= len(players) - promotion_count:
+                marker = "v"  # relegation
+
             lines.append(
-                f"{rank_str:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>5}  {frames:>7}"
+                f"{i+1:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>5}  {diff_str:>4} {marker}"
             )
 
         lines.append("```")
-        lines.append("\nFull standings: https://austinio7116.github.io/swissleague/display/")
-        await interaction.followup.send('\n'.join(lines))
 
-    except Exception as e:
-        await interaction.followup.send(f"Error: {str(e)}")
+    lines.append("^ = promotion zone, v = relegation zone")
+    lines.append("\nFull standings: https://austinio7116.github.io/swissleague/display/")
+    await interaction.followup.send('\n'.join(lines))
 
 
 @tree.command(name='matches', description='Show your pending matches')
@@ -406,7 +484,11 @@ async def my_matches(interaction: discord.Interaction):
             await interaction.followup.send(f"No pending matches for {name_display}.")
             return
 
-        lines = [f"**Pending matches for {name_display}**\n"]
+        tiered = is_tiered_league(league_data)
+        player_tier = player.get("tier") if tiered else None
+        tier_label = f" [{player_tier}]" if player_tier else ""
+
+        lines = [f"**Pending matches for {name_display}{tier_label}**\n"]
         for m in pending:
             opponent_display = format_player_name(interaction.guild, m['opponent'])
             lines.append(f"Round {m['round']}: vs **{opponent_display}**")

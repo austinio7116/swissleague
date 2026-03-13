@@ -16,6 +16,8 @@ from league import (
     find_pending_match,
     apply_match_result,
     apply_forfeit_result,
+    get_tier_for_player,
+    is_tiered_league,
     parse_input_string,
     recalculate_all_player_stats,
     validate_frame_scores,
@@ -69,9 +71,14 @@ def find_all_matching_matches(data, player1_name, player2_name):
                 round_data = rd
                 break
 
+        tiered = is_tiered_league(league_data)
+        tier = get_tier_for_player(league_data, player1["id"]) if tiered else None
+
         results.append({
             "league_id": league_id,
             "league_name": league_data.get("league", {}).get("name", "Unknown"),
+            "is_tiered": tiered,
+            "tier": tier,
             "player1": player1,
             "player2": player2,
             "player1_match_score": score1,
@@ -105,6 +112,8 @@ def format_match_preview(match_info, frame_scores, overall_frames, input_player1
     lines = []
     lines.append("\n" + "=" * 60)
     lines.append(f"League: {match_info['league_name']}")
+    if match_info.get('tier'):
+        lines.append(f"Tier: {match_info['tier']}")
     lines.append(f"Round: {match_info['round_number']}")
     lines.append(f"Match ID: {match['id']}")
     lines.append("-" * 60)
@@ -190,6 +199,8 @@ def format_forfeit_preview(match_info, forfeit_type, forfeiting_player_name=None
     lines = []
     lines.append("\n" + "=" * 60)
     lines.append(f"League: {match_info['league_name']}")
+    if match_info.get('tier'):
+        lines.append(f"Tier: {match_info['tier']}")
     lines.append(f"Round: {match_info['round_number']}")
     lines.append(f"Match ID: {match['id']}")
     lines.append("-" * 60)
@@ -217,7 +228,8 @@ def format_forfeit_preview(match_info, forfeit_type, forfeiting_player_name=None
         lines.append(f"  No frames recorded")
 
     lines.append("-" * 60)
-    lines.append("NOTE: Forfeits are excluded from SOS and Buchholz calculations")
+    if not match_info.get('is_tiered'):
+        lines.append("NOTE: Forfeits are excluded from SOS and Buchholz calculations")
     lines.append("=" * 60)
 
     return "\n".join(lines)
@@ -316,7 +328,8 @@ def handle_forfeit(input_str, dev_mode):
     else:
         print(f"\nFound {len(matches)} matches for these players:")
         for i, m in enumerate(matches, 1):
-            print(f"  {i}. {m['league_name']} - Round {m['round_number']}")
+            tier_info = f" [{m['tier']}]" if m.get('tier') else ""
+            print(f"  {i}. {m['league_name']}{tier_info} - Round {m['round_number']}")
 
         while selected_match is None:
             try:
@@ -463,7 +476,8 @@ def handle_regular_result(input_str, dev_mode):
     else:
         print(f"\nFound {len(matches)} matches for these players:")
         for i, m in enumerate(matches, 1):
-            print(f"  {i}. {m['league_name']} - Round {m['round_number']}")
+            tier_info = f" [{m['tier']}]" if m.get('tier') else ""
+            print(f"  {i}. {m['league_name']}{tier_info} - Round {m['round_number']}")
 
         while selected_match is None:
             try:

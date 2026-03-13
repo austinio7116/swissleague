@@ -1,10 +1,11 @@
-import { 
-  getPendingMatches, 
-  getCompletedMatches, 
-  getPlayerById, 
-  escapeHtml, 
-  formatDateShort 
+import {
+  getPendingMatches,
+  getCompletedMatches,
+  getPlayerById,
+  escapeHtml,
+  formatDateShort
 } from '../utils/helpers.js';
+import { LEAGUE_FORMATS } from '../../shared/constants.js';
 
 export class MatchesRenderer {
   static renderOutstanding(leagueData, containerId) {
@@ -37,51 +38,65 @@ export class MatchesRenderer {
         <p class="match-count">${pendingMatches.length} match${pendingMatches.length !== 1 ? 'es' : ''} to be played</p>
     `;
 
+    const isTiered = leagueData.league.format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN;
+    const tierConfig = isTiered ? leagueData.league.tierConfig : null;
+    const tierColors = { 'Diamond': '#b9f2ff', 'Gold': '#ffd700', 'Silver': '#c0c0c0', 'Bronze': '#cd7f32' };
+
     Object.keys(matchesByRound).sort((a, b) => parseInt(a) - parseInt(b)).forEach(roundNum => {
       const matches = matchesByRound[roundNum];
-      
+
       html += `
         <div class="round-section">
           <h3>Round ${roundNum}</h3>
-          <div class="matches-grid">
       `;
 
-      matches.forEach(match => {
-        const player1 = getPlayerById(leagueData, match.player1Id);
-        const player2 = match.player2Id ? getPlayerById(leagueData, match.player2Id) : null;
+      // Group by tier if tiered league
+      const groups = isTiered ? this.groupMatchesByTier(matches, leagueData, tierConfig.tiers) : { 'all': matches };
 
-        if (match.isBye) {
-          html += `
-            <div class="match-card bye-match">
-              <div class="match-info">
-                <span class="player">${escapeHtml(player1.name)}</span>
-                <span class="bye-label">BYE</span>
-              </div>
-            </div>
-          `;
-        } else {
-          html += `
-            <div class="match-card pending-match">
-              <div class="match-players">
-                <span class="player">${escapeHtml(player1.name)}</span>
-                <span class="vs">vs</span>
-                <span class="player">${escapeHtml(player2.name)}</span>
-              </div>
-              ${match.status === 'in-progress' ? `
-                <div class="match-score">
-                  ${match.player1FramesWon} - ${match.player2FramesWon}
-                </div>
-              ` : ''}
-              <span class="match-status status-${match.status}">${match.status}</span>
-            </div>
-          `;
+      Object.entries(groups).forEach(([tierName, tierMatches]) => {
+        if (isTiered && tierName !== 'all') {
+          const bgColor = tierColors[tierName] || '#e8e8e8';
+          html += `<h4 style="background: ${bgColor}; padding: 0.3rem 0.75rem; border-radius: 4px; margin: 0.5rem 0; color: #000;">${escapeHtml(tierName)}</h4>`;
         }
+
+        html += '<div class="matches-grid">';
+
+        tierMatches.forEach(match => {
+          const player1 = getPlayerById(leagueData, match.player1Id);
+          const player2 = match.player2Id ? getPlayerById(leagueData, match.player2Id) : null;
+
+          if (match.isBye) {
+            html += `
+              <div class="match-card bye-match">
+                <div class="match-info">
+                  <span class="player">${escapeHtml(player1.name)}</span>
+                  <span class="bye-label">BYE</span>
+                </div>
+              </div>
+            `;
+          } else {
+            html += `
+              <div class="match-card pending-match">
+                <div class="match-players">
+                  <span class="player">${escapeHtml(player1.name)}</span>
+                  <span class="vs">vs</span>
+                  <span class="player">${escapeHtml(player2.name)}</span>
+                </div>
+                ${match.status === 'in-progress' ? `
+                  <div class="match-score">
+                    ${match.player1FramesWon} - ${match.player2FramesWon}
+                  </div>
+                ` : ''}
+                <span class="match-status status-${match.status}">${match.status}</span>
+              </div>
+            `;
+          }
+        });
+
+        html += '</div>';
       });
 
-      html += `
-          </div>
-        </div>
-      `;
+      html += '</div>';
     });
 
     html += '</div>';
@@ -239,6 +254,20 @@ export class MatchesRenderer {
       framesDiv.style.display = 'none';
       button.textContent = 'Show Frames';
     }
+  }
+
+  static groupMatchesByTier(matches, leagueData, tiers) {
+    const groups = {};
+    for (const tier of tiers) {
+      groups[tier] = [];
+    }
+    for (const match of matches) {
+      const player1 = getPlayerById(leagueData, match.player1Id);
+      const tierName = player1 && player1.tier ? player1.tier : 'Unknown';
+      if (!groups[tierName]) groups[tierName] = [];
+      groups[tierName].push(match);
+    }
+    return groups;
   }
 
   static renderRoundMatches(leagueData, roundNumber, containerId) {

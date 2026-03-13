@@ -1,5 +1,6 @@
-import { calculateStandings, escapeHtml, calculateWinRate, calculateAvgFrames } from '../utils/helpers.js';
+import { calculateStandings, escapeHtml, calculateWinRate, calculateAvgFrames, sortByTierStandings } from '../utils/helpers.js';
 import { PlayerModal } from './player-modal.js';
+import { LEAGUE_FORMATS } from '../../shared/constants.js';
 
 export class StandingsRenderer {
   static arePlayersTied(a, b) {
@@ -46,6 +47,10 @@ export class StandingsRenderer {
   static render(leagueData, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
+
+    if (leagueData.league.format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN) {
+      return this.renderTiered(leagueData, containerId);
+    }
 
     // Initialize modal with league data
     PlayerModal.init(leagueData);
@@ -281,6 +286,108 @@ export class StandingsRenderer {
 
     // Re-append rows in sorted order
     rows.forEach(row => tbody.appendChild(row));
+  }
+
+  static renderTiered(leagueData, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    PlayerModal.init(leagueData);
+
+    const { tierConfig } = leagueData.league;
+    const { tiers, promotionCount } = tierConfig;
+    const tierColors = {
+      'Diamond': '#b9f2ff',
+      'Gold': '#ffd700',
+      'Silver': '#c0c0c0',
+      'Bronze': '#cd7f32'
+    };
+
+    let html = `
+      <div class="standings-header">
+        <h2>League Standings - Season ${leagueData.league.currentSeason}</h2>
+      </div>
+    `;
+
+    for (let t = 0; t < tiers.length; t++) {
+      const tierName = tiers[t];
+      const tierPlayers = leagueData.players.filter(p => p.active && p.tier === tierName);
+      const standings = sortByTierStandings(tierPlayers);
+      const bgColor = tierColors[tierName] || '#e8e8e8';
+      const isTopTier = t === 0;
+      const isBottomTier = t === tiers.length - 1;
+
+      html += `
+        <div class="tier-standings-section" style="margin-bottom: 2rem;">
+          <h3 style="background: ${bgColor}; padding: 0.5rem 1rem; border-radius: 4px; color: #000;">
+            ${escapeHtml(tierName)} (${standings.length} players)
+          </h3>
+          <div class="table-responsive">
+            <table class="standings-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Match Pts</th>
+                  <th>Played</th>
+                  <th>Won</th>
+                  <th>Lost</th>
+                  <th>Frames Won</th>
+                  <th>Frames Lost</th>
+                  <th>Frame +/-</th>
+                  <th>Points For</th>
+                  <th>Points Against</th>
+                  <th>Win %</th>
+                </tr>
+              </thead>
+              <tbody>
+      `;
+
+      standings.forEach((player, index) => {
+        const winRate = calculateWinRate(player.stats);
+        const snookerPoints = this.calculateSnookerPoints(leagueData, player.id);
+        let rowClass = '';
+        if (!isTopTier && index < promotionCount) rowClass = 'promotion-zone';
+        if (!isBottomTier && index >= standings.length - promotionCount) rowClass = 'relegation-zone';
+
+        html += `
+          <tr class="${rowClass}" data-player-id="${player.id}">
+            <td class="rank">${index + 1}</td>
+            <td class="player-name clickable" data-player-id="${player.id}">${escapeHtml(player.name)}</td>
+            <td class="points"><strong>${player.stats.points}</strong></td>
+            <td>${player.stats.matchesPlayed}</td>
+            <td class="wins">${player.stats.matchesWon}</td>
+            <td class="losses">${player.stats.matchesLost}</td>
+            <td>${player.stats.framesWon}</td>
+            <td>${player.stats.framesLost}</td>
+            <td class="frame-diff ${player.stats.frameDifference >= 0 ? 'positive' : 'negative'}">
+              ${player.stats.frameDifference > 0 ? '+' : ''}${player.stats.frameDifference}
+            </td>
+            <td>${snookerPoints.pointsScored}</td>
+            <td>${snookerPoints.pointsConceded}</td>
+            <td>${winRate}%</td>
+          </tr>
+        `;
+      });
+
+      html += `
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    // Legend
+    html += `
+      <div class="standings-legend" style="margin-top: 1rem; font-size: 0.85rem;">
+        <span style="display: inline-block; width: 12px; height: 12px; background: rgba(40, 167, 69, 0.3); border-left: 3px solid #28a745; margin-right: 0.5rem;"></span> Promotion zone
+        <span style="display: inline-block; width: 12px; height: 12px; background: rgba(220, 53, 69, 0.3); border-left: 3px solid #dc3545; margin-left: 1rem; margin-right: 0.5rem;"></span> Relegation zone
+      </div>
+    `;
+
+    container.innerHTML = html;
+    this.addPlayerClickListeners();
   }
 
   static renderCompact(leagueData, containerId, limit = 5) {

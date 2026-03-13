@@ -4,17 +4,19 @@ import { PlayerManager } from './modules/players.js';
 import { RoundManager } from './modules/rounds.js';
 import { ScoringManager } from './modules/scoring.js';
 import { SwissPairing } from './modules/swiss-pairing.js';
+import { TierManager } from './modules/tier-manager.js';
+import { TieredViews } from './modules/tiered-views.js';
 import { ScoreValidator, showValidationErrors, clearValidationErrors } from './utils/validation.js';
-import { 
-  generateId, 
-  formatDate, 
-  escapeHtml, 
+import {
+  generateId,
+  formatDate,
+  escapeHtml,
   calculateStandings,
   downloadJSON,
   readJSONFile,
   validateLeagueData
 } from './utils/helpers.js';
-import { VIEWS, ERROR_TYPES } from '../shared/constants.js';
+import { VIEWS, ERROR_TYPES, LEAGUE_FORMATS } from '../shared/constants.js';
 
 class AdminApp {
   constructor() {
@@ -184,9 +186,8 @@ class AdminApp {
     const container = document.getElementById('league-setup-content');
     if (!container) return;
 
-    // Always show the create new league form
     const bestOfOptions = LeagueManager.getBestOfOptions();
-    
+
     let html = `
       <div class="create-league-form">
         <h2>Create New League</h2>
@@ -195,45 +196,91 @@ class AdminApp {
           <input type="text" id="league-name" class="form-control" placeholder="e.g., Winter 2026 Snooker League" required>
         </div>
         <div class="form-group">
+          <label for="league-format">League Format</label>
+          <select id="league-format" class="form-control">
+            <option value="swiss">Swiss</option>
+            <option value="tiered-round-robin">Tiered Round-Robin</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label for="best-of-frames">Best of Frames</label>
           <select id="best-of-frames" class="form-control">
             ${bestOfOptions.map(n => `<option value="${n}"${n === 5 ? ' selected' : ''}>Best of ${n}</option>`).join('')}
           </select>
         </div>
-        <div class="form-group">
-          <label for="total-rounds">Total Rounds</label>
-          <input type="number" id="total-rounds" class="form-control" value="7" min="1" max="20">
-          <small class="form-text">Recommended: 7 rounds for Swiss format</small>
+        <div id="swiss-config-fields">
+          <div class="form-group">
+            <label for="total-rounds">Total Rounds</label>
+            <input type="number" id="total-rounds" class="form-control" value="7" min="1" max="20">
+            <small class="form-text">Recommended: 7 rounds for Swiss format</small>
+          </div>
         </div>
+        ${TieredViews.renderTierConfigFields()}
         <div id="league-errors" class="error-container"></div>
         <button id="create-league-btn" class="btn btn-primary">Create League</button>
       </div>
     `;
 
     if (this.leagueData) {
-      // Show current league info above the form
       const league = this.leagueData.league;
-      const stats = LeagueManager.getLeagueStats(this.leagueData);
-      
-      html = `
-        <div class="league-info" style="margin-bottom: 2rem;">
-          <h2>Current League: ${escapeHtml(league.name)}</h2>
-          <div class="league-details">
-            <p><strong>Format:</strong> Swiss (Best of ${league.bestOfFrames})</p>
-            <p><strong>Total Rounds:</strong> ${league.totalRounds}</p>
-            <p><strong>Current Round:</strong> ${league.currentRound}</p>
-            <p><strong>Active Players:</strong> ${stats.activePlayers}</p>
-            <p><strong>Completed Rounds:</strong> ${stats.completedRounds}</p>
-            <p><strong>Created:</strong> ${formatDate(league.createdAt)}</p>
+      const isTiered = league.format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN;
+
+      if (isTiered) {
+        html = TieredViews.renderTieredLeagueInfo(this.leagueData) +
+          `<p style="margin-bottom: 1rem;"><em>Creating a new league will save the current league and switch to the new one.</em></p>` + html;
+      } else {
+        const stats = LeagueManager.getLeagueStats(this.leagueData);
+        html = `
+          <div class="league-info" style="margin-bottom: 2rem;">
+            <h2>Current League: ${escapeHtml(league.name)}</h2>
+            <div class="league-details">
+              <p><strong>Format:</strong> Swiss (Best of ${league.bestOfFrames})</p>
+              <p><strong>Total Rounds:</strong> ${league.totalRounds}</p>
+              <p><strong>Current Round:</strong> ${league.currentRound}</p>
+              <p><strong>Active Players:</strong> ${stats.activePlayers}</p>
+              <p><strong>Completed Rounds:</strong> ${stats.completedRounds}</p>
+              <p><strong>Created:</strong> ${formatDate(league.createdAt)}</p>
+            </div>
+            <p style="margin-top: 1rem;"><em>Creating a new league will save the current league and switch to the new one.</em></p>
           </div>
-          <p style="margin-top: 1rem;"><em>Creating a new league will save the current league and switch to the new one.</em></p>
-        </div>
-      ` + html;
+        ` + html;
+      }
     }
 
     container.innerHTML = html;
-    
-    // Attach event listener after button is rendered
+
+    // Toggle format-specific fields
+    const formatSelect = document.getElementById('league-format');
+    const swissFields = document.getElementById('swiss-config-fields');
+    const tierFields = document.getElementById('tier-config-fields');
+
+    const toggleFormatFields = () => {
+      const isTiered = formatSelect.value === LEAGUE_FORMATS.TIERED_ROUND_ROBIN;
+      swissFields.style.display = isTiered ? 'none' : 'block';
+      tierFields.style.display = isTiered ? 'block' : 'none';
+    };
+    toggleFormatFields();
+
+    formatSelect.addEventListener('change', toggleFormatFields);
+
+    // Tier count change handler
+    const tierCountSelect = document.getElementById('tier-count');
+    const playersPerTierInput = document.getElementById('players-per-tier');
+    const totalPlayersSpan = document.getElementById('total-players-needed');
+    const tierRoundsSpan = document.getElementById('tier-rounds-count');
+
+    const updateTierInfo = () => {
+      const tierCount = parseInt(tierCountSelect.value, 10);
+      const playersPerTier = parseInt(playersPerTierInput.value, 10);
+      TieredViews.updateTierNameInputs(tierCount);
+      if (totalPlayersSpan) totalPlayersSpan.textContent = tierCount * playersPerTier;
+      if (tierRoundsSpan) tierRoundsSpan.textContent = playersPerTier - 1;
+    };
+
+    tierCountSelect.addEventListener('change', updateTierInfo);
+    playersPerTierInput.addEventListener('input', updateTierInfo);
+
+    // Attach create button
     const createLeagueBtn = document.getElementById('create-league-btn');
     if (createLeagueBtn) {
       createLeagueBtn.addEventListener('click', () => this.createLeague());
@@ -243,11 +290,10 @@ class AdminApp {
   createLeague() {
     const name = document.getElementById('league-name').value;
     const bestOfFrames = document.getElementById('best-of-frames').value;
-    const totalRounds = document.getElementById('total-rounds').value;
+    const format = document.getElementById('league-format').value;
 
     clearValidationErrors('league-errors');
 
-    // Validate
     const nameValidation = ScoreValidator.validateLeagueName(name);
     if (!nameValidation.valid) {
       showValidationErrors(nameValidation.errors, 'league-errors');
@@ -260,26 +306,45 @@ class AdminApp {
       return;
     }
 
-    const roundsValidation = ScoreValidator.validateTotalRounds(totalRounds, 0);
-    if (!roundsValidation.valid) {
-      showValidationErrors(roundsValidation.errors, 'league-errors');
-      return;
-    }
-
-    try {
-      // Save current league if it exists
-      if (this.leagueData) {
-        StorageManager.saveLeague(this.leagueData);
+    if (format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN) {
+      const tierConfig = TieredViews.getTierConfigFromForm();
+      if (tierConfig.playersPerTier < 3) {
+        showValidationErrors(['Need at least 3 players per tier'], 'league-errors');
+        return;
       }
-      
-      // Create new league
-      this.leagueData = LeagueManager.createLeague(name, bestOfFrames, totalRounds);
-      this.saveData();
-      this.updateCurrentLeagueIndicator();
-      this.showSuccess('League created successfully!');
-      this.switchView(VIEWS.PLAYERS);
-    } catch (error) {
-      this.showError('Failed to create league: ' + error.message);
+      if (tierConfig.promotionCount >= tierConfig.playersPerTier) {
+        showValidationErrors(['Promotion count must be less than players per tier'], 'league-errors');
+        return;
+      }
+
+      try {
+        if (this.leagueData) StorageManager.saveLeague(this.leagueData);
+        this.leagueData = LeagueManager.createTieredLeague(name, bestOfFrames, tierConfig);
+        this.saveData();
+        this.updateCurrentLeagueIndicator();
+        this.showSuccess('Tiered league created successfully!');
+        this.switchView(VIEWS.PLAYERS);
+      } catch (error) {
+        this.showError('Failed to create league: ' + error.message);
+      }
+    } else {
+      const totalRounds = document.getElementById('total-rounds').value;
+      const roundsValidation = ScoreValidator.validateTotalRounds(totalRounds, 0);
+      if (!roundsValidation.valid) {
+        showValidationErrors(roundsValidation.errors, 'league-errors');
+        return;
+      }
+
+      try {
+        if (this.leagueData) StorageManager.saveLeague(this.leagueData);
+        this.leagueData = LeagueManager.createLeague(name, bestOfFrames, totalRounds);
+        this.saveData();
+        this.updateCurrentLeagueIndicator();
+        this.showSuccess('League created successfully!');
+        this.switchView(VIEWS.PLAYERS);
+      } catch (error) {
+        this.showError('Failed to create league: ' + error.message);
+      }
     }
   }
 
@@ -313,12 +378,28 @@ class AdminApp {
     const container = document.getElementById('players-content');
     if (!container) return;
 
+    const isTiered = this.leagueData.league.format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN;
+    const allPlayerNames = StorageManager.getAllUniquePlayerNames();
+
+    if (isTiered) {
+      container.innerHTML = TieredViews.renderTieredPlayers(this.leagueData, allPlayerNames);
+
+      // Attach event listeners
+      const addPlayerBtn = document.getElementById('add-player-btn');
+      if (addPlayerBtn) {
+        addPlayerBtn.addEventListener('click', () => this.addPlayer());
+      }
+      const distributeBtn = document.getElementById('distribute-tiers-btn');
+      if (distributeBtn) {
+        distributeBtn.addEventListener('click', () => this.distributeTiers());
+      }
+      return;
+    }
+
     const activePlayers = PlayerManager.getActivePlayers(this.leagueData);
     const inactivePlayers = PlayerManager.getInactivePlayers(this.leagueData);
     const standings = calculateStandings(this.leagueData);
-    
-    // Get all unique player names from all leagues
-    const allPlayerNames = StorageManager.getAllUniquePlayerNames();
+
     const currentPlayerNames = this.leagueData.players.map(p => p.name);
     const availablePlayerNames = allPlayerNames.filter(name => !currentPlayerNames.includes(name));
 
@@ -426,14 +507,17 @@ class AdminApp {
     if (!container) return;
 
     const { league, rounds } = this.leagueData;
+    const isTiered = league.format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN;
     const currentRound = RoundManager.getCurrentRound(this.leagueData);
     const isCurrentRoundComplete = currentRound && RoundManager.isRoundComplete(this.leagueData, league.currentRound);
     const canGenerate = LeagueManager.canGenerateNextRound(this.leagueData);
+    const allRoundsComplete = rounds.length >= league.totalRounds &&
+      rounds.every(r => r.status === 'completed');
 
     container.innerHTML = `
       <div class="rounds-section">
-        <h2>Round Management</h2>
-        
+        <h2>Round Management${isTiered ? ` - Season ${league.currentSeason}` : ''}</h2>
+
         <div class="round-info">
           <p><strong>Current Round:</strong> ${league.currentRound} of ${league.totalRounds}</p>
           ${isCurrentRoundComplete ? `
@@ -441,7 +525,7 @@ class AdminApp {
               <button id="advance-round-btn" class="btn btn-success">Advance to Round ${league.currentRound + 1}</button>
             ` : `
               <div class="alert alert-success">
-                <p><strong>League Complete!</strong> All rounds have been played.</p>
+                <p><strong>${isTiered ? 'Season' : 'League'} Complete!</strong> All rounds have been played.</p>
               </div>
             `}
           ` : canGenerate.canGenerate ? `
@@ -456,29 +540,40 @@ class AdminApp {
         <div class="rounds-list">
           ${rounds.map(round => this.renderRoundSummary(round)).join('')}
         </div>
+
+        ${isTiered && allRoundsComplete ? TieredViews.renderSeasonManagement(this.leagueData) : ''}
       </div>
     `;
-        // Attach event listeners after buttons are rendered
+
     const generateRoundBtn = document.getElementById('generate-round-btn');
     if (generateRoundBtn) {
       generateRoundBtn.addEventListener('click', () => this.generateRound());
     }
-    
+
     const advanceRoundBtn = document.getElementById('advance-round-btn');
     if (advanceRoundBtn) {
       advanceRoundBtn.addEventListener('click', () => this.advanceRound());
+    }
+
+    const startNewSeasonBtn = document.getElementById('start-new-season-btn');
+    if (startNewSeasonBtn) {
+      startNewSeasonBtn.addEventListener('click', () => this.startNewSeason());
     }
   }
 
   renderRoundSummary(round) {
     const stats = RoundManager.getRoundStats(round);
-    
+    const isTiered = this.leagueData.league.format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN;
+
     return `
       <div class="round-card">
         <h3>Round ${round.roundNumber} <span class="badge badge-${round.status}">${round.status}</span></h3>
         <p>Progress: ${stats.completedMatches}/${stats.totalMatches} matches (${stats.progress}%)</p>
         <div class="matches-list">
-          ${round.matches.map(match => this.renderMatchSummary(match, round.roundNumber)).join('')}
+          ${isTiered
+            ? TieredViews.renderTieredRoundMatches(round, this.leagueData)
+            : round.matches.map(match => this.renderMatchSummary(match, round.roundNumber)).join('')
+          }
         </div>
       </div>
     `;
@@ -748,41 +843,6 @@ class AdminApp {
   }
 
   // Action methods
-  createLeague() {
-    const name = document.getElementById('league-name').value;
-    const bestOfFrames = document.getElementById('best-of-frames').value;
-    const totalRounds = document.getElementById('total-rounds').value;
-
-    clearValidationErrors('league-errors');
-
-    // Validate
-    const nameValidation = ScoreValidator.validateLeagueName(name);
-    if (!nameValidation.valid) {
-      showValidationErrors(nameValidation.errors, 'league-errors');
-      return;
-    }
-
-    const framesValidation = ScoreValidator.validateBestOfFrames(bestOfFrames);
-    if (!framesValidation.valid) {
-      showValidationErrors(framesValidation.errors, 'league-errors');
-      return;
-    }
-
-    const roundsValidation = ScoreValidator.validateTotalRounds(totalRounds, 0);
-    if (!roundsValidation.valid) {
-      showValidationErrors(roundsValidation.errors, 'league-errors');
-      return;
-    }
-
-    try {
-      this.leagueData = LeagueManager.createLeague(name, bestOfFrames, totalRounds);
-      this.saveData();
-      this.showSuccess('League created successfully!');
-      this.switchView(VIEWS.PLAYERS);
-    } catch (error) {
-      this.showError('Failed to create league: ' + error.message);
-    }
-  }
 
   addPlayer() {
     const nameInput = document.getElementById('player-name');
@@ -883,6 +943,12 @@ class AdminApp {
 
   generateRound() {
     try {
+      // For tiered leagues, initialize season if needed
+      const isTiered = this.leagueData.league.format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN;
+      if (isTiered && (!this.leagueData.seasons || this.leagueData.seasons.length === 0)) {
+        this.leagueData = TierManager.initializeSeason(this.leagueData);
+      }
+
       StorageManager.backup();
       this.leagueData = RoundManager.generateRound(this.leagueData);
       this.saveData();
@@ -1292,6 +1358,100 @@ class AdminApp {
         modal.remove();
       }
     });
+  }
+
+  // Tiered league methods
+
+  distributeTiers() {
+    if (!this.leagueData) return;
+
+    const activePlayers = this.leagueData.players.filter(p => p.active);
+    const { tierConfig } = this.leagueData.league;
+    const expectedTotal = tierConfig.tiers.length * tierConfig.playersPerTier;
+
+    if (activePlayers.length !== expectedTotal) {
+      this.showError(`Need exactly ${expectedTotal} players. Currently have ${activePlayers.length}`);
+      return;
+    }
+
+    // Get player order from ranking list
+    const rankingItems = document.querySelectorAll('.ranking-item');
+    const rankedPlayerIds = [];
+    rankingItems.forEach(item => {
+      rankedPlayerIds.push(item.dataset.playerId);
+    });
+
+    // If no ranking items, use current player order
+    if (rankedPlayerIds.length === 0) {
+      activePlayers.forEach(p => rankedPlayerIds.push(p.id));
+    }
+
+    try {
+      this.leagueData = TierManager.distributePlayers(this.leagueData, rankedPlayerIds);
+      this.leagueData = TierManager.initializeSeason(this.leagueData);
+      this.saveData();
+      this.showSuccess('Players distributed to tiers and season initialized!');
+      this.renderPlayers();
+    } catch (error) {
+      this.showError('Failed to distribute players: ' + error.message);
+    }
+  }
+
+  movePlayerRank(playerId, direction) {
+    if (!this.leagueData) return;
+
+    const activePlayers = this.leagueData.players.filter(p => p.active);
+    // Sort by current tier/rank order
+    const sorted = [...activePlayers].sort((a, b) => {
+      const tiers = this.leagueData.league.tierConfig.tiers;
+      const tierA = a.tier ? tiers.indexOf(a.tier) : 999;
+      const tierB = b.tier ? tiers.indexOf(b.tier) : 999;
+      if (tierA !== tierB) return tierA - tierB;
+      return (a.tierRank || 0) - (b.tierRank || 0);
+    });
+
+    const idx = sorted.findIndex(p => p.id === playerId);
+    if (idx === -1) return;
+
+    const newIdx = idx + direction;
+    if (newIdx < 0 || newIdx >= sorted.length) return;
+
+    // Swap
+    [sorted[idx], sorted[newIdx]] = [sorted[newIdx], sorted[idx]];
+
+    // Re-distribute with new order
+    const rankedIds = sorted.map(p => p.id);
+    try {
+      this.leagueData = TierManager.distributePlayers(this.leagueData, rankedIds);
+      this.saveData();
+      this.renderPlayers();
+    } catch (error) {
+      this.showError('Failed to move player: ' + error.message);
+    }
+  }
+
+  startNewSeason() {
+    if (!this.leagueData) return;
+
+    const canStart = TierManager.canStartNewSeason(this.leagueData);
+    if (!canStart.canStart) {
+      this.showError(canStart.errors.join('. '));
+      return;
+    }
+
+    if (!confirm(`Start Season ${this.leagueData.league.currentSeason + 1}? This will apply promotions/relegations and reset season stats.`)) {
+      return;
+    }
+
+    try {
+      StorageManager.backup();
+      this.leagueData = TierManager.applyPromotionRelegation(this.leagueData);
+      this.saveData();
+      this.showSuccess(`Season ${this.leagueData.league.currentSeason} started!`);
+      this.switchView(VIEWS.ROUNDS);
+    } catch (error) {
+      this.showError('Failed to start new season: ' + error.message);
+    }
   }
 
   showError(message) {

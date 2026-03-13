@@ -2463,3 +2463,22 @@ button:focus-visible {
     font-size: 0.6rem;
   }
 }
+
+/* Tiered League Styles */
+.promotion-zone {
+  background: rgba(40, 167, 69, 0.15) !important;
+  border-left: 3px solid #28a745;
+}
+
+.relegation-zone {
+  background: rgba(220, 53, 69, 0.15) !important;
+  border-left: 3px solid #dc3545;
+}
+
+.tier-standings-section {
+  margin-bottom: 2rem;
+}
+
+.standings-legend {
+  color: var(--text-secondary, #aaa);
+}
