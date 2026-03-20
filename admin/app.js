@@ -16,7 +16,7 @@ import {
   readJSONFile,
   validateLeagueData
 } from './utils/helpers.js';
-import { VIEWS, ERROR_TYPES, LEAGUE_FORMATS } from '../shared/constants.js';
+import { VIEWS, ERROR_TYPES, LEAGUE_FORMATS, TRACK_FRAME_SCORES_DEFAULT, TIER_DEFAULTS } from '../shared/constants.js';
 
 class AdminApp {
   constructor() {
@@ -216,6 +216,13 @@ class AdminApp {
           </div>
         </div>
         ${TieredViews.renderTierConfigFields()}
+        <div class="form-group">
+          <label>
+            <input type="checkbox" id="track-frame-scores" checked>
+            Track individual frame scores (e.g. 63-45 per frame)
+          </label>
+          <small class="form-text">When unchecked, only the overall match score in frames (e.g. 2-1) is recorded. Recommended off for tiered leagues.</small>
+        </div>
         <div id="league-errors" class="error-container"></div>
         <button id="create-league-btn" class="btn btn-primary">Create League</button>
       </div>
@@ -234,7 +241,7 @@ class AdminApp {
           <div class="league-info" style="margin-bottom: 2rem;">
             <h2>Current League: ${escapeHtml(league.name)}</h2>
             <div class="league-details">
-              <p><strong>Format:</strong> Swiss (Best of ${league.bestOfFrames})</p>
+              <p><strong>Format:</strong> Swiss (Best of ${league.bestOfFrames})${league.trackFrameScores === false ? ' - Frame scores not tracked' : ''}</p>
               <p><strong>Total Rounds:</strong> ${league.totalRounds}</p>
               <p><strong>Current Round:</strong> ${league.currentRound}</p>
               <p><strong>Active Players:</strong> ${stats.activePlayers}</p>
@@ -254,10 +261,16 @@ class AdminApp {
     const swissFields = document.getElementById('swiss-config-fields');
     const tierFields = document.getElementById('tier-config-fields');
 
+    const trackFrameScoresCheckbox = document.getElementById('track-frame-scores');
+
     const toggleFormatFields = () => {
       const isTiered = formatSelect.value === LEAGUE_FORMATS.TIERED_ROUND_ROBIN;
       swissFields.style.display = isTiered ? 'none' : 'block';
       tierFields.style.display = isTiered ? 'block' : 'none';
+      // Auto-set default based on format
+      if (trackFrameScoresCheckbox) {
+        trackFrameScoresCheckbox.checked = TRACK_FRAME_SCORES_DEFAULT[formatSelect.value] !== false;
+      }
     };
     toggleFormatFields();
 
@@ -274,7 +287,8 @@ class AdminApp {
       const playersPerTier = parseInt(playersPerTierInput.value, 10);
       TieredViews.updateTierNameInputs(tierCount);
       if (totalPlayersSpan) totalPlayersSpan.textContent = tierCount * playersPerTier;
-      if (tierRoundsSpan) tierRoundsSpan.textContent = playersPerTier - 1;
+      const totalRounds = playersPerTier % 2 === 0 ? playersPerTier - 1 : playersPerTier;
+      if (tierRoundsSpan) tierRoundsSpan.textContent = totalRounds;
     };
 
     tierCountSelect.addEventListener('change', updateTierInfo);
@@ -306,10 +320,12 @@ class AdminApp {
       return;
     }
 
+    const trackFrameScores = document.getElementById('track-frame-scores')?.checked ?? true;
+
     if (format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN) {
       const tierConfig = TieredViews.getTierConfigFromForm();
-      if (tierConfig.playersPerTier < 3) {
-        showValidationErrors(['Need at least 3 players per tier'], 'league-errors');
+      if (tierConfig.playersPerTier < TIER_DEFAULTS.MIN_PLAYERS_PER_TIER) {
+        showValidationErrors([`Need at least ${TIER_DEFAULTS.MIN_PLAYERS_PER_TIER} players per tier`], 'league-errors');
         return;
       }
       if (tierConfig.promotionCount >= tierConfig.playersPerTier) {
@@ -319,7 +335,7 @@ class AdminApp {
 
       try {
         if (this.leagueData) StorageManager.saveLeague(this.leagueData);
-        this.leagueData = LeagueManager.createTieredLeague(name, bestOfFrames, tierConfig);
+        this.leagueData = LeagueManager.createTieredLeague(name, bestOfFrames, tierConfig, { trackFrameScores });
         this.saveData();
         this.updateCurrentLeagueIndicator();
         this.showSuccess('Tiered league created successfully!');
@@ -337,7 +353,7 @@ class AdminApp {
 
       try {
         if (this.leagueData) StorageManager.saveLeague(this.leagueData);
-        this.leagueData = LeagueManager.createLeague(name, bestOfFrames, totalRounds);
+        this.leagueData = LeagueManager.createLeague(name, bestOfFrames, totalRounds, { trackFrameScores });
         this.saveData();
         this.updateCurrentLeagueIndicator();
         this.showSuccess('League created successfully!');
@@ -698,6 +714,7 @@ class AdminApp {
     }
 
     const progress = ScoringManager.getMatchProgress(matchData, this.leagueData.league.bestOfFrames);
+    const trackScores = this.leagueData.league.trackFrameScores !== false;
 
     container.innerHTML = `
       <div class="scoring-section">
@@ -713,7 +730,7 @@ class AdminApp {
           </p>
         </div>
 
-        ${!progress.isComplete ? `
+        ${!progress.isComplete ? (trackScores ? `
           <div class="add-frame-form">
             <h4>Add Frame ${matchData.frames.length + 1}</h4>
             <div class="frame-inputs">
@@ -730,6 +747,22 @@ class AdminApp {
             <button class="btn btn-primary" onclick="app.addFrame()">Add Frame</button>
           </div>
         ` : `
+          <div class="add-frame-form">
+            <h4>Submit Match Result</h4>
+            <div class="frame-inputs">
+              <div class="form-group">
+                <label>${escapeHtml(matchData.player1.name)} frames won</label>
+                <input type="number" id="match-p1-frames" class="form-control" min="0" max="${this.leagueData.league.bestOfFrames}" value="${progress.player1FramesWon}">
+              </div>
+              <div class="form-group">
+                <label>${escapeHtml(matchData.player2.name)} frames won</label>
+                <input type="number" id="match-p2-frames" class="form-control" min="0" max="${this.leagueData.league.bestOfFrames}" value="${progress.player2FramesWon}">
+              </div>
+            </div>
+            <div id="frame-errors" class="error-container"></div>
+            <button class="btn btn-primary" onclick="app.submitMatchResult()">Submit Result</button>
+          </div>
+        `) : `
           <div class="alert alert-success">
             <strong>Match Complete!</strong> Winner: ${escapeHtml(matchData.player1.id === matchData.winnerId ? matchData.player1.name : matchData.player2.name)}
           </div>
@@ -741,8 +774,10 @@ class AdminApp {
             <thead>
               <tr>
                 <th>Frame</th>
-                <th>${escapeHtml(matchData.player1.name)}</th>
-                <th>${escapeHtml(matchData.player2.name)}</th>
+                ${trackScores ? `
+                  <th>${escapeHtml(matchData.player1.name)}</th>
+                  <th>${escapeHtml(matchData.player2.name)}</th>
+                ` : ''}
                 <th>Winner</th>
                 <th>Actions</th>
               </tr>
@@ -753,8 +788,10 @@ class AdminApp {
                 return `
                   <tr>
                     <td>${frame.frameNumber}</td>
-                    <td>${frame.player1Score}</td>
-                    <td>${frame.player2Score}</td>
+                    ${trackScores ? `
+                      <td>${frame.player1Score}</td>
+                      <td>${frame.player2Score}</td>
+                    ` : ''}
                     <td>${escapeHtml(winner.name)}</td>
                     <td>
                       ${frame.frameNumber === matchData.frames.length ? `
@@ -1005,6 +1042,36 @@ class AdminApp {
       this.renderScoring();
     } catch (error) {
       this.showError('Failed to add frame: ' + error.message);
+    }
+  }
+
+  submitMatchResult() {
+    const p1Frames = parseInt(document.getElementById('match-p1-frames').value, 10);
+    const p2Frames = parseInt(document.getElementById('match-p2-frames').value, 10);
+
+    clearValidationErrors('frame-errors');
+
+    if (isNaN(p1Frames) || isNaN(p2Frames) || p1Frames < 0 || p2Frames < 0) {
+      showValidationErrors(['Frame counts must be non-negative numbers'], 'frame-errors');
+      return;
+    }
+    if (p1Frames === p2Frames) {
+      showValidationErrors(['Match cannot be a draw - one player must win more frames'], 'frame-errors');
+      return;
+    }
+
+    try {
+      this.leagueData = ScoringManager.submitMatchResult(
+        this.leagueData,
+        this.selectedMatchId,
+        p1Frames,
+        p2Frames
+      );
+      this.saveData();
+      this.showSuccess('Match result submitted successfully!');
+      this.renderScoring();
+    } catch (error) {
+      showValidationErrors([error.message], 'frame-errors');
     }
   }
 
@@ -1367,12 +1434,32 @@ class AdminApp {
 
     const activePlayers = this.leagueData.players.filter(p => p.active);
     const { tierConfig } = this.leagueData.league;
-    const expectedTotal = tierConfig.tiers.length * tierConfig.playersPerTier;
+    const tierCount = tierConfig.tiers.length;
+    const minTotal = tierCount * TIER_DEFAULTS.MIN_PLAYERS_PER_TIER;
 
-    if (activePlayers.length !== expectedTotal) {
-      this.showError(`Need exactly ${expectedTotal} players. Currently have ${activePlayers.length}`);
+    if (activePlayers.length < minTotal) {
+      this.showError(`Need at least ${minTotal} players (${TIER_DEFAULTS.MIN_PLAYERS_PER_TIER} per tier). Currently have ${activePlayers.length}`);
       return;
     }
+
+    // Auto-balance tier sizes based on actual player count
+    const newTierSizes = TierManager.calculateTierSizes(activePlayers.length, tierCount);
+    const maxTierSize = Math.max(...newTierSizes);
+    const newTotalRounds = maxTierSize % 2 === 0 ? maxTierSize - 1 : maxTierSize;
+
+    // Update tierConfig with balanced sizes
+    this.leagueData = {
+      ...this.leagueData,
+      league: {
+        ...this.leagueData.league,
+        totalRounds: newTotalRounds,
+        tierConfig: {
+          ...tierConfig,
+          tierSizes: newTierSizes,
+          playersPerTier: maxTierSize
+        }
+      }
+    };
 
     // Get player order from ranking list
     const rankingItems = document.querySelectorAll('.ranking-item');
@@ -1390,7 +1477,7 @@ class AdminApp {
       this.leagueData = TierManager.distributePlayers(this.leagueData, rankedPlayerIds);
       this.leagueData = TierManager.initializeSeason(this.leagueData);
       this.saveData();
-      this.showSuccess('Players distributed to tiers and season initialized!');
+      this.showSuccess(`Players distributed to tiers (${newTierSizes.join(', ')}) and season initialized!`);
       this.renderPlayers();
     } catch (error) {
       this.showError('Failed to distribute players: ' + error.message);

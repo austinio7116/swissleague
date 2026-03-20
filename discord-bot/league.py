@@ -329,13 +329,15 @@ def apply_match_result(league_data, match, submitter_id, opponent_id, frame_scor
         match: The match dict to update
         submitter_id: ID of player who submitted (their scores are first in frame_scores)
         opponent_id: ID of opponent
-        frame_scores: List of (submitter_score, opponent_score) tuples
+        frame_scores: List of (submitter_score, opponent_score) tuples.
+                      For frames-only mode (no point scores), use (1, 0) or (0, 1).
 
     Returns:
         Updated league_data with recalculated stats
     """
     match_p1_id = match["player1Id"]
     match_p2_id = match["player2Id"]
+    track_frame_scores = league_data.get("league", {}).get("trackFrameScores", True)
 
     # Determine if we need to swap scores based on match player order
     if submitter_id == match_p1_id:
@@ -357,12 +359,14 @@ def apply_match_result(league_data, match, submitter_id, opponent_id, frame_scor
         else:
             p2_frames_won += 1
 
-        frames.append({
+        frame = {
             "frameNumber": idx + 1,
-            "player1Score": p1_score,
-            "player2Score": p2_score,
             "winnerId": winner_id
-        })
+        }
+        if track_frame_scores:
+            frame["player1Score"] = p1_score
+            frame["player2Score"] = p2_score
+        frames.append(frame)
 
     # Determine match winner
     match_winner_id = match_p1_id if p1_frames_won > p2_frames_won else match_p2_id
@@ -531,6 +535,25 @@ def get_all_tier_standings(league_data):
 def is_tiered_league(league_data):
     """Check if a league uses tiered round-robin format."""
     return league_data.get("league", {}).get("format") == "tiered-round-robin"
+
+
+def tracks_frame_scores(league_data):
+    """Check if a league tracks individual frame point scores."""
+    return league_data.get("league", {}).get("trackFrameScores", True)
+
+
+def make_frames_from_score(submitter_frames_won, opponent_frames_won):
+    """
+    Create frame score tuples from an overall match score for frames-only mode.
+    E.g. (2, 1) -> [(1, 0), (1, 0), (0, 1)]
+    The submitter's winning frames come first, then the opponent's.
+    """
+    frames = []
+    for _ in range(submitter_frames_won):
+        frames.append((1, 0))
+    for _ in range(opponent_frames_won):
+        frames.append((0, 1))
+    return frames
 
 
 MAX_FRAME_SCORE = 147  # Maximum possible break in snooker

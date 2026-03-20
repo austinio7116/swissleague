@@ -18,6 +18,8 @@ from league import (
     apply_forfeit_result,
     get_tier_for_player,
     is_tiered_league,
+    tracks_frame_scores,
+    make_frames_from_score,
     parse_input_string,
     recalculate_all_player_stats,
     validate_frame_scores,
@@ -127,10 +129,14 @@ def format_match_preview(match_info, frame_scores, overall_frames, input_player1
     # Show result
     lines.append(f"Result: {display_p1['name']} vs {display_p2['name']}")
     lines.append(f"Overall: {display_overall[0]}-{display_overall[1]}")
-    lines.append("\nFrames:")
-    for i, (p1_score, p2_score) in enumerate(display_frames, 1):
-        winner = display_p1['name'] if p1_score > p2_score else display_p2['name']
-        lines.append(f"  Frame {i}: {p1_score}-{p2_score} ({winner})")
+
+    # Only show individual frame scores if they have real point data (not synthetic 1-0/0-1)
+    has_real_scores = any(max(p1, p2) > 1 for p1, p2 in display_frames)
+    if has_real_scores:
+        lines.append("\nFrames:")
+        for i, (p1_score, p2_score) in enumerate(display_frames, 1):
+            winner = display_p1['name'] if p1_score > p2_score else display_p2['name']
+            lines.append(f"  Frame {i}: {p1_score}-{p2_score} ({winner})")
 
     # Show winner
     if display_overall[0] > display_overall[1]:
@@ -259,17 +265,19 @@ def main():
     args = [a for a in sys.argv[1:] if a != '--dev']
 
     if len(args) < 1:
-        print("Usage: python cli.py \"player1 Vs player2 1-2 63-40 42-66 60-63\" [--dev]")
+        print("Usage: python cli.py \"player1 Vs player2 1-2 [63-40 42-66 60-63]\" [--dev]")
         print("\nFormats:")
-        print("  Regular match:   player1 Vs player2 frames1-frames2 score1-score2 score1-score2 ...")
-        print("  Single forfeit:  player1 Vs player2 forfeit <forfeiting_player>")
-        print("  Double forfeit:  player1 Vs player2 double-forfeit")
+        print("  With frame scores:    player1 Vs player2 frames1-frames2 score1-score2 score1-score2 ...")
+        print("  Frames only:          player1 Vs player2 frames1-frames2")
+        print("  Single forfeit:       player1 Vs player2 forfeit <forfeiting_player>")
+        print("  Double forfeit:       player1 Vs player2 double-forfeit")
         print("\nFlags:")
         print("  --dev    Skip git commit (for testing)")
         print("\nExamples:")
-        print('  python cli.py "john Vs jane 2-1 63-40 42-66 60-63"')
-        print('  python cli.py "john Vs jane forfeit john"        # john forfeits, jane wins')
-        print('  python cli.py "john Vs jane double-forfeit"      # both forfeit, both lose')
+        print('  python cli.py "john Vs jane 2-1 63-40 42-66 60-63"  # with frame scores')
+        print('  python cli.py "john Vs jane 2-1"                     # frames only (tiered leagues)')
+        print('  python cli.py "john Vs jane forfeit john"            # john forfeits, jane wins')
+        print('  python cli.py "john Vs jane double-forfeit"          # both forfeit, both lose')
         sys.exit(1)
 
     if dev_mode:
@@ -433,20 +441,8 @@ def handle_regular_result(input_str, dev_mode):
     print(f"  Player 1: {player1_name}")
     print(f"  Player 2: {player2_name}")
     print(f"  Overall: {overall_frames[0]}-{overall_frames[1]}")
-    print(f"  Frames: {frame_scores}")
-
-    # Validate individual frame scores (ties, bounds)
-    is_valid, error = validate_frame_scores(frame_scores)
-    if not is_valid:
-        print(f"\nError: {error}")
-        sys.exit(1)
-
-    # Validate frame scores match claimed overall score
-    p1_wins = sum(1 for p1, p2 in frame_scores if p1 > p2)
-    p2_wins = sum(1 for p1, p2 in frame_scores if p2 > p1)
-    if (p1_wins, p2_wins) != overall_frames:
-        print(f"\nError: Frame scores ({p1_wins}-{p2_wins}) don't match overall score ({overall_frames[0]}-{overall_frames[1]})")
-        sys.exit(1)
+    if frame_scores:
+        print(f"  Frames: {frame_scores}")
 
     # Load data
     try:
@@ -492,16 +488,54 @@ def handle_regular_result(input_str, dev_mode):
             except ValueError:
                 print("Please enter a number")
 
-    # Get best_of_frames from the league to validate match completion
+    # Get league config
     league_id = selected_match["league_id"]
     league_data = data["leagues"][league_id]
     best_of_frames = league_data.get("league", {}).get("bestOfFrames", 3)
+    track_scores = tracks_frame_scores(league_data)
 
-    # Validate match completion (not over too early, not incomplete)
-    is_valid, error = validate_match_completion(frame_scores, best_of_frames)
-    if not is_valid:
-        print(f"\nError: {error}")
-        sys.exit(1)
+    if track_scores:
+        # Full frame score tracking - validate individual frame scores
+        if not frame_scores:
+            print("\nError: This league tracks individual frame scores.")
+            print("  Please provide frame scores, e.g.: \"player1 Vs player2 2-1 63-45 52-60 71-38\"")
+            sys.exit(1)
+
+        is_valid, error = validate_frame_scores(frame_scores)
+        if not is_valid:
+            print(f"\nError: {error}")
+            sys.exit(1)
+
+        # Validate frame scores match claimed overall score
+        p1_wins = sum(1 for p1, p2 in frame_scores if p1 > p2)
+        p2_wins = sum(1 for p1, p2 in frame_scores if p2 > p1)
+        if (p1_wins, p2_wins) != overall_frames:
+            print(f"\nError: Frame scores ({p1_wins}-{p2_wins}) don't match overall score ({overall_frames[0]}-{overall_frames[1]})")
+            sys.exit(1)
+
+        # Validate match completion (not over too early, not incomplete)
+        is_valid, error = validate_match_completion(frame_scores, best_of_frames)
+        if not is_valid:
+            print(f"\nError: {error}")
+            sys.exit(1)
+    else:
+        # Frames-only mode - just validate the overall score
+        frames_to_win = (best_of_frames // 2) + 1
+        p1_frames, p2_frames = overall_frames
+        total = p1_frames + p2_frames
+
+        if p1_frames == p2_frames:
+            print("\nError: Match cannot be a draw")
+            sys.exit(1)
+        if max(p1_frames, p2_frames) < frames_to_win:
+            print(f"\nError: Match not complete - need {frames_to_win} frames to win (best of {best_of_frames})")
+            sys.exit(1)
+        if total > best_of_frames:
+            print(f"\nError: Too many frames ({total}) for best of {best_of_frames}")
+            sys.exit(1)
+
+        # Generate synthetic frame data from overall score
+        frame_scores = make_frames_from_score(p1_frames, p2_frames)
 
     # Show preview
     preview = format_match_preview(selected_match, frame_scores, overall_frames,

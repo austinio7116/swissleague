@@ -79,8 +79,14 @@ export class RoundManager {
           ERROR_TYPES.PAIRING
         );
       }
-      const tierPairings = RoundRobinPairing.generateRoundPairings(tierPlayers, roundIndex);
-      allPairings.push(...tierPairings);
+      // Each tier has its own round-robin cycle length
+      const tierN = tierPlayers.length % 2 === 0 ? tierPlayers.length : tierPlayers.length + 1;
+      const tierTotalRounds = tierN - 1;
+      if (roundIndex < tierTotalRounds) {
+        const tierPairings = RoundRobinPairing.generateRoundPairings(tierPlayers, roundIndex);
+        allPairings.push(...tierPairings);
+      }
+      // If roundIndex >= tierTotalRounds, this tier has completed its round-robin — no matches this round
     }
 
     // Create matches from pairings

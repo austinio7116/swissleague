@@ -177,6 +177,10 @@ export class MatchesRenderer {
           </div>
         `;
       } else {
+        // Only show frame detail toggle if frames have real point scores
+        const hasFrameScores = match.frames.length > 0 &&
+          match.frames[0].player1Score !== undefined;
+
         html += `
           <div class="match-item" data-match-id="${match.id}">
             <div class="match-header">
@@ -188,7 +192,7 @@ export class MatchesRenderer {
               <span class="score">${match.player1FramesWon} - ${match.player2FramesWon}</span>
               <span class="player ${match.winnerId === player2.id ? 'winner' : ''}">${escapeHtml(player2.name)}</span>
             </div>
-            ${match.frames.length > 0 ? `
+            ${hasFrameScores ? `
               <button class="toggle-frames" onclick="displayApp.toggleFrames('${match.id}')">
                 Show Frames
               </button>

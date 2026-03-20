@@ -56,6 +56,7 @@ export class StandingsRenderer {
     PlayerModal.init(leagueData);
 
     const standings = calculateStandings(leagueData);
+    const trackScores = leagueData.league.trackFrameScores !== false;
 
     if (standings.length === 0) {
       container.innerHTML = '<p class="no-data">No players in the league yet.</p>';
@@ -82,9 +83,11 @@ export class StandingsRenderer {
               <th data-sort="framesWon">Frames Won</th>
               <th data-sort="framesLost">Frames Lost</th>
               <th data-sort="frameDiff">Frame +/-</th>
-              <th data-sort="pointsScored">Points For</th>
-              <th data-sort="pointsConceded">Points Against</th>
-              <th data-sort="pointsDiff">Points +/-</th>
+              ${trackScores ? `
+                <th data-sort="pointsScored">Points For</th>
+                <th data-sort="pointsConceded">Points Against</th>
+                <th data-sort="pointsDiff">Points +/-</th>
+              ` : ''}
               <th data-sort="winRate">Win %</th>
             </tr>
           </thead>
@@ -109,7 +112,6 @@ export class StandingsRenderer {
 
     standings.forEach((player, index) => {
       const winRate = calculateWinRate(player.stats);
-      const snookerPoints = this.calculateSnookerPoints(leagueData, player.id);
       const rank = ranks[index];
       const rankClass = rank <= 3 ? `rank-${rank}` : '';
       const buchholz = player.stats.buchholzScore || 0;
@@ -119,6 +121,18 @@ export class StandingsRenderer {
       const isTied = (index > 0 && ranks[index - 1] === rank) ||
                      (index < ranks.length - 1 && ranks[index + 1] === rank);
       const rankDisplay = isTied ? `T${rank}` : rank;
+
+      let pointsCols = '';
+      if (trackScores) {
+        const snookerPoints = this.calculateSnookerPoints(leagueData, player.id);
+        pointsCols = `
+          <td>${snookerPoints.pointsScored}</td>
+          <td>${snookerPoints.pointsConceded}</td>
+          <td class="points-diff ${snookerPoints.pointsDifference >= 0 ? 'positive' : 'negative'}">
+            ${snookerPoints.pointsDifference > 0 ? '+' : ''}${snookerPoints.pointsDifference}
+          </td>
+        `;
+      }
 
       html += `
         <tr class="${rankClass}" data-player-id="${player.id}">
@@ -135,11 +149,7 @@ export class StandingsRenderer {
           <td class="frame-diff ${player.stats.frameDifference >= 0 ? 'positive' : 'negative'}">
             ${player.stats.frameDifference > 0 ? '+' : ''}${player.stats.frameDifference}
           </td>
-          <td>${snookerPoints.pointsScored}</td>
-          <td>${snookerPoints.pointsConceded}</td>
-          <td class="points-diff ${snookerPoints.pointsDifference >= 0 ? 'positive' : 'negative'}">
-            ${snookerPoints.pointsDifference > 0 ? '+' : ''}${snookerPoints.pointsDifference}
-          </td>
+          ${pointsCols}
           <td>${winRate}%</td>
         </tr>
       `;
@@ -296,6 +306,7 @@ export class StandingsRenderer {
 
     const { tierConfig } = leagueData.league;
     const { tiers, promotionCount } = tierConfig;
+    const trackScores = leagueData.league.trackFrameScores !== false;
     const tierColors = {
       'Diamond': '#b9f2ff',
       'Gold': '#ffd700',
@@ -335,8 +346,10 @@ export class StandingsRenderer {
                   <th>Frames Won</th>
                   <th>Frames Lost</th>
                   <th>Frame +/-</th>
-                  <th>Points For</th>
-                  <th>Points Against</th>
+                  ${trackScores ? `
+                    <th>Points For</th>
+                    <th>Points Against</th>
+                  ` : ''}
                   <th>Win %</th>
                 </tr>
               </thead>
@@ -345,10 +358,18 @@ export class StandingsRenderer {
 
       standings.forEach((player, index) => {
         const winRate = calculateWinRate(player.stats);
-        const snookerPoints = this.calculateSnookerPoints(leagueData, player.id);
         let rowClass = '';
         if (!isTopTier && index < promotionCount) rowClass = 'promotion-zone';
         if (!isBottomTier && index >= standings.length - promotionCount) rowClass = 'relegation-zone';
+
+        let pointsCols = '';
+        if (trackScores) {
+          const snookerPoints = this.calculateSnookerPoints(leagueData, player.id);
+          pointsCols = `
+            <td>${snookerPoints.pointsScored}</td>
+            <td>${snookerPoints.pointsConceded}</td>
+          `;
+        }
 
         html += `
           <tr class="${rowClass}" data-player-id="${player.id}">
@@ -363,8 +384,7 @@ export class StandingsRenderer {
             <td class="frame-diff ${player.stats.frameDifference >= 0 ? 'positive' : 'negative'}">
               ${player.stats.frameDifference > 0 ? '+' : ''}${player.stats.frameDifference}
             </td>
-            <td>${snookerPoints.pointsScored}</td>
-            <td>${snookerPoints.pointsConceded}</td>
+            ${pointsCols}
             <td>${winRate}%</td>
           </tr>
         `;

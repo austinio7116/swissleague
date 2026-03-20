@@ -135,20 +135,29 @@ export class PlayerModal {
       const isWinner = match.winnerId === playerId;
       const resultClass = isWinner ? 'win' : 'loss';
 
-      // Calculate snooker points for this match
-      let playerPoints = 0;
-      let opponentPoints = 0;
-      for (const frame of match.frames || []) {
-        if (isPlayer1) {
-          playerPoints += frame.player1Score;
-          opponentPoints += frame.player2Score;
-        } else {
-          playerPoints += frame.player2Score;
-          opponentPoints += frame.player1Score;
+      // Calculate snooker points for this match (only if frame scores are tracked)
+      const hasFrameScores = (match.frames || []).length > 0 &&
+        match.frames[0].player1Score !== undefined;
+      let pointsSummary = '';
+      let framesCompact = '';
+
+      if (hasFrameScores) {
+        let playerPoints = 0;
+        let opponentPoints = 0;
+        for (const frame of match.frames || []) {
+          if (isPlayer1) {
+            playerPoints += frame.player1Score;
+            opponentPoints += frame.player2Score;
+          } else {
+            playerPoints += frame.player2Score;
+            opponentPoints += frame.player1Score;
+          }
         }
+        const pointsDiff = playerPoints - opponentPoints;
+        pointsSummary = `<span class="points-summary ${pointsDiff >= 0 ? 'positive' : 'negative'}">${pointsDiff >= 0 ? '+' : ''}${pointsDiff} pts</span>`;
+        framesCompact = this.renderFramesCompact(match.frames || [], isPlayer1);
       }
 
-      const pointsDiff = playerPoints - opponentPoints;
       html += `
         <div class="match-card ${resultClass}">
           <div class="match-left">
@@ -157,11 +166,11 @@ export class PlayerModal {
           </div>
           <div class="match-center">
             <span class="match-opponent">vs ${escapeHtml(opponent?.name || 'Unknown')}</span>
-            <span class="match-frames">${this.renderFramesCompact(match.frames || [], isPlayer1)}</span>
+            ${framesCompact ? `<span class="match-frames">${framesCompact}</span>` : ''}
           </div>
           <div class="match-right">
             <span class="frames-score">${playerFrames} - ${opponentFrames}</span>
-            <span class="points-summary ${pointsDiff >= 0 ? 'positive' : 'negative'}">${pointsDiff >= 0 ? '+' : ''}${pointsDiff} pts</span>
+            ${pointsSummary}
           </div>
         </div>
       `;

@@ -10,16 +10,30 @@ export class TierManager {
    */
   static distributePlayers(leagueData, rankedPlayerIds) {
     const { tierConfig } = leagueData.league;
-    const { tiers, playersPerTier } = tierConfig;
+    const { tiers } = tierConfig;
+    const tierSizes = tierConfig.tierSizes || tiers.map(() => tierConfig.playersPerTier);
+
+    // Build cumulative offsets: tier 0 starts at 0, tier 1 starts at tierSizes[0], etc.
+    const tierOffsets = [0];
+    for (let i = 0; i < tierSizes.length - 1; i++) {
+      tierOffsets.push(tierOffsets[i] + tierSizes[i]);
+    }
 
     const players = leagueData.players.map(player => {
       const rankIndex = rankedPlayerIds.indexOf(player.id);
       if (rankIndex === -1 || !player.active) {
         return { ...player, tier: null, tierRank: null };
       }
-      const tierIndex = Math.floor(rankIndex / playersPerTier);
+      // Find which tier this rank falls into
+      let tierIndex = tiers.length - 1;
+      for (let i = 0; i < tierOffsets.length; i++) {
+        if (rankIndex < tierOffsets[i] + tierSizes[i]) {
+          tierIndex = i;
+          break;
+        }
+      }
       const tierName = tiers[tierIndex] || null;
-      const tierRank = (rankIndex % playersPerTier) + 1;
+      const tierRank = rankIndex - tierOffsets[tierIndex] + 1;
       return { ...player, tier: tierName, tierRank };
     });
 
@@ -271,6 +285,13 @@ export class TierManager {
       finalStandings: null
     });
 
+    // Recalculate tier sizes and totalRounds from actual player distribution
+    const newTierSizes = tiers.map(tier =>
+      updatedPlayers.filter(p => p.tier === tier && p.active).length
+    );
+    const maxTierSize = Math.max(...newTierSizes);
+    const newTotalRounds = maxTierSize % 2 === 0 ? maxTierSize - 1 : maxTierSize;
+
     return {
       ...leagueData,
       players: updatedPlayers,
@@ -281,9 +302,30 @@ export class TierManager {
         ...leagueData.league,
         currentSeason: newSeason,
         currentRound: 1,
-        updatedAt: new Date().toISOString()
+        totalRounds: newTotalRounds,
+        updatedAt: new Date().toISOString(),
+        tierConfig: {
+          ...leagueData.league.tierConfig,
+          tierSizes: newTierSizes,
+          playersPerTier: maxTierSize
+        }
       }
     };
+  }
+
+  /**
+   * Calculate balanced tier sizes for a given player count and tier count.
+   * Extra players are distributed to top tiers first.
+   * e.g. 16 players, 3 tiers -> [6, 5, 5]
+   */
+  static calculateTierSizes(playerCount, tierCount) {
+    const base = Math.floor(playerCount / tierCount);
+    const remainder = playerCount % tierCount;
+    const sizes = [];
+    for (let i = 0; i < tierCount; i++) {
+      sizes.push(base + (i < remainder ? 1 : 0));
+    }
+    return sizes;
   }
 
   static emptySeasonStats() {

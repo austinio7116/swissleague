@@ -395,9 +395,10 @@ class DisplayApp {
     const { league } = this.leagueData;
 
     const isTiered = league.format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN;
+    const scoreLabel = league.trackFrameScores === false ? ' (frames only)' : '';
     const formatLabel = isTiered
-      ? `Tiered Round-Robin - Season ${league.currentSeason} - Best of ${league.bestOfFrames}`
-      : `Swiss Format - Best of ${league.bestOfFrames}`;
+      ? `Tiered Round-Robin - Season ${league.currentSeason} - Best of ${league.bestOfFrames}${scoreLabel}`
+      : `Swiss Format - Best of ${league.bestOfFrames}${scoreLabel}`;
     const roundsLabel = isTiered
       ? `Season ${league.currentSeason} - Round ${league.currentRound} of ${league.totalRounds}`
       : `Round ${league.currentRound} of ${league.totalRounds}`;

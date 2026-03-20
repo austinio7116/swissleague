@@ -23,6 +23,8 @@ from league import (
     get_all_tier_standings,
     get_tier_for_player,
     is_tiered_league,
+    tracks_frame_scores,
+    make_frames_from_score,
     parse_frame_score,
     validate_frame_scores,
     validate_match_completion,
@@ -88,7 +90,12 @@ github = GitHubAPI(GITHUB_TOKEN, REPO, FILE_PATH)
 
 
 def get_active_league(data):
-    """Get the first active league from the data."""
+    """Get the active league from the data, using currentLeagueId if set."""
+    # Use currentLeagueId if available
+    current_id = data.get("currentLeagueId")
+    if current_id and current_id in data.get("leagues", {}):
+        return current_id, data["leagues"][current_id]
+    # Fallback: look for a league with status "active"
     for league_id, league_data in data.get("leagues", {}).items():
         if league_data.get("league", {}).get("status") == "active":
             return league_id, league_data
@@ -154,6 +161,7 @@ async def resolve_opponent_to_username(guild, opponent_input):
 @tree.command(name='result', description='Submit a match result')
 @app_commands.describe(
     opponent='Your opponent (their Discord username or display name)',
+    score='Overall match score (e.g. 2-1) - required for leagues without frame tracking',
     frame1='Frame 1 score (your-score-opponent-score, e.g. 63-45)',
     frame2='Frame 2 score (e.g. 52-60)',
     frame3='Frame 3 score (optional, e.g. 71-38)',
@@ -163,8 +171,9 @@ async def resolve_opponent_to_username(guild, opponent_input):
 async def submit_result(
     interaction: discord.Interaction,
     opponent: str,
-    frame1: str,
-    frame2: str,
+    score: str = None,
+    frame1: str = None,
+    frame2: str = None,
     frame3: str = None,
     frame4: str = None,
     frame5: str = None
@@ -181,6 +190,7 @@ async def submit_result(
             return
 
         players = league_data.get("players", [])
+        track_scores = tracks_frame_scores(league_data)
 
         # Find submitter by Discord username (exact match only for security)
         submitter_name = interaction.user.name
@@ -218,37 +228,98 @@ async def submit_result(
             )
             return
 
-        # Parse frame scores
-        frame_strs = [frame1, frame2]
-        if frame3:
-            frame_strs.append(frame3)
-        if frame4:
-            frame_strs.append(frame4)
-        if frame5:
-            frame_strs.append(frame5)
+        best_of_frames = league_data.get("league", {}).get("bestOfFrames", 3)
 
-        frames = []
-        for i, fs in enumerate(frame_strs):
-            parsed = parse_frame_score(fs)
-            if not parsed:
+        if track_scores:
+            # Full frame score tracking mode - require individual frame scores
+            if not frame1 or not frame2:
                 await interaction.followup.send(
-                    f"Invalid frame {i+1} score format: '{fs}'. Use format like '63-45'."
+                    "This league tracks individual frame scores. "
+                    "Please provide frame1 and frame2 parameters (e.g. frame1: 63-45 frame2: 52-60)."
                 )
                 return
-            frames.append(parsed)
 
-        # Validate individual frame scores (ties, bounds)
-        is_valid, error = validate_frame_scores(frames)
-        if not is_valid:
-            await interaction.followup.send(f"Invalid frame scores: {error}")
-            return
+            frame_strs = [frame1, frame2]
+            if frame3:
+                frame_strs.append(frame3)
+            if frame4:
+                frame_strs.append(frame4)
+            if frame5:
+                frame_strs.append(frame5)
 
-        # Validate match completion (not over too early, not incomplete)
-        best_of_frames = league_data.get("league", {}).get("bestOfFrames", 3)
-        is_valid, error = validate_match_completion(frames, best_of_frames)
-        if not is_valid:
-            await interaction.followup.send(f"Invalid match result: {error}")
-            return
+            frames = []
+            for i, fs in enumerate(frame_strs):
+                parsed = parse_frame_score(fs)
+                if not parsed:
+                    await interaction.followup.send(
+                        f"Invalid frame {i+1} score format: '{fs}'. Use format like '63-45'."
+                    )
+                    return
+                frames.append(parsed)
+
+            # Validate individual frame scores (ties, bounds)
+            is_valid, error = validate_frame_scores(frames)
+            if not is_valid:
+                await interaction.followup.send(f"Invalid frame scores: {error}")
+                return
+
+            # Validate match completion (not over too early, not incomplete)
+            is_valid, error = validate_match_completion(frames, best_of_frames)
+            if not is_valid:
+                await interaction.followup.send(f"Invalid match result: {error}")
+                return
+
+            submitter_frames = sum(1 for f in frames if f[0] > f[1])
+            opponent_frames = sum(1 for f in frames if f[1] > f[0])
+            frame_summary = ' '.join(frame_strs)
+        else:
+            # Frames-only mode - just need overall score
+            if not score:
+                # Try to use frame1 as score if provided (common mistake)
+                if frame1 and parse_frame_score(frame1):
+                    score = frame1
+                else:
+                    await interaction.followup.send(
+                        "This league uses frames-only scoring. "
+                        "Please provide the score parameter with the overall match result (e.g. score: 2-1)."
+                    )
+                    return
+
+            parsed_score = parse_frame_score(score)
+            if not parsed_score:
+                await interaction.followup.send(
+                    f"Invalid score format: '{score}'. Use format like '2-1'."
+                )
+                return
+
+            submitter_frames, opponent_frames = parsed_score
+            total_frames = submitter_frames + opponent_frames
+            frames_to_win = (best_of_frames // 2) + 1
+
+            if submitter_frames == opponent_frames:
+                await interaction.followup.send("Match cannot be a draw - one player must win more frames.")
+                return
+            if max(submitter_frames, opponent_frames) < frames_to_win:
+                await interaction.followup.send(
+                    f"Match not complete: need {frames_to_win} frames to win (best of {best_of_frames}). "
+                    f"Score {submitter_frames}-{opponent_frames} doesn't have a winner."
+                )
+                return
+            if min(submitter_frames, opponent_frames) >= frames_to_win:
+                await interaction.followup.send(
+                    f"Invalid score: both players can't reach {frames_to_win} frames."
+                )
+                return
+            if total_frames > best_of_frames:
+                await interaction.followup.send(
+                    f"Too many frames: {total_frames} exceeds best of {best_of_frames}."
+                )
+                return
+
+            frames = make_frames_from_score(submitter_frames, opponent_frames)
+            frame_summary = f"{submitter_frames}-{opponent_frames}"
+
+        winner = submitter['name'] if submitter_frames > opponent_frames else opponent_player['name']
 
         # Apply the match result (this also recalculates all stats)
         league_data = apply_match_result(
@@ -260,17 +331,11 @@ async def submit_result(
         # Update the data structure
         data["leagues"][league_id] = league_data
 
-        # Calculate result summary for display
-        submitter_frames = sum(1 for f in frames if f[0] > f[1])
-        opponent_frames = sum(1 for f in frames if f[1] > f[0])
-        winner = submitter['name'] if submitter_frames > opponent_frames else opponent_player['name']
-
         # Commit to GitHub
         commit_msg = f"{submitter['name']} vs {opponent_player['name']} {submitter_frames}-{opponent_frames}"
         await github.commit_league_data(data, sha, commit_msg)
 
         # Send confirmation
-        frame_summary = ' '.join(frame_strs)
         tier_info = ""
         if is_tiered_league(league_data):
             player_tier = submitter.get("tier", "")
@@ -280,7 +345,6 @@ async def submit_result(
         await interaction.followup.send(
             f"**Match Result Recorded**{tier_info}\n"
             f"Round {round_num}: **{submitter['name']}** vs **{opponent_player['name']}**\n"
-            f"Frames: {frame_summary}\n"
             f"Result: **{submitter_frames}-{opponent_frames}** - {winner} wins!\n\n"
             f"Stats have been updated."
         )

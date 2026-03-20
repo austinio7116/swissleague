@@ -31,7 +31,7 @@ export class TieredViews {
         <div class="form-group">
           <label for="players-per-tier">Players per Tier</label>
           <input type="number" id="players-per-tier" class="form-control" value="${TIER_DEFAULTS.PLAYERS_PER_TIER}" min="${TIER_DEFAULTS.MIN_PLAYERS_PER_TIER}" max="20">
-          <small class="form-text">Each tier will have this many players. Total players needed: <span id="total-players-needed">${TIER_DEFAULTS.PLAYERS_PER_TIER * 4}</span></small>
+          <small class="form-text">Target players per tier. Total: <span id="total-players-needed">${TIER_DEFAULTS.PLAYERS_PER_TIER * 4}</span>. Tiers will auto-balance if player count doesn't divide evenly.</small>
         </div>
         <div class="form-group">
           <label for="promotion-count">Promotions/Relegations per Season</label>
@@ -40,7 +40,7 @@ export class TieredViews {
         </div>
         <div class="form-group">
           <label>Rounds per Season</label>
-          <p class="form-text"><strong id="tier-rounds-count">${TIER_DEFAULTS.PLAYERS_PER_TIER - 1}</strong> rounds (round-robin: each player plays every other player in their tier once)</p>
+          <p class="form-text"><strong id="tier-rounds-count">${TIER_DEFAULTS.PLAYERS_PER_TIER - 1}</strong> rounds (round-robin: each player plays every other in their tier once)</p>
         </div>
       </div>
     `;
@@ -79,7 +79,7 @@ export class TieredViews {
       }
     });
 
-    return { tierCount, playersPerTier, promotionCount, tiers };
+    return { tierCount, playersPerTier, promotionCount, tiers, tierSizes: null };
   }
 
   /**
@@ -94,10 +94,10 @@ export class TieredViews {
       <div class="league-info" style="margin-bottom: 2rem;">
         <h2>Current League: ${escapeHtml(league.name)}</h2>
         <div class="league-details">
-          <p><strong>Format:</strong> Tiered Round-Robin (Best of ${league.bestOfFrames})</p>
+          <p><strong>Format:</strong> Tiered Round-Robin (Best of ${league.bestOfFrames})${league.trackFrameScores === false ? ' - Frame scores not tracked' : ''}</p>
           <p><strong>Season:</strong> ${league.currentSeason}</p>
           <p><strong>Tiers:</strong> ${tierConfig.tiers.join(', ')}</p>
-          <p><strong>Players per Tier:</strong> ${tierConfig.playersPerTier}</p>
+          <p><strong>Players per Tier:</strong> ${tierConfig.tierSizes ? tierConfig.tierSizes.join(', ') : tierConfig.playersPerTier}</p>
           <p><strong>Promotion/Relegation:</strong> ${tierConfig.promotionCount} per season</p>
           <p><strong>Rounds per Season:</strong> ${league.totalRounds}</p>
           <p><strong>Current Round:</strong> ${league.currentRound}</p>
@@ -116,14 +116,18 @@ export class TieredViews {
     const activePlayers = leagueData.players.filter(p => p.active);
     const unassigned = activePlayers.filter(p => !p.tier);
     const hasStarted = leagueData.rounds.length > 0;
-    const expectedTotal = tierConfig.tiers.length * tierConfig.playersPerTier;
+    const tierSizes = tierConfig.tierSizes || tierConfig.tiers.map(() => tierConfig.playersPerTier);
+    const expectedTotal = tierSizes.reduce((sum, s) => sum + s, 0);
+    const tierSizeLabel = tierSizes.every(s => s === tierSizes[0])
+      ? `${tierConfig.tiers.length} tiers x ${tierSizes[0]} players`
+      : `tiers: ${tierConfig.tiers.map((t, i) => `${t} (${tierSizes[i]})`).join(', ')}`;
     const currentPlayerNames = leagueData.players.map(p => p.name);
     const filteredAvailable = availablePlayerNames.filter(name => !currentPlayerNames.includes(name));
 
     let html = `
       <div class="players-section">
         <h2>Player Management - Tiered League</h2>
-        <p>Total players needed: <strong>${expectedTotal}</strong> (${tierConfig.tiers.length} tiers x ${tierConfig.playersPerTier} players). Currently have: <strong>${activePlayers.length}</strong></p>
+        <p>Total players needed: <strong>${expectedTotal}</strong> (${tierSizeLabel}). Currently have: <strong>${activePlayers.length}</strong></p>
 
         <div class="add-player-form">
           <div class="form-group">
@@ -156,7 +160,7 @@ export class TieredViews {
 
     // Show ranking/distribution UI if enough players and league hasn't started
     if (!hasStarted && activePlayers.length > 0) {
-      if (unassigned.length > 0 || activePlayers.length === expectedTotal) {
+      if (unassigned.length > 0 || activePlayers.length >= tierConfig.tiers.length * TIER_DEFAULTS.MIN_PLAYERS_PER_TIER) {
         html += `
           <div class="tier-ranking-section" style="margin-top: 2rem;">
             <h3>Player Rankings & Tier Distribution</h3>
@@ -166,11 +170,18 @@ export class TieredViews {
             </div>
             ${activePlayers.length === expectedTotal ? `
               <button class="btn btn-success" id="distribute-tiers-btn" style="margin-top: 1rem;">
-                Distribute to Tiers (${tierConfig.playersPerTier} per tier)
+                Distribute to Tiers (${tierSizes.join(', ')} players)
               </button>
+            ` : activePlayers.length >= tierConfig.tiers.length * TIER_DEFAULTS.MIN_PLAYERS_PER_TIER ? `
+              <button class="btn btn-success" id="distribute-tiers-btn" style="margin-top: 1rem;">
+                Auto-balance & Distribute (${TierManager.calculateTierSizes(activePlayers.length, tierConfig.tiers.length).join(', ')} players)
+              </button>
+              <p class="form-text" style="margin-top: 0.5rem;">
+                Players will be auto-balanced across ${tierConfig.tiers.length} tiers.
+              </p>
             ` : `
               <p class="alert alert-warning" style="margin-top: 1rem;">
-                Need ${expectedTotal - activePlayers.length} more player(s) before distributing to tiers.
+                Need at least ${tierConfig.tiers.length * TIER_DEFAULTS.MIN_PLAYERS_PER_TIER} players (${TIER_DEFAULTS.MIN_PLAYERS_PER_TIER} per tier minimum). Currently have ${activePlayers.length}.
               </p>
             `}
           </div>
