@@ -1,426 +1,242 @@
-# Swiss-Format Snooker League Management System
+# Snooker League Management System
 
-A lightweight, browser-based system for managing Snooker leagues using the Swiss tournament format. Features separate admin and display interfaces, with data persistence via local storage and GitHub Pages deployment.
+A lightweight, browser-based system for managing Snooker leagues. Supports **Tiered Round-Robin** (with promotion/relegation across seasons) and **Swiss** tournament formats. Features separate admin and display interfaces, a Discord bot for player self-service, and data persistence via GitHub.
 
-## ✨ New in Version 2.0
+## League Formats
 
-- **🎱 Snooker Score Points**: Main standings table now includes Points For, Points Against, and Points +/- columns
-- **🏆 Multiple League Support**: Create and manage multiple independent leagues simultaneously
-- **📊 Cross-League Statistics**: Track player performance across all leagues
-- **🔄 League Selector**: Easy switching between active and completed leagues
-- **💾 Dual Data Sources**: Display interface supports both GitHub URLs and local storage
+### Tiered Round-Robin
 
-👉 **[See the Multi-League Guide](MULTI_LEAGUE_GUIDE.md) for complete details on new features**
+Players are divided into tiers (e.g. Diamond, Gold, Silver). Each tier plays a full round-robin independently. At the end of each season, top players promote up a tier and bottom players relegate down.
 
-## Features
+- **Auto-balanced tiers**: If players don't divide evenly, extra players are assigned to top tiers first (e.g. 16 players across 3 tiers = 6, 5, 5)
+- **Seasons**: Each season is a complete round-robin within tiers, followed by promotion/relegation
+- **Career stats**: Accumulated across seasons
+- **Configurable**: Number of tiers, tier names, promotion/relegation count, best-of-N frames
 
-### Admin Interface
-- 🏆 Create and configure multiple leagues with customizable best-of-N frames
-- 🔄 Switch between leagues and view cross-league statistics
-- 👥 Manage players (add, edit, deactivate)
-- 🎯 Automatic Swiss-format pairing generation
-- 📊 Frame-by-frame score entry with snooker points tracking
-- 💾 Multi-league local storage persistence
-- 📤 JSON export/import for backup and portability
-- ♿ Responsive design for desktop and tablet use
+#### Tiered Standings
 
-### Display Interface
-- 📈 Live standings table with sortable columns including snooker points
-- 🎮 Outstanding matches view
-- 📜 Complete match history
-- 📊 Detailed player statistics
-- 🔄 Loads data from GitHub repository OR local storage
-- 📱 Fully responsive for all devices
-- 🖨️ Print-friendly styling
+Players within each tier are ranked by:
 
-### Swiss Pairing Algorithm
-- Pairs players with similar standings (top vs second, third vs fourth, etc.)
-- Avoids repeat matchups when possible (allows them only if necessary)
-- Bye goes to lowest-ranked player who hasn't had one yet
-- Transparent pairing logic with explanations
+| Priority | Criterion | Description |
+|----------|-----------|-------------|
+| 1st | **Match Points** | 1 for a win, 0 for a loss, 1 for a bye |
+| 2nd | **Frame Difference** | Frames won minus frames lost |
+| 3rd | **Frames Won** | Total frames won |
+| 4th | **Alphabetical** | Name, for display only |
 
-## How Standings & Pairing Work
+#### Promotion & Relegation
 
-This section explains how player rankings are determined and how match pairings are generated. Understanding these helps you see why you're ranked where you are and who you might play next.
+At season end:
+- Top N players in each tier (except the highest) promote up one tier
+- Bottom N players in each tier (except the lowest) relegate down one tier
+- N is configurable (default: 2)
 
-### How Your Ranking is Calculated
+#### Odd-Sized Tiers
 
-Players are ranked using six criteria, checked in order. If two players are tied on one criterion, the next one is used to break the tie:
+When a tier has an odd number of players, one player receives a bye each round (automatic win). The round-robin still covers all matchups — an odd tier of 5 players plays 5 rounds (with one bye per round), while an even tier of 6 plays 5 rounds (no byes).
 
-| Priority | Criterion | What It Means |
-|----------|-----------|---------------|
-| 1st | **Match Points** | 1 point for a win, 0 for a loss. The most important factor. |
-| 2nd | **Buchholz Score** | The total match points of all your opponents added together. If you played tougher opponents, this number is higher. |
-| 3rd | **Strength of Schedule (SOS)** | The average win rate of your opponents. Shown as a percentage (e.g., 66% means your opponents win 2/3 of their matches on average). |
-| 4th | **Frame Difference** | Frames won minus frames lost. Winning 3-0 is better than winning 3-2. |
-| 5th | **Frames Won** | Total frames won across all matches. |
-| 6th | **Alphabetical** | If still tied after all the above, sorted by name for display - but NOT used when considering ranking - replaced with random for pairing next round. |
+### Swiss Format
 
-**Example:** Two players both have 4 match points. Player A faced opponents who have a combined 12 points (Buchholz = 12). Player B faced opponents with a combined 8 points (Buchholz = 8). Player A ranks higher because they played tougher competition.
+Traditional Swiss-system pairing where players with similar records face each other each round.
 
-**Tied Rankings:** When players are equal on all five statistical criteria, they share the same rank (shown as "T1", "T2", etc. for tied positions).
+- Pairs players by current standings (top vs second, third vs fourth, etc.)
+- Avoids repeat matchups when possible (allows them if necessary)
+- Bye goes to lowest-ranked player who hasn't had one
+- Configurable number of rounds and best-of-N frames
 
-### How Match Pairings Work
+#### Swiss Standings
 
-Each round, the system generates pairings using the **Swiss format**:
+| Priority | Criterion | Description |
+|----------|-----------|-------------|
+| 1st | **Match Points** | 1 for a win, 0 for a loss |
+| 2nd | **Buchholz Score** | Sum of all opponents' match points — higher means tougher opposition |
+| 3rd | **Strength of Schedule** | Average win rate of opponents (shown as %) |
+| 4th | **Frame Difference** | Frames won minus frames lost |
+| 5th | **Frames Won** | Total frames won |
+| 6th | **Alphabetical** | Name, for display only |
 
-1. **Sort by Standings** - All active players are ranked using the criteria above
-2. **Pair Top-to-Bottom** - The highest-ranked player plays the second-highest, third plays fourth, and so on
-3. **Avoid Repeat Matchups** - If two players have already played each other, the system tries to find a different opponent nearby in the standings
-4. **Allow Repeats if Necessary** - In later rounds or small leagues, repeat matchups may be unavoidable (marked with a warning)
-5. **Assign Bye** - If there's an odd number of players, the lowest-ranked player who hasn't had a bye yet receives one (automatic win, 1 point)
+**Tied Rankings:** When players are equal on all statistical criteria, they share the same rank (shown as "T1", "T2", etc.).
 
-**Why This Matters:** Swiss pairing ensures you play opponents of similar skill level. Early rounds may feel random (everyone starts at 0 points), but as the league progresses, you'll face players with similar records.
+## Components
+
+### Admin Interface (`admin/`)
+- Create and configure leagues (tiered or Swiss)
+- Manage players, generate rounds, enter results
+- Drag-and-drop player ranking for tier distribution
+- Season management with promotion/relegation preview
+- JSON export/import, local storage persistence
+
+### Display Interface (`display/`)
+- Public standings, matches, and statistics
+- Tier-grouped views for tiered leagues
+- Loads data from GitHub raw URL or local storage
+- Responsive design, print-friendly
+
+### Discord Bot (`discord-bot/`)
+- `/result` — Players submit their own match results
+- `/standings` — View current standings (with optional tier filter)
+- `/matches` — View outstanding matches
+- Reads/writes directly to GitHub via API
+- CLI tool for admin result entry with fuzzy name matching
 
 ## Quick Start
 
-### 1. Clone or Download
+### 1. Clone
 
 ```bash
-git clone https://github.com/yourusername/swissleague.git
+git clone https://github.com/austinio7116/swissleague.git
 cd swissleague
 ```
 
-### 2. Deploy to GitHub Pages
+### 2. Web Interfaces
 
-1. Create a new repository on GitHub
-2. Push this code to your repository
-3. Enable GitHub Pages in repository settings
-4. Select `main` branch and `/ (root)` folder
+No build step — open `admin/index.html` or `display/index.html` directly in a browser.
 
-### 3. Access the Interfaces
+For public access, deploy to GitHub Pages:
+1. Enable GitHub Pages in repository settings
+2. Select `main` branch and `/ (root)` folder
 
-**Admin Interface (for league management):**
-```
-https://yourusername.github.io/swissleague/admin/
+### 3. Discord Bot
+
+```bash
+cd discord-bot
+pip install -r requirements.txt
+python bot.py                    # Run Discord bot (requires env vars)
+python cli.py "Player1 Vs Player2 2-1 63-45 52-60 71-38"  # CLI result entry
+python cli.py "..." --dev        # Skip git commit (testing)
 ```
 
-**Display Interface (for public viewing):**
-```
-https://yourusername.github.io/swissleague/display/
-```
+**Environment variables:**
+- `DISCORD_TOKEN` — Discord bot token
+- `GITHUB_TOKEN` — GitHub PAT with Contents write access
+- `GITHUB_REPO` — Repository (default: `austinio7116/swissleague`)
+- `LEAGUE_FILE_PATH` — Data file path (default: `data/league.json`)
 
 ## Usage Workflow
 
-### Step 1: Create League (Admin Interface)
+### Tiered Round-Robin
 
-1. Open the admin interface
-2. Click "Create New League"
-3. Enter league details:
-   - League name
-   - Best of frames (3, 5, 7, or 9)
-   - Total rounds (typically 7 for Swiss)
-4. Add all players to the league
+1. **Create league** — Choose tiered format, set number of tiers, tier names, players per tier, promotion count
+2. **Add players** — Add all players, rank them by skill (drag to reorder)
+3. **Distribute to tiers** — Click distribute; tiers auto-balance if players don't divide evenly
+4. **Play season** — Generate rounds, enter results (or players submit via Discord)
+5. **End season** — Review promotion/relegation preview, start new season
+6. **Repeat** — Players move between tiers, career stats accumulate
 
-### Step 2: Generate Rounds
+### Swiss
 
-1. Click "Generate Next Round"
-2. Review the proposed pairings
-3. Confirm to create the round
-4. Players receive their match assignments
+1. **Create league** — Choose Swiss format, set rounds and best-of frames
+2. **Add players**
+3. **Generate rounds** — System pairs players by standings each round
+4. **Enter results** — Frame-by-frame or match scores
+5. **Publish** — Export JSON and commit to GitHub
 
-### Step 3: Enter Results
+## Data Model
 
-1. After matches are played, select each match
-2. Enter frame-by-frame scores
-3. System automatically determines winners
-4. Repeat for all matches in the round
+Multi-league format stored in `data/league.json`:
 
-### Step 4: Publish Data
+```json
+{
+  "leagues": {
+    "league-id": {
+      "league": {
+        "id": "league-id",
+        "name": "League Name",
+        "format": "tiered-round-robin",
+        "bestOfFrames": 3,
+        "currentRound": 1,
+        "totalRounds": 5,
+        "currentSeason": 1,
+        "tierConfig": {
+          "tiers": ["Diamond", "Gold", "Silver"],
+          "tierSizes": [6, 5, 5],
+          "playersPerTier": 6,
+          "promotionCount": 2
+        }
+      },
+      "players": [...],
+      "rounds": [...],
+      "seasons": [...]
+    }
+  },
+  "currentLeagueId": "league-id",
+  "metadata": { "version": "2.0" }
+}
+```
 
-1. Click "Export JSON" in admin interface
-2. Save the file as `league-data.json`
-3. Copy to the `data/` directory
-4. Commit and push to GitHub:
-   ```bash
-   git add data/league-data.json
-   git commit -m "Update: Round X results"
-   git push origin main
-   ```
-
-### Step 5: View Public Display
-
-1. Share the display interface URL with participants
-2. Display automatically loads latest data from GitHub
-3. Participants can view:
-   - Current standings
-   - Their upcoming matches
-   - Match history and statistics
+**Important:** `data/league.json` is production data. Changes committed to main are immediately live — the display interface and Discord bot read from it directly.
 
 ## Project Structure
 
 ```
 swissleague/
 ├── admin/                      # Admin interface
-│   ├── index.html             # Main admin page
-│   ├── styles.css             # Admin styling
-│   ├── app.js                 # Main application logic
-│   ├── modules/               # Feature modules
-│   │   ├── league.js          # League management
-│   │   ├── players.js         # Player management
-│   │   ├── rounds.js          # Round generation
-│   │   ├── scoring.js         # Score entry
-│   │   ├── swiss-pairing.js   # Pairing algorithm
-│   │   └── storage.js         # Local storage handling
-│   └── utils/                 # Utility functions
-│       ├── validation.js      # Input validation
-│       └── helpers.js         # Helper functions
-│
-├── display/                    # Display interface
-│   ├── index.html             # Main display page
-│   ├── styles.css             # Display styling
-│   ├── app.js                 # Display application logic
-│   ├── modules/               # Display modules
-│   │   ├── standings.js       # Standings table
-│   │   ├── matches.js         # Match displays
-│   │   ├── statistics.js      # Player statistics
-│   │   └── data-loader.js     # GitHub data fetching
-│   └── utils/                 # Utility functions
-│       └── helpers.js         # Helper functions
-│
-├── data/                       # League data storage
-│   └── league-data.json       # Current league state
-│
-├── plans/                      # Planning documents
-│   ├── architecture.md        # System architecture
-│   ├── technical-specification.md  # Technical details
-│   └── deployment-guide.md    # Deployment instructions
-│
-├── README.md                   # This file
-└── .gitignore                 # Git ignore rules
+│   ├── index.html
+│   ├── app.js
+│   ├── modules/
+│   │   ├── league.js           # League creation (Swiss + Tiered)
+│   │   ├── tier-manager.js     # Tier distribution, promotion/relegation
+│   │   ├── tiered-views.js     # Tiered league UI components
+│   │   ├── round-robin-pairing.js  # Circle-method round-robin
+│   │   ├── swiss-pairing.js    # Swiss pairing algorithm
+│   │   ├── rounds.js           # Round generation
+│   │   ├── scoring.js          # Score entry
+│   │   ├── players.js          # Player management
+│   │   └── storage.js          # Local storage
+│   └── utils/
+├── display/                    # Public display interface
+│   ├── index.html
+│   ├── app.js
+│   └── modules/
+│       ├── standings.js        # Standings (Swiss + Tiered)
+│       ├── matches.js          # Match display
+│       ├── player-modal.js     # Player detail modal
+│       └── data-loader.js      # GitHub data fetching
+├── discord-bot/                # Discord bot + CLI
+│   ├── bot.py                  # Discord slash commands
+│   ├── cli.py                  # CLI result entry
+│   └── league.py               # Shared league logic
+├── shared/
+│   └── constants.js            # Shared constants
+├── data/
+│   └── league.json             # Production league data
+└── README.md
 ```
-
-## Data Model
-
-The system uses a JSON data structure to represent the complete league state:
-
-```json
-{
-  "league": {
-    "id": "uuid",
-    "name": "League Name",
-    "format": "swiss",
-    "bestOfFrames": 5,
-    "currentRound": 1,
-    "totalRounds": 7
-  },
-  "players": [
-    {
-      "id": "uuid",
-      "name": "Player Name",
-      "active": true,
-      "stats": {
-        "matchesPlayed": 0,
-        "matchesWon": 0,
-        "framesWon": 0,
-        "framesLost": 0,
-        "points": 0,
-        "frameDifference": 0
-      }
-    }
-  ],
-  "rounds": [
-    {
-      "roundNumber": 1,
-      "status": "completed",
-      "matches": [...]
-    }
-  ],
-  "pairingHistory": []
-}
-```
-
-See [`plans/architecture.md`](plans/architecture.md) for complete data model documentation.
-
-## Swiss Format Rules
-
-### Scoring System
-
-- **Match Win**: 1 point
-- **Match Loss**: 0 points
-- **Bye**: 1 point (automatic win for odd-numbered leagues)
-
-### Tiebreakers
-
-See [How Your Ranking is Calculated](#how-your-ranking-is-calculated) above for the full tiebreaker order: Buchholz, Strength of Schedule, Frame Difference, Frames Won.
-
-### Best-of-N Frames
-
-- Configurable: 3, 5, 7, or 9 frames
-- Winner determined when reaching majority (e.g., 3 frames in best-of-5)
-- All frame scores recorded for statistics
-
-## Technical Details
-
-### Technologies Used
-
-- **HTML5**: Semantic markup
-- **CSS3**: Responsive design with flexbox/grid
-- **Vanilla JavaScript (ES6+)**: No frameworks required
-- **Local Storage API**: Client-side data persistence
-- **Fetch API**: Loading data from GitHub
-- **GitHub Pages**: Free static hosting
-
-### Browser Compatibility
-
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-
-### Performance
-
-- Handles leagues up to 100 players
-- Optimized pairing algorithm
-- Efficient DOM manipulation
-- Minimal external dependencies
 
 ## Configuration
 
-### Admin Interface
+### Scoring
 
-Settings stored in browser local storage:
-- League data (automatic)
-- User preferences (optional)
-- Backup data (automatic)
+- **Match Win**: 1 point
+- **Match Loss**: 0 points
+- **Bye**: 1 point (automatic win)
+- **Best-of-N**: Configurable (3, 5, 7, 9, 11 frames)
+- **Frame scores**: Optionally track individual frame point scores (0-147 range)
 
-### Display Interface
+### Tiered League Defaults
 
-Configuration via UI:
-- GitHub raw JSON URL
-- Refresh behavior
-- Display preferences
-
-Example GitHub raw URL:
-```
-https://raw.githubusercontent.com/username/swissleague/main/data/league-data.json
-```
+- Players per tier: 6
+- Promotion/relegation count: 2
+- Minimum players per tier: 3
+- Maximum tiers: 6
 
 ## Backup and Recovery
 
-### Automatic Backups
-
-- Admin interface auto-saves to local storage
-- Survives browser restarts
-- Limited to single device/browser
-
-### Manual Backups
-
-1. Export JSON after each round
-2. Keep organized backup folder:
-   ```
-   backups/
-   ├── 2026-01-13-round-1.json
-   ├── 2026-01-20-round-2.json
-   └── 2026-01-27-round-3.json
-   ```
-
-### Recovery
-
-1. Open admin interface
-2. Click "Import JSON"
-3. Select backup file
-4. System restores complete state
+- Admin auto-saves to browser local storage
+- Export JSON after each round for manual backup
+- Import JSON to restore state
+- Discord bot commits results directly to GitHub
 
 ## Troubleshooting
 
-### Display Shows Old Data
-
-**Solution**: Hard refresh browser (`Ctrl+F5` or `Cmd+Shift+R`)
-
-### Admin Data Lost
-
-**Solution**: Import most recent JSON backup
-
-### Pairing Generation Fails
-
-**Solution**: Ensure all previous matches are completed
-
-### GitHub Pages Not Updating
-
-**Solution**: Wait 1-5 minutes for GitHub to rebuild, then clear cache
-
-See [`plans/deployment-guide.md`](plans/deployment-guide.md) for comprehensive troubleshooting.
-
-## Documentation
-
-- **[Architecture](plans/architecture.md)**: System design and component breakdown
-- **[Technical Specification](plans/technical-specification.md)**: Detailed implementation specs
-- **[Deployment Guide](plans/deployment-guide.md)**: Complete deployment and usage instructions
-
-## Development
-
-### Local Development
-
-1. Clone the repository
-2. Open `admin/index.html` in a browser (no build step required)
-3. Make changes to HTML/CSS/JS files
-4. Refresh browser to see changes
-
-### Testing
-
-Test scenarios to verify:
-- League creation with various player counts
-- Swiss pairing with even/odd players
-- Score entry and validation
-- JSON export/import round-trip
-- Display interface data loading
-- Responsive design on different devices
-
-### Contributing
-
-This is a personal project, but suggestions and improvements are welcome:
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+| Problem | Solution |
+|---------|----------|
+| Display shows old data | Hard refresh (`Ctrl+F5` / `Cmd+Shift+R`) |
+| Admin data lost | Import most recent JSON backup |
+| Round generation fails | Ensure all current round matches are completed |
+| GitHub Pages not updating | Wait 1-5 minutes, then clear browser cache |
+| Discord bot wrong league | Check `currentLeagueId` in `data/league.json` |
 
 ## License
 
-This project is provided as-is for personal and recreational use. Feel free to modify and adapt for your own leagues.
-
-## Roadmap
-
-### Current Version (v2.0)
-- ✅ Basic league management
-- ✅ Swiss pairing algorithm
-- ✅ Score entry and tracking
-- ✅ Public display interface
-- ✅ GitHub Pages deployment
-- ✅ **Multiple league support**
-- ✅ **Cross-league player statistics**
-- ✅ **Snooker score points tracking**
-- ✅ **Dual data source display (GitHub + Local)**
-
-### Future Enhancements
-- 📧 Email notifications for pairings
-- 🔄 Real-time updates
-- 📱 Native mobile apps
-- 📊 Advanced statistics and analytics
-- 🏆 Tournament bracket visualization
-- 🎯 Player rating system (ELO)
-- 🔀 Multi-format support (Round Robin, Knockout)
-- 📈 Performance trends across seasons
-- 👤 Dedicated player profile pages
-
-## Support
-
-For issues, questions, or suggestions:
-1. Check the [Deployment Guide](plans/deployment-guide.md)
-2. Review browser console for errors
-3. Verify JSON data structure
-4. Test with sample data
-5. Open an issue on GitHub
-
-## Acknowledgments
-
-Built for managing recreational Snooker leagues with a focus on simplicity, reliability, and ease of use.
-
-## Contact
-
-For questions or feedback about this system, please open an issue on the GitHub repository.
-
----
-
-**Ready to start your league?** Follow the Quick Start guide above and refer to the [Deployment Guide](plans/deployment-guide.md) for detailed instructions.
+This project is provided as-is for personal and recreational use.
