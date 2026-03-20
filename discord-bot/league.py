@@ -282,6 +282,13 @@ def recalculate_all_player_stats(league_data):
         stats["frameDifference"] = stats["framesWon"] - stats["framesLost"]
 
     # Pass 2: Calculate SOS and Buchholz using freshly computed stats
+    # Skip for tiered round-robin (these tiebreakers aren't meaningful in round-robin)
+    league_format = league_data.get("league", {}).get("format", "swiss")
+    if league_format == "tiered-round-robin":
+        for player in players:
+            player["stats"] = fresh_stats[player["id"]]
+        return league_data
+
     # Note: opponent_map only contains opponents from actually played matches
     # (forfeits, double forfeits, and byes are excluded)
     for player_id in fresh_stats:
@@ -322,13 +329,15 @@ def apply_match_result(league_data, match, submitter_id, opponent_id, frame_scor
         match: The match dict to update
         submitter_id: ID of player who submitted (their scores are first in frame_scores)
         opponent_id: ID of opponent
-        frame_scores: List of (submitter_score, opponent_score) tuples
+        frame_scores: List of (submitter_score, opponent_score) tuples.
+                      For frames-only mode (no point scores), use (1, 0) or (0, 1).
 
     Returns:
         Updated league_data with recalculated stats
     """
     match_p1_id = match["player1Id"]
     match_p2_id = match["player2Id"]
+    track_frame_scores = league_data.get("league", {}).get("trackFrameScores", True)
 
     # Determine if we need to swap scores based on match player order
     if submitter_id == match_p1_id:
@@ -350,12 +359,14 @@ def apply_match_result(league_data, match, submitter_id, opponent_id, frame_scor
         else:
             p2_frames_won += 1
 
-        frames.append({
+        frame = {
             "frameNumber": idx + 1,
-            "player1Score": p1_score,
-            "player2Score": p2_score,
             "winnerId": winner_id
-        })
+        }
+        if track_frame_scores:
+            frame["player1Score"] = p1_score
+            frame["player2Score"] = p2_score
+        frames.append(frame)
 
     # Determine match winner
     match_winner_id = match_p1_id if p1_frames_won > p2_frames_won else match_p2_id
@@ -450,37 +461,99 @@ def apply_forfeit_result(league_data, match, forfeit_type, forfeiting_player_id=
     return league_data
 
 
-def get_standings(league_data, limit=None):
+def get_standings(league_data, limit=None, tier=None):
     """
     Get sorted standings for the league.
 
-    Sorting matches display page:
-    1. Points (desc)
-    2. Buchholz Score (desc)
-    3. Strength of Schedule (desc)
-    4. Frame difference (desc)
-    5. Frames won (desc)
-    6. Name (alphabetical)
+    For Swiss:
+      1. Points (desc), 2. Buchholz (desc), 3. SOS (desc),
+      4. Frame diff (desc), 5. Frames won (desc), 6. Name (asc)
+
+    For Tiered Round-Robin:
+      1. Points (desc), 2. Frame diff (desc), 3. Frames won (desc), 4. Name (asc)
     """
-    def sort_key(p):
-        stats = p.get("stats", {})
-        return (
-            -stats.get("points", 0),
-            -stats.get("buchholzScore", 0),
-            -stats.get("strengthOfSchedule", 0),
-            -stats.get("frameDifference", 0),
-            -stats.get("framesWon", 0),
-            p.get("name", "").lower()
-        )
+    league_format = league_data.get("league", {}).get("format", "swiss")
+    is_tiered = league_format == "tiered-round-robin"
+
+    if is_tiered:
+        def sort_key(p):
+            stats = p.get("stats", {})
+            return (
+                -stats.get("points", 0),
+                -stats.get("frameDifference", 0),
+                -stats.get("framesWon", 0),
+                p.get("name", "").lower()
+            )
+    else:
+        def sort_key(p):
+            stats = p.get("stats", {})
+            return (
+                -stats.get("points", 0),
+                -stats.get("buchholzScore", 0),
+                -stats.get("strengthOfSchedule", 0),
+                -stats.get("frameDifference", 0),
+                -stats.get("framesWon", 0),
+                p.get("name", "").lower()
+            )
 
     # Only include active players
     active_players = [p for p in league_data.get("players", []) if p.get("active", True)]
+
+    # Filter by tier if specified
+    if tier:
+        active_players = [p for p in active_players if p.get("tier") == tier]
+
     players = sorted(active_players, key=sort_key)
 
     if limit:
         players = players[:limit]
 
     return players
+
+
+def get_tier_for_player(league_data, player_id):
+    """Get the tier name for a player."""
+    for player in league_data.get("players", []):
+        if player["id"] == player_id:
+            return player.get("tier")
+    return None
+
+
+def get_all_tier_standings(league_data):
+    """
+    Get standings grouped by tier for a tiered league.
+    Returns dict: { tier_name: [sorted_players] }
+    """
+    tier_config = league_data.get("league", {}).get("tierConfig", {})
+    tiers = tier_config.get("tiers", [])
+    result = {}
+    for tier_name in tiers:
+        result[tier_name] = get_standings(league_data, tier=tier_name)
+    return result
+
+
+def is_tiered_league(league_data):
+    """Check if a league uses tiered round-robin format."""
+    return league_data.get("league", {}).get("format") == "tiered-round-robin"
+
+
+def tracks_frame_scores(league_data):
+    """Check if a league tracks individual frame point scores."""
+    return league_data.get("league", {}).get("trackFrameScores", True)
+
+
+def make_frames_from_score(submitter_frames_won, opponent_frames_won):
+    """
+    Create frame score tuples from an overall match score for frames-only mode.
+    E.g. (2, 1) -> [(1, 0), (1, 0), (0, 1)]
+    The submitter's winning frames come first, then the opponent's.
+    """
+    frames = []
+    for _ in range(submitter_frames_won):
+        frames.append((1, 0))
+    for _ in range(opponent_frames_won):
+        frames.append((0, 1))
+    return frames
 
 
 MAX_FRAME_SCORE = 147  # Maximum possible break in snooker

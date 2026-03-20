@@ -36,7 +36,29 @@ export const FORFEIT_TYPE = {
   DOUBLE: 'double'     // Both players forfeit, neither wins
 };
 
+export const LEAGUE_FORMATS = {
+  SWISS: 'swiss',
+  TIERED_ROUND_ROBIN: 'tiered-round-robin'
+};
+
+export const DEFAULT_TIER_NAMES = ['Diamond', 'Gold', 'Silver', 'Bronze'];
+
+export const TIER_DEFAULTS = {
+  PLAYERS_PER_TIER: 6,
+  PROMOTION_COUNT: 2,
+  MIN_TIERS: 2,
+  MAX_TIERS: 6,
+  MIN_PLAYERS_PER_TIER: 3
+};
+
 export const BEST_OF_OPTIONS = [3, 5, 7, 9, 11];
+
+// Whether to track individual frame point scores (e.g. 63-45) vs just frame wins
+// When false, only overall match frame score (e.g. 2-1) is recorded
+export const TRACK_FRAME_SCORES_DEFAULT = {
+  [LEAGUE_FORMATS.SWISS]: true,
+  [LEAGUE_FORMATS.TIERED_ROUND_ROBIN]: false
+};
 
 export const MAX_FRAME_SCORE = 147; // Maximum possible break in snooker
 

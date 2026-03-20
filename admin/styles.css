@@ -1226,3 +1226,96 @@ button:focus-visible,
     box-shadow: none;
   }
 }
+
+/* Tiered League Styles */
+.tier-config-section {
+  border: 1px solid var(--broadcast-overlay);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: var(--broadcast-surface);
+}
+
+.tier-ranking-section {
+  border: 1px solid var(--broadcast-overlay);
+  border-radius: 8px;
+  padding: 1.5rem;
+  background: var(--broadcast-surface);
+}
+
+.ranking-list {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0.25rem;
+  background: var(--broadcast-surface-elevated);
+  border-radius: 4px;
+  cursor: grab;
+  transition: background 0.15s;
+}
+
+.ranking-item:hover {
+  background: var(--broadcast-overlay);
+}
+
+.rank-number {
+  font-weight: bold;
+  min-width: 2rem;
+  color: var(--broadcast-gold);
+}
+
+.rank-name {
+  flex: 1;
+}
+
+.rank-controls {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.rank-controls .btn {
+  padding: 0.1rem 0.4rem;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.tier-assignments .tier-table {
+  margin-bottom: 1.5rem;
+}
+
+.promotion-zone {
+  background: rgba(40, 167, 69, 0.15) !important;
+  border-left: 3px solid #28a745;
+}
+
+.relegation-zone {
+  background: rgba(220, 53, 69, 0.15) !important;
+  border-left: 3px solid #dc3545;
+}
+
+.tier-matches-group {
+  margin-bottom: 1rem;
+}
+
+.season-management {
+  background: var(--broadcast-surface);
+}
+
+.season-card {
+  background: var(--broadcast-surface-elevated);
+}
+
+.promotion-relegation-preview ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.promotion-relegation-preview li {
+  padding: 0.25rem 0;
+}

@@ -1,9 +1,9 @@
 import { generateId } from '../utils/helpers.js';
-import { POINTS } from '../../shared/constants.js';
+import { POINTS, LEAGUE_FORMATS } from '../../shared/constants.js';
 
 export class PlayerManager {
-  static createPlayer(name) {
-    return {
+  static createPlayer(name, options = {}) {
+    const player = {
       id: generateId(),
       name: name.trim(),
       active: true,
@@ -22,6 +22,22 @@ export class PlayerManager {
         buchholzScore: 0
       }
     };
+
+    if (options.tier) player.tier = options.tier;
+    if (options.tierRank) player.tierRank = options.tierRank;
+    if (options.includeCareerStats) {
+      player.careerStats = {
+        matchesPlayed: 0,
+        matchesWon: 0,
+        matchesLost: 0,
+        framesWon: 0,
+        framesLost: 0,
+        points: 0,
+        seasonsPlayed: 0
+      };
+    }
+
+    return player;
   }
 
   static addPlayer(leagueData, name) {
@@ -221,6 +237,17 @@ export class PlayerManager {
     }
 
     // Pass 2: Calculate SOS and Buchholz using freshly computed stats
+    // Skip for tiered round-robin (these tiebreakers aren't meaningful in round-robin)
+    const isTiered = leagueData.league && leagueData.league.format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN;
+    if (isTiered) {
+      // Apply fresh stats and return early - no SOS/Buchholz needed
+      const updatedPlayers = players.map(player => ({
+        ...player,
+        stats: freshStats[player.id]
+      }));
+      return { ...leagueData, players: updatedPlayers };
+    }
+
     // Note: opponentMap only contains opponents from actually played matches
     // (forfeits, double forfeits, and byes are excluded)
     for (const playerId in freshStats) {

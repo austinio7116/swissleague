@@ -20,6 +20,11 @@ from league import (
     find_pending_matches_for_player,
     apply_match_result,
     get_standings,
+    get_all_tier_standings,
+    get_tier_for_player,
+    is_tiered_league,
+    tracks_frame_scores,
+    make_frames_from_score,
     parse_frame_score,
     validate_frame_scores,
     validate_match_completion,
@@ -85,7 +90,12 @@ github = GitHubAPI(GITHUB_TOKEN, REPO, FILE_PATH)
 
 
 def get_active_league(data):
-    """Get the first active league from the data."""
+    """Get the active league from the data, using currentLeagueId if set."""
+    # Use currentLeagueId if available
+    current_id = data.get("currentLeagueId")
+    if current_id and current_id in data.get("leagues", {}):
+        return current_id, data["leagues"][current_id]
+    # Fallback: look for a league with status "active"
     for league_id, league_data in data.get("leagues", {}).items():
         if league_data.get("league", {}).get("status") == "active":
             return league_id, league_data
@@ -151,6 +161,7 @@ async def resolve_opponent_to_username(guild, opponent_input):
 @tree.command(name='result', description='Submit a match result')
 @app_commands.describe(
     opponent='Your opponent (their Discord username or display name)',
+    score='Overall match score (e.g. 2-1) - required for leagues without frame tracking',
     frame1='Frame 1 score (your-score-opponent-score, e.g. 63-45)',
     frame2='Frame 2 score (e.g. 52-60)',
     frame3='Frame 3 score (optional, e.g. 71-38)',
@@ -160,8 +171,9 @@ async def resolve_opponent_to_username(guild, opponent_input):
 async def submit_result(
     interaction: discord.Interaction,
     opponent: str,
-    frame1: str,
-    frame2: str,
+    score: str = None,
+    frame1: str = None,
+    frame2: str = None,
     frame3: str = None,
     frame4: str = None,
     frame5: str = None
@@ -178,6 +190,7 @@ async def submit_result(
             return
 
         players = league_data.get("players", [])
+        track_scores = tracks_frame_scores(league_data)
 
         # Find submitter by Discord username (exact match only for security)
         submitter_name = interaction.user.name
@@ -215,37 +228,98 @@ async def submit_result(
             )
             return
 
-        # Parse frame scores
-        frame_strs = [frame1, frame2]
-        if frame3:
-            frame_strs.append(frame3)
-        if frame4:
-            frame_strs.append(frame4)
-        if frame5:
-            frame_strs.append(frame5)
+        best_of_frames = league_data.get("league", {}).get("bestOfFrames", 3)
 
-        frames = []
-        for i, fs in enumerate(frame_strs):
-            parsed = parse_frame_score(fs)
-            if not parsed:
+        if track_scores:
+            # Full frame score tracking mode - require individual frame scores
+            if not frame1 or not frame2:
                 await interaction.followup.send(
-                    f"Invalid frame {i+1} score format: '{fs}'. Use format like '63-45'."
+                    "This league tracks individual frame scores. "
+                    "Please provide frame1 and frame2 parameters (e.g. frame1: 63-45 frame2: 52-60)."
                 )
                 return
-            frames.append(parsed)
 
-        # Validate individual frame scores (ties, bounds)
-        is_valid, error = validate_frame_scores(frames)
-        if not is_valid:
-            await interaction.followup.send(f"Invalid frame scores: {error}")
-            return
+            frame_strs = [frame1, frame2]
+            if frame3:
+                frame_strs.append(frame3)
+            if frame4:
+                frame_strs.append(frame4)
+            if frame5:
+                frame_strs.append(frame5)
 
-        # Validate match completion (not over too early, not incomplete)
-        best_of_frames = league_data.get("league", {}).get("bestOfFrames", 3)
-        is_valid, error = validate_match_completion(frames, best_of_frames)
-        if not is_valid:
-            await interaction.followup.send(f"Invalid match result: {error}")
-            return
+            frames = []
+            for i, fs in enumerate(frame_strs):
+                parsed = parse_frame_score(fs)
+                if not parsed:
+                    await interaction.followup.send(
+                        f"Invalid frame {i+1} score format: '{fs}'. Use format like '63-45'."
+                    )
+                    return
+                frames.append(parsed)
+
+            # Validate individual frame scores (ties, bounds)
+            is_valid, error = validate_frame_scores(frames)
+            if not is_valid:
+                await interaction.followup.send(f"Invalid frame scores: {error}")
+                return
+
+            # Validate match completion (not over too early, not incomplete)
+            is_valid, error = validate_match_completion(frames, best_of_frames)
+            if not is_valid:
+                await interaction.followup.send(f"Invalid match result: {error}")
+                return
+
+            submitter_frames = sum(1 for f in frames if f[0] > f[1])
+            opponent_frames = sum(1 for f in frames if f[1] > f[0])
+            frame_summary = ' '.join(frame_strs)
+        else:
+            # Frames-only mode - just need overall score
+            if not score:
+                # Try to use frame1 as score if provided (common mistake)
+                if frame1 and parse_frame_score(frame1):
+                    score = frame1
+                else:
+                    await interaction.followup.send(
+                        "This league uses frames-only scoring. "
+                        "Please provide the score parameter with the overall match result (e.g. score: 2-1)."
+                    )
+                    return
+
+            parsed_score = parse_frame_score(score)
+            if not parsed_score:
+                await interaction.followup.send(
+                    f"Invalid score format: '{score}'. Use format like '2-1'."
+                )
+                return
+
+            submitter_frames, opponent_frames = parsed_score
+            total_frames = submitter_frames + opponent_frames
+            frames_to_win = (best_of_frames // 2) + 1
+
+            if submitter_frames == opponent_frames:
+                await interaction.followup.send("Match cannot be a draw - one player must win more frames.")
+                return
+            if max(submitter_frames, opponent_frames) < frames_to_win:
+                await interaction.followup.send(
+                    f"Match not complete: need {frames_to_win} frames to win (best of {best_of_frames}). "
+                    f"Score {submitter_frames}-{opponent_frames} doesn't have a winner."
+                )
+                return
+            if min(submitter_frames, opponent_frames) >= frames_to_win:
+                await interaction.followup.send(
+                    f"Invalid score: both players can't reach {frames_to_win} frames."
+                )
+                return
+            if total_frames > best_of_frames:
+                await interaction.followup.send(
+                    f"Too many frames: {total_frames} exceeds best of {best_of_frames}."
+                )
+                return
+
+            frames = make_frames_from_score(submitter_frames, opponent_frames)
+            frame_summary = f"{submitter_frames}-{opponent_frames}"
+
+        winner = submitter['name'] if submitter_frames > opponent_frames else opponent_player['name']
 
         # Apply the match result (this also recalculates all stats)
         league_data = apply_match_result(
@@ -257,21 +331,20 @@ async def submit_result(
         # Update the data structure
         data["leagues"][league_id] = league_data
 
-        # Calculate result summary for display
-        submitter_frames = sum(1 for f in frames if f[0] > f[1])
-        opponent_frames = sum(1 for f in frames if f[1] > f[0])
-        winner = submitter['name'] if submitter_frames > opponent_frames else opponent_player['name']
-
         # Commit to GitHub
         commit_msg = f"{submitter['name']} vs {opponent_player['name']} {submitter_frames}-{opponent_frames}"
         await github.commit_league_data(data, sha, commit_msg)
 
         # Send confirmation
-        frame_summary = ' '.join(frame_strs)
+        tier_info = ""
+        if is_tiered_league(league_data):
+            player_tier = submitter.get("tier", "")
+            if player_tier:
+                tier_info = f" [{player_tier}]"
+
         await interaction.followup.send(
-            f"**Match Result Recorded**\n"
+            f"**Match Result Recorded**{tier_info}\n"
             f"Round {round_num}: **{submitter['name']}** vs **{opponent_player['name']}**\n"
-            f"Frames: {frame_summary}\n"
             f"Result: **{submitter_frames}-{opponent_frames}** - {winner} wins!\n\n"
             f"Stats have been updated."
         )
@@ -294,7 +367,8 @@ def are_players_tied(a, b):
 
 
 @tree.command(name='standings', description='Show current league standings')
-async def standings(interaction: discord.Interaction):
+@app_commands.describe(tier='Tier to show (for tiered leagues only)')
+async def standings(interaction: discord.Interaction, tier: str = None):
     await interaction.response.defer()
 
     try:
@@ -305,68 +379,136 @@ async def standings(interaction: discord.Interaction):
             await interaction.followup.send("No active league found.")
             return
 
-        players = get_standings(league_data)  # Full league, no limit
         league_name = league_data.get("league", {}).get("name", "League")
 
-        # Calculate ranks with ties (matching display page logic)
-        ranks = []
-        current_rank = 1
-        for i, player in enumerate(players):
-            if i == 0:
-                ranks.append(current_rank)
-            elif are_players_tied(players[i - 1], player):
-                ranks.append(current_rank)  # Tied, same rank
-            else:
-                current_rank = i + 1  # Not tied, rank = position
-                ranks.append(current_rank)
+        if is_tiered_league(league_data):
+            await send_tiered_standings(interaction, league_data, league_name, tier)
+        else:
+            await send_swiss_standings(interaction, league_data, league_name)
 
-        # Build formatted names with display names
+    except Exception as e:
+        await interaction.followup.send(f"Error: {str(e)}")
+
+
+async def send_swiss_standings(interaction, league_data, league_name):
+    """Send Swiss format standings."""
+    players = get_standings(league_data)
+
+    ranks = []
+    current_rank = 1
+    for i, player in enumerate(players):
+        if i == 0:
+            ranks.append(current_rank)
+        elif are_players_tied(players[i - 1], player):
+            ranks.append(current_rank)
+        else:
+            current_rank = i + 1
+            ranks.append(current_rank)
+
+    formatted_names = [
+        format_player_name(interaction.guild, p['name'])
+        for p in players
+    ]
+
+    max_name = max(len(n) for n in formatted_names) if formatted_names else 10
+
+    header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'Frames':>7}"
+    separator = "-" * len(header)
+
+    lines = [
+        f"**{league_name} Standings**",
+        f"```",
+        header,
+        separator
+    ]
+
+    for i, player in enumerate(players):
+        stats = player['stats']
+        rank = ranks[i]
+        name = formatted_names[i]
+        is_tied = (
+            (i > 0 and ranks[i - 1] == rank) or
+            (i < len(ranks) - 1 and ranks[i + 1] == rank)
+        )
+        rank_str = f"T{rank}" if is_tied else str(rank)
+        wl = f"{stats['matchesWon']}-{stats['matchesLost']}"
+        frames = f"{stats['framesWon']}-{stats['framesLost']}"
+
+        lines.append(
+            f"{rank_str:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>5}  {frames:>7}"
+        )
+
+    lines.append("```")
+    lines.append("\nFull standings: https://austinio7116.github.io/swissleague/display/")
+    await interaction.followup.send('\n'.join(lines))
+
+
+async def send_tiered_standings(interaction, league_data, league_name, tier_filter=None):
+    """Send tiered round-robin standings."""
+    tier_config = league_data.get("league", {}).get("tierConfig", {})
+    tiers = tier_config.get("tiers", [])
+    promotion_count = tier_config.get("promotionCount", 2)
+    season = league_data.get("league", {}).get("currentSeason", 1)
+
+    all_standings = get_all_tier_standings(league_data)
+
+    # Filter to specific tier if requested
+    if tier_filter:
+        matching = [t for t in tiers if t.lower() == tier_filter.lower()]
+        if not matching:
+            await interaction.followup.send(
+                f"Tier '{tier_filter}' not found. Available tiers: {', '.join(tiers)}"
+            )
+            return
+        tiers = matching
+
+    lines = [f"**{league_name} - Season {season} Standings**\n"]
+
+    for t_idx, tier_name in enumerate(tiers):
+        players = all_standings.get(tier_name, [])
+        if not players:
+            continue
+
         formatted_names = [
             format_player_name(interaction.guild, p['name'])
             for p in players
         ]
-
-        # Find max name length for padding
         max_name = max(len(n) for n in formatted_names) if formatted_names else 10
 
-        # Build table
-        header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'Frames':>7}"
+        header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'F+/-':>4}"
         separator = "-" * len(header)
 
-        lines = [
-            f"**{league_name} Standings**",
-            f"```",
-            header,
-            separator
-        ]
+        lines.append(f"**{tier_name}**")
+        lines.append("```")
+        lines.append(header)
+        lines.append(separator)
+
+        is_top_tier = tier_name == tier_config.get("tiers", [None])[0]
+        is_bottom_tier = tier_name == tier_config.get("tiers", [None])[-1]
 
         for i, player in enumerate(players):
             stats = player['stats']
-            rank = ranks[i]
             name = formatted_names[i]
-
-            # Show "T" prefix for tied ranks
-            is_tied = (
-                (i > 0 and ranks[i - 1] == rank) or
-                (i < len(ranks) - 1 and ranks[i + 1] == rank)
-            )
-            rank_str = f"T{rank}" if is_tied else str(rank)
-
             wl = f"{stats['matchesWon']}-{stats['matchesLost']}"
-            frames = f"{stats['framesWon']}-{stats['framesLost']}"
             diff = stats['frameDifference']
             diff_str = f"+{diff}" if diff > 0 else str(diff)
 
+            # Mark promotion/relegation zones
+            marker = " "
+            if not is_top_tier and i < promotion_count:
+                marker = "^"  # promotion
+            elif not is_bottom_tier and i >= len(players) - promotion_count:
+                marker = "v"  # relegation
+
             lines.append(
-                f"{rank_str:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>5}  {frames:>7}"
+                f"{i+1:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>5}  {diff_str:>4} {marker}"
             )
 
         lines.append("```")
-        lines.append("\nFull standings: https://austinio7116.github.io/swissleague/display/")
-        await interaction.followup.send('\n'.join(lines))
 
-    except Exception as e:
-        await interaction.followup.send(f"Error: {str(e)}")
+    lines.append("^ = promotion zone, v = relegation zone")
+    lines.append("\nFull standings: https://austinio7116.github.io/swissleague/display/")
+    await interaction.followup.send('\n'.join(lines))
 
 
 @tree.command(name='matches', description='Show your pending matches')
@@ -406,7 +548,11 @@ async def my_matches(interaction: discord.Interaction):
             await interaction.followup.send(f"No pending matches for {name_display}.")
             return
 
-        lines = [f"**Pending matches for {name_display}**\n"]
+        tiered = is_tiered_league(league_data)
+        player_tier = player.get("tier") if tiered else None
+        tier_label = f" [{player_tier}]" if player_tier else ""
+
+        lines = [f"**Pending matches for {name_display}{tier_label}**\n"]
         for m in pending:
             opponent_display = format_player_name(interaction.guild, m['opponent'])
             lines.append(f"Round {m['round']}: vs **{opponent_display}**")

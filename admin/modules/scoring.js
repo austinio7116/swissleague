@@ -18,7 +18,7 @@ export class ScoringManager {
 
   static addFrame(leagueData, matchId, player1Score, player2Score) {
     const { match, round } = this.findMatch(leagueData, matchId);
-    
+
     if (!match) {
       throw new LeagueError('Match not found', ERROR_TYPES.VALIDATION);
     }
@@ -41,13 +41,16 @@ export class ScoringManager {
     // Determine frame winner
     const winnerId = player1Score > player2Score ? match.player1Id : match.player2Id;
 
-    // Create frame
+    // Create frame - omit point scores if not tracking them
+    const trackScores = leagueData.league.trackFrameScores !== false;
     const frame = {
       frameNumber: match.frames.length + 1,
-      player1Score: parseInt(player1Score, 10),
-      player2Score: parseInt(player2Score, 10),
       winnerId
     };
+    if (trackScores) {
+      frame.player1Score = parseInt(player1Score, 10);
+      frame.player2Score = parseInt(player2Score, 10);
+    }
 
     // Update frame counts
     const updatedMatch = {
@@ -90,6 +93,54 @@ export class ScoringManager {
     if (updatedMatch.status === MATCH_STATUS.COMPLETED) {
       updatedData = PlayerManager.recalculatePlayerStats(updatedData, match.player1Id);
       updatedData = PlayerManager.recalculatePlayerStats(updatedData, match.player2Id);
+    }
+
+    return updatedData;
+  }
+
+  static addFrameByWinner(leagueData, matchId, winnerId) {
+    // Convenience method for frames-only mode: just specify who won the frame
+    // Use dummy scores (1-0 or 0-1) to indicate the winner
+    const { match } = this.findMatch(leagueData, matchId);
+    if (!match) {
+      throw new LeagueError('Match not found', ERROR_TYPES.VALIDATION);
+    }
+    const p1Score = winnerId === match.player1Id ? 1 : 0;
+    const p2Score = winnerId === match.player2Id ? 1 : 0;
+    return this.addFrame(leagueData, matchId, p1Score, p2Score);
+  }
+
+  static submitMatchResult(leagueData, matchId, player1FramesWon, player2FramesWon) {
+    // Submit a complete match result at once (for frames-only mode)
+    // Creates all frames at once based on the overall score
+    const { match } = this.findMatch(leagueData, matchId);
+    if (!match) {
+      throw new LeagueError('Match not found', ERROR_TYPES.VALIDATION);
+    }
+    if (match.status === MATCH_STATUS.COMPLETED) {
+      throw new LeagueError('Match is already completed', ERROR_TYPES.VALIDATION);
+    }
+
+    const totalFrames = player1FramesWon + player2FramesWon;
+    const framesToWin = Math.ceil(leagueData.league.bestOfFrames / 2);
+
+    if (player1FramesWon < framesToWin && player2FramesWon < framesToWin) {
+      throw new LeagueError(`Match not complete: need ${framesToWin} frames to win`, ERROR_TYPES.VALIDATION);
+    }
+    if (player1FramesWon >= framesToWin && player2FramesWon >= framesToWin) {
+      throw new LeagueError('Both players cannot reach the frames needed to win', ERROR_TYPES.VALIDATION);
+    }
+    if (totalFrames > leagueData.league.bestOfFrames) {
+      throw new LeagueError(`Too many frames: ${totalFrames} exceeds best of ${leagueData.league.bestOfFrames}`, ERROR_TYPES.VALIDATION);
+    }
+
+    let updatedData = leagueData;
+    // Add player1's winning frames first, then player2's, then remaining in order
+    for (let i = 0; i < player1FramesWon; i++) {
+      updatedData = this.addFrameByWinner(updatedData, matchId, match.player1Id);
+    }
+    for (let i = 0; i < player2FramesWon; i++) {
+      updatedData = this.addFrameByWinner(updatedData, matchId, match.player2Id);
     }
 
     return updatedData;

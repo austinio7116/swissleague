@@ -1,11 +1,20 @@
 import { generateId } from '../utils/helpers.js';
-import { MATCH_STATUS, ROUND_STATUS, ERROR_TYPES } from '../../shared/constants.js';
+import { MATCH_STATUS, ROUND_STATUS, ERROR_TYPES, LEAGUE_FORMATS } from '../../shared/constants.js';
 import { SwissPairing } from './swiss-pairing.js';
+import { RoundRobinPairing } from './round-robin-pairing.js';
+import { TierManager } from './tier-manager.js';
 import { LeagueError } from './storage.js';
 import { PlayerManager } from './players.js';
 
 export class RoundManager {
   static generateRound(leagueData) {
+    if (leagueData.league.format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN) {
+      return this.generateTieredRound(leagueData);
+    }
+    return this.generateSwissRound(leagueData);
+  }
+
+  static generateSwissRound(leagueData) {
     // Recalculate all player stats before generating pairings
     // This ensures buchholz/SOS tiebreakers are accurate regardless of
     // the order results were entered during the previous round
@@ -15,21 +24,21 @@ export class RoundManager {
 
     // Generate pairings using Swiss algorithm
     const pairings = SwissPairing.generatePairings(leagueData);
-    
+
     // Validate pairings
     const activePlayers = leagueData.players.filter(p => p.active);
     const validation = SwissPairing.validatePairings(pairings, activePlayers);
-    
+
     if (!validation.valid) {
       throw new LeagueError(
         `Pairing validation failed: ${validation.errors.join(', ')}`,
         ERROR_TYPES.PAIRING
       );
     }
-    
+
     // Create matches from pairings
     const matches = pairings.map(pairing => this.createMatchFromPairing(pairing, league.bestOfFrames));
-    
+
     // Create round
     const round = {
       roundNumber: league.currentRound,
@@ -37,7 +46,7 @@ export class RoundManager {
       matches,
       generatedAt: new Date().toISOString()
     };
-    
+
     // Update pairing history
     const newPairingHistory = [...leagueData.pairingHistory];
     for (const pairing of pairings) {
@@ -45,7 +54,59 @@ export class RoundManager {
         newPairingHistory.push([pairing.player1.id, pairing.player2.id]);
       }
     }
-    
+
+    return {
+      ...leagueData,
+      rounds: [...rounds, round],
+      pairingHistory: newPairingHistory
+    };
+  }
+
+  static generateTieredRound(leagueData) {
+    leagueData = PlayerManager.recalculateAllPlayerStats(leagueData);
+
+    const { league, rounds } = leagueData;
+    const { tiers } = league.tierConfig;
+    const roundIndex = rounds.length; // 0-based
+
+    // Generate pairings for each tier and merge
+    const allPairings = [];
+    for (const tierName of tiers) {
+      const tierPlayers = TierManager.getTierPlayers(leagueData, tierName);
+      if (tierPlayers.length < 2) {
+        throw new LeagueError(
+          `Tier "${tierName}" has fewer than 2 players`,
+          ERROR_TYPES.PAIRING
+        );
+      }
+      // Each tier has its own round-robin cycle length
+      const tierN = tierPlayers.length % 2 === 0 ? tierPlayers.length : tierPlayers.length + 1;
+      const tierTotalRounds = tierN - 1;
+      if (roundIndex < tierTotalRounds) {
+        const tierPairings = RoundRobinPairing.generateRoundPairings(tierPlayers, roundIndex);
+        allPairings.push(...tierPairings);
+      }
+      // If roundIndex >= tierTotalRounds, this tier has completed its round-robin — no matches this round
+    }
+
+    // Create matches from pairings
+    const matches = allPairings.map(pairing => this.createMatchFromPairing(pairing, league.bestOfFrames));
+
+    const round = {
+      roundNumber: league.currentRound,
+      status: ROUND_STATUS.PENDING,
+      matches,
+      generatedAt: new Date().toISOString()
+    };
+
+    // Update pairing history
+    const newPairingHistory = [...leagueData.pairingHistory];
+    for (const pairing of allPairings) {
+      if (!pairing.isBye) {
+        newPairingHistory.push([pairing.player1.id, pairing.player2.id]);
+      }
+    }
+
     return {
       ...leagueData,
       rounds: [...rounds, round],
