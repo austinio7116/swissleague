@@ -97,6 +97,45 @@ def find_pending_matches_for_player(league_data, player_id):
     return pending
 
 
+def find_all_pending_matches(league_data):
+    """
+    Find all pending matches (including byes) across all rounds.
+    Returns list of dicts with round, player1 name, player2 name (None for byes), is_bye flag.
+    """
+    pending = []
+    players_map = {p["id"]: p for p in league_data.get("players", [])}
+
+    for round_data in league_data.get("rounds", []):
+        for match in round_data.get("matches", []):
+            if match.get("status") != "pending":
+                continue
+
+            p1 = players_map.get(match.get("player1Id"))
+
+            if match.get("isBye"):
+                if p1:
+                    pending.append({
+                        "round": round_data["roundNumber"],
+                        "player1": p1["name"],
+                        "player2": None,
+                        "player1_tier": p1.get("tier"),
+                        "is_bye": True,
+                    })
+                continue
+
+            p2 = players_map.get(match.get("player2Id"))
+            if p1 and p2:
+                pending.append({
+                    "round": round_data["roundNumber"],
+                    "player1": p1["name"],
+                    "player2": p2["name"],
+                    "player1_tier": p1.get("tier"),
+                    "is_bye": False,
+                })
+
+    return pending
+
+
 def parse_frame_score(frame_str):
     """
     Parse a frame score string like '63-45' into (score1, score2).

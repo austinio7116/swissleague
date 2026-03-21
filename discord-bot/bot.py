@@ -18,6 +18,7 @@ from league import (
     find_player_by_name_exact,
     find_pending_match,
     find_pending_matches_for_player,
+    find_all_pending_matches,
     apply_match_result,
     get_standings,
     get_all_tier_standings,
@@ -556,6 +557,70 @@ async def my_matches(interaction: discord.Interaction):
         for m in pending:
             opponent_display = format_player_name(interaction.guild, m['opponent'])
             lines.append(f"Round {m['round']}: vs **{opponent_display}**")
+
+        await interaction.followup.send('\n'.join(lines))
+
+    except Exception as e:
+        await interaction.followup.send(f"Error: {str(e)}")
+
+
+@tree.command(name='fixtures', description='Show all outstanding fixtures')
+async def fixtures(interaction: discord.Interaction):
+    await interaction.response.defer()
+
+    try:
+        data, _ = await github.get_league_data()
+        _, league_data = get_active_league(data)
+
+        if not league_data:
+            await interaction.followup.send("No active league found.")
+            return
+
+        pending = find_all_pending_matches(league_data)
+
+        if not pending:
+            await interaction.followup.send("No outstanding fixtures.")
+            return
+
+        league_name = league_data.get("league", {}).get("name", "League")
+        tiered = is_tiered_league(league_data)
+
+        # Group by round
+        rounds = {}
+        for m in pending:
+            rounds.setdefault(m["round"], []).append(m)
+
+        lines = [f"**{league_name} - Outstanding Fixtures**\n"]
+
+        for round_num in sorted(rounds.keys()):
+            matches = rounds[round_num]
+            lines.append(f"**Round {round_num}**")
+
+            if tiered:
+                # Group by tier within each round
+                by_tier = {}
+                for m in matches:
+                    tier = m.get("player1_tier") or "Unknown"
+                    by_tier.setdefault(tier, []).append(m)
+                for tier_name in sorted(by_tier.keys()):
+                    lines.append(f"  *{tier_name}*")
+                    for m in by_tier[tier_name]:
+                        p1 = format_player_name(interaction.guild, m["player1"])
+                        if m.get("is_bye"):
+                            lines.append(f"    {p1} - BYE")
+                        else:
+                            p2 = format_player_name(interaction.guild, m["player2"])
+                            lines.append(f"    {p1} vs {p2}")
+            else:
+                for m in matches:
+                    p1 = format_player_name(interaction.guild, m["player1"])
+                    if m.get("is_bye"):
+                        lines.append(f"  {p1} - BYE")
+                    else:
+                        p2 = format_player_name(interaction.guild, m["player2"])
+                        lines.append(f"  {p1} vs {p2}")
+
+            lines.append("")
 
         await interaction.followup.send('\n'.join(lines))
 
