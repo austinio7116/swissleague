@@ -107,12 +107,14 @@ def find_all_pending_matches(league_data):
 
     for round_data in league_data.get("rounds", []):
         for match in round_data.get("matches", []):
-            if match.get("status") != "pending":
+            is_bye = match.get("isBye", False)
+
+            if match.get("status") != "pending" and not is_bye:
                 continue
 
             p1 = players_map.get(match.get("player1Id"))
 
-            if match.get("isBye"):
+            if is_bye:
                 if p1:
                     pending.append({
                         "round": round_data["roundNumber"],
