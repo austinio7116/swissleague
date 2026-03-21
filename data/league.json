@@ -2767,7 +2767,7 @@
           "playersPerTier": 6,
           "tierSizes": [
             6,
-            5,
+            6,
             5
           ],
           "promotionCount": 2,
@@ -3110,6 +3110,36 @@
           }
         },
         {
+          "id": "3e16cdd9-81a5-4ee0-a45f-efec6134dba2",
+          "name": "kidbrush52.",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Gold",
+          "tierRank": 6,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
           "id": "4dc5aa01-f262-45ce-8237-f26f3a0c1a94",
           "name": "relisys196",
           "active": true,
@@ -3312,14 +3342,13 @@
             {
               "id": "b464a8c1-046b-469c-9b9b-9eee0733a525",
               "player1Id": "a2ad9ba4-6ebc-4423-953a-505422e841f2",
-              "player2Id": null,
-              "status": "completed",
+              "player2Id": "3e16cdd9-81a5-4ee0-a45f-efec6134dba2",
+              "status": "pending",
               "frames": [],
-              "player1FramesWon": 2,
+              "player1FramesWon": 0,
               "player2FramesWon": 0,
-              "winnerId": "a2ad9ba4-6ebc-4423-953a-505422e841f2",
-              "isBye": true,
-              "completedAt": "2026-03-20T23:19:43.357Z"
+              "winnerId": null,
+              "isBye": false
             },
             {
               "id": "675c9218-db89-4a6d-be83-bf79fc952cf6",
@@ -3398,6 +3427,10 @@
         [
           "b08f573d-df3c-4e44-b95f-7d80fccd3f3d",
           "84bb6793-fd12-4dcf-951f-b0c9839fb3f7"
+        ],
+        [
+          "a2ad9ba4-6ebc-4423-953a-505422e841f2",
+          "3e16cdd9-81a5-4ee0-a45f-efec6134dba2"
         ]
       ],
       "seasons": [
@@ -3420,7 +3453,8 @@
               "62237e68-a750-4cf9-87b3-03d1b0f82c30",
               "a2ad9ba4-6ebc-4423-953a-505422e841f2",
               "a33aa83c-3194-4f0b-a9a7-43c04b11b85d",
-              "e8b08e49-ec4f-4565-8350-785e3c435abe"
+              "e8b08e49-ec4f-4565-8350-785e3c435abe",
+              "3e16cdd9-81a5-4ee0-a45f-efec6134dba2"
             ],
             "Silver": [
               "4dc5aa01-f262-45ce-8237-f26f3a0c1a94",
