@@ -2759,7 +2759,7 @@
         "bestOfFrames": 3,
         "trackFrameScores": false,
         "createdAt": "2026-03-20T23:14:57.650Z",
-        "updatedAt": "2026-03-22T15:11:02.772720Z",
+        "updatedAt": "2026-03-23T15:52:55.521338Z",
         "currentRound": 1,
         "totalRounds": 5,
         "currentSeason": 1,
@@ -2964,13 +2964,13 @@
           "name": "naedangerpawl",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
-            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "matchesWon": 1,
             "matchesLost": 0,
-            "framesWon": 0,
+            "framesWon": 2,
             "framesLost": 0,
-            "points": 0,
-            "frameDifference": 0,
+            "points": 1,
+            "frameDifference": 2,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -2994,13 +2994,13 @@
           "name": "jimmyo76",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "matchesWon": 0,
-            "matchesLost": 0,
+            "matchesLost": 1,
             "framesWon": 0,
-            "framesLost": 0,
+            "framesLost": 2,
             "points": 0,
-            "frameDifference": 0,
+            "frameDifference": -2,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -3342,12 +3342,22 @@
               "id": "f97df9a0-745b-419f-ae68-fd5a578ac98e",
               "player1Id": "da5e5298-08c0-45cf-8838-f9ef31fcbed8",
               "player2Id": "62237e68-a750-4cf9-87b3-03d1b0f82c30",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "da5e5298-08c0-45cf-8838-f9ef31fcbed8"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "da5e5298-08c0-45cf-8838-f9ef31fcbed8"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "da5e5298-08c0-45cf-8838-f9ef31fcbed8",
+              "isBye": false,
+              "completedAt": "2026-03-23T15:52:55.521311Z"
             },
             {
               "id": "b464a8c1-046b-469c-9b9b-9eee0733a525",
