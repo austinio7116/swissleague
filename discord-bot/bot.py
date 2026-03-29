@@ -3,6 +3,7 @@ Discord bot for Swiss League result submission.
 Allows players to submit match results via slash commands.
 """
 
+import asyncio
 import discord
 from discord import app_commands
 import aiohttp
@@ -13,6 +14,7 @@ import os
 import random
 import re
 import secrets
+import time
 
 from league import (
     find_player_by_name_exact,
@@ -694,7 +696,21 @@ def main():
         print('Error: GITHUB_TOKEN environment variable not set')
         return
 
-    client.run(DISCORD_TOKEN)
+    max_retries = 5
+    base_delay = 10  # seconds
+    for attempt in range(max_retries):
+        try:
+            client.run(DISCORD_TOKEN)
+            break  # Clean shutdown
+        except discord.errors.HTTPException as e:
+            if e.status == 429:
+                delay = base_delay * (2 ** attempt)
+                print(f'Rate limited by Discord (attempt {attempt + 1}/{max_retries}). Retrying in {delay}s...')
+                time.sleep(delay)
+            else:
+                raise
+    else:
+        print(f'Failed to connect after {max_retries} attempts. Exiting.')
 
 
 if __name__ == '__main__':
