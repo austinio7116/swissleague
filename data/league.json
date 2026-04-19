@@ -2759,7 +2759,7 @@
         "bestOfFrames": 3,
         "trackFrameScores": false,
         "createdAt": "2026-03-20T23:14:57.650Z",
-        "updatedAt": "2026-04-19T07:19:15.885522Z",
+        "updatedAt": "2026-04-19T07:19:51.554459Z",
         "currentRound": 2,
         "totalRounds": 5,
         "currentSeason": 1,
@@ -3204,16 +3204,16 @@
           "name": "gconwell",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "matchesWon": 1,
-            "matchesLost": 0,
+            "matchesLost": 1,
             "framesWon": 0,
             "framesLost": 0,
             "points": 1,
             "frameDifference": 0,
             "byesReceived": 1,
             "forfeitsReceived": 0,
-            "forfeitsGiven": 0,
+            "forfeitsGiven": 1,
             "strengthOfSchedule": 0,
             "buchholzScore": 0
           },
@@ -3234,15 +3234,15 @@
           "name": "speddr0w",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
-            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "matchesWon": 2,
             "matchesLost": 0,
             "framesWon": 0,
             "framesLost": 0,
-            "points": 1,
+            "points": 2,
             "frameDifference": 0,
             "byesReceived": 0,
-            "forfeitsReceived": 1,
+            "forfeitsReceived": 2,
             "forfeitsGiven": 0,
             "strengthOfSchedule": 0,
             "buchholzScore": 0
@@ -3490,7 +3490,7 @@
         },
         {
           "roundNumber": 2,
-          "status": "pending",
+          "status": "completed",
           "matches": [
             {
               "id": "8ae97c0f-bcb0-47fe-8ba8-b52017a2d0ab",
@@ -3653,12 +3653,16 @@
               "id": "3c333e45-31f5-465a-bb27-16ecbdc33827",
               "player1Id": "056b09ab-bbc4-4348-803d-37224923a35e",
               "player2Id": "b08f573d-df3c-4e44-b95f-7d80fccd3f3d",
-              "status": "pending",
+              "status": "completed",
               "frames": [],
               "player1FramesWon": 0,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "b08f573d-df3c-4e44-b95f-7d80fccd3f3d",
+              "isBye": false,
+              "isForfeit": true,
+              "forfeitType": "single",
+              "completedAt": "2026-04-19T07:19:51.554419Z",
+              "forfeitingPlayerId": "056b09ab-bbc4-4348-803d-37224923a35e"
             }
           ],
           "generatedAt": "2026-04-02T22:18:03.618Z"
