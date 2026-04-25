@@ -2759,7 +2759,7 @@
         "bestOfFrames": 3,
         "trackFrameScores": false,
         "createdAt": "2026-03-20T23:14:57.650Z",
-        "updatedAt": "2026-04-25T04:15:47.575432Z",
+        "updatedAt": "2026-04-25T16:05:54.891634Z",
         "currentRound": 3,
         "totalRounds": 5,
         "currentSeason": 1,
@@ -2784,13 +2784,13 @@
           "name": "austinio7116",
           "active": true,
           "stats": {
-            "matchesPlayed": 2,
+            "matchesPlayed": 3,
             "matchesWon": 1,
-            "matchesLost": 1,
+            "matchesLost": 2,
             "framesWon": 2,
-            "framesLost": 3,
+            "framesLost": 5,
             "points": 1,
-            "frameDifference": -1,
+            "frameDifference": -3,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -2904,13 +2904,13 @@
           "name": "lle9endd",
           "active": true,
           "stats": {
-            "matchesPlayed": 2,
-            "matchesWon": 2,
+            "matchesPlayed": 3,
+            "matchesWon": 3,
             "matchesLost": 0,
-            "framesWon": 4,
+            "framesWon": 6,
             "framesLost": 1,
-            "points": 2,
-            "frameDifference": 3,
+            "points": 3,
+            "frameDifference": 5,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -3696,12 +3696,22 @@
               "id": "c1a5f7ab-8041-4b78-a5ee-0ce51e13a271",
               "player1Id": "45ac3bda-f16b-47d4-a6b3-500b38fe0b5f",
               "player2Id": "9ffb1e36-d132-4cfe-b4eb-66004562b65f",
-              "status": "pending",
-              "frames": [],
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "9ffb1e36-d132-4cfe-b4eb-66004562b65f"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "9ffb1e36-d132-4cfe-b4eb-66004562b65f"
+                }
+              ],
               "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "player2FramesWon": 2,
+              "winnerId": "9ffb1e36-d132-4cfe-b4eb-66004562b65f",
+              "isBye": false,
+              "completedAt": "2026-04-25T16:05:54.891610Z"
             },
             {
               "id": "e9f172d6-8832-47ab-abc2-fa57d86da212",
