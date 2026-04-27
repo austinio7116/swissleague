@@ -2759,7 +2759,7 @@
         "bestOfFrames": 3,
         "trackFrameScores": false,
         "createdAt": "2026-03-20T23:14:57.650Z",
-        "updatedAt": "2026-04-27T19:49:01.106509Z",
+        "updatedAt": "2026-04-27T20:49:43.107916Z",
         "currentRound": 3,
         "totalRounds": 5,
         "currentSeason": 1,
@@ -3174,13 +3174,13 @@
           "name": "nathan1045.",
           "active": true,
           "stats": {
-            "matchesPlayed": 2,
-            "matchesWon": 1,
+            "matchesPlayed": 3,
+            "matchesWon": 2,
             "matchesLost": 1,
-            "framesWon": 0,
-            "framesLost": 2,
-            "points": 1,
-            "frameDifference": -2,
+            "framesWon": 2,
+            "framesLost": 3,
+            "points": 2,
+            "frameDifference": -1,
             "byesReceived": 0,
             "forfeitsReceived": 1,
             "forfeitsGiven": 0,
@@ -3294,13 +3294,13 @@
           "name": "nsdchronicle",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "matchesWon": 0,
-            "matchesLost": 0,
-            "framesWon": 0,
-            "framesLost": 0,
+            "matchesLost": 1,
+            "framesWon": 1,
+            "framesLost": 2,
             "points": 0,
-            "frameDifference": 0,
+            "frameDifference": -1,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -3827,12 +3827,26 @@
               "id": "01e5ee8a-7ba4-4a39-866f-92e3acd64100",
               "player1Id": "40fc098a-7c24-4e65-a668-21564c4692c2",
               "player2Id": "536a7d72-e567-4bfd-acbf-c9910122421d",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "536a7d72-e567-4bfd-acbf-c9910122421d"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "536a7d72-e567-4bfd-acbf-c9910122421d"
+                },
+                {
+                  "frameNumber": 3,
+                  "winnerId": "40fc098a-7c24-4e65-a668-21564c4692c2"
+                }
+              ],
+              "player1FramesWon": 1,
+              "player2FramesWon": 2,
+              "winnerId": "536a7d72-e567-4bfd-acbf-c9910122421d",
+              "isBye": false,
+              "completedAt": "2026-04-27T20:49:43.107884Z"
             }
           ],
           "generatedAt": "2026-04-19T07:27:08.866Z"
