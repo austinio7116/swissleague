@@ -2759,7 +2759,7 @@
         "bestOfFrames": 3,
         "trackFrameScores": false,
         "createdAt": "2026-03-20T23:14:57.650Z",
-        "updatedAt": "2026-05-12T13:32:35.867969Z",
+        "updatedAt": "2026-05-12T22:22:14.041234Z",
         "currentRound": 4,
         "totalRounds": 5,
         "currentSeason": 1,
@@ -2994,13 +2994,13 @@
           "name": "jimmyo76",
           "active": true,
           "stats": {
-            "matchesPlayed": 3,
+            "matchesPlayed": 4,
             "matchesWon": 0,
-            "matchesLost": 3,
-            "framesWon": 0,
-            "framesLost": 6,
+            "matchesLost": 4,
+            "framesWon": 1,
+            "framesLost": 8,
             "points": 0,
-            "frameDifference": -6,
+            "frameDifference": -7,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -3114,13 +3114,13 @@
           "name": "kidbrush52.",
           "active": true,
           "stats": {
-            "matchesPlayed": 3,
-            "matchesWon": 1,
+            "matchesPlayed": 4,
+            "matchesWon": 2,
             "matchesLost": 2,
-            "framesWon": 4,
-            "framesLost": 4,
-            "points": 1,
-            "frameDifference": 0,
+            "framesWon": 6,
+            "framesLost": 5,
+            "points": 2,
+            "frameDifference": 1,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -3958,12 +3958,26 @@
               "id": "73a618bf-c41d-47a4-bf1e-181bdbe1f87b",
               "player1Id": "3e16cdd9-81a5-4ee0-a45f-efec6134dba2",
               "player2Id": "62237e68-a750-4cf9-87b3-03d1b0f82c30",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "62237e68-a750-4cf9-87b3-03d1b0f82c30"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "3e16cdd9-81a5-4ee0-a45f-efec6134dba2"
+                },
+                {
+                  "frameNumber": 3,
+                  "winnerId": "3e16cdd9-81a5-4ee0-a45f-efec6134dba2"
+                }
+              ],
+              "player1FramesWon": 2,
+              "player2FramesWon": 1,
+              "winnerId": "3e16cdd9-81a5-4ee0-a45f-efec6134dba2",
+              "isBye": false,
+              "completedAt": "2026-05-12T22:22:14.041210Z"
             }
           ],
           "generatedAt": "2026-05-06T17:12:49.802Z"
