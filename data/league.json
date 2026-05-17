@@ -2759,7 +2759,7 @@
         "bestOfFrames": 3,
         "trackFrameScores": false,
         "createdAt": "2026-03-20T23:14:57.650Z",
-        "updatedAt": "2026-05-16T13:50:58.806058Z",
+        "updatedAt": "2026-05-17T21:37:44.081879Z",
         "currentRound": 4,
         "totalRounds": 5,
         "currentSeason": 1,
@@ -3024,13 +3024,13 @@
           "name": "kin3pin",
           "active": true,
           "stats": {
-            "matchesPlayed": 3,
-            "matchesWon": 3,
+            "matchesPlayed": 4,
+            "matchesWon": 4,
             "matchesLost": 0,
-            "framesWon": 6,
+            "framesWon": 8,
             "framesLost": 1,
-            "points": 3,
-            "frameDifference": 5,
+            "points": 4,
+            "frameDifference": 7,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -3084,13 +3084,13 @@
           "name": "redeyeknightuk",
           "active": true,
           "stats": {
-            "matchesPlayed": 3,
+            "matchesPlayed": 4,
             "matchesWon": 1,
-            "matchesLost": 2,
+            "matchesLost": 3,
             "framesWon": 4,
-            "framesLost": 4,
+            "framesLost": 6,
             "points": 1,
-            "frameDifference": 0,
+            "frameDifference": -2,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -3957,12 +3957,22 @@
               "id": "2c4cd9e0-f6e2-4868-a88b-93412935b397",
               "player1Id": "e8b08e49-ec4f-4565-8350-785e3c435abe",
               "player2Id": "a2ad9ba4-6ebc-4423-953a-505422e841f2",
-              "status": "pending",
-              "frames": [],
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "a2ad9ba4-6ebc-4423-953a-505422e841f2"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "a2ad9ba4-6ebc-4423-953a-505422e841f2"
+                }
+              ],
               "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "player2FramesWon": 2,
+              "winnerId": "a2ad9ba4-6ebc-4423-953a-505422e841f2",
+              "isBye": false,
+              "completedAt": "2026-05-17T21:37:44.081856Z"
             },
             {
               "id": "73a618bf-c41d-47a4-bf1e-181bdbe1f87b",
