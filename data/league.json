@@ -2759,7 +2759,7 @@
         "bestOfFrames": 3,
         "trackFrameScores": false,
         "createdAt": "2026-03-20T23:14:57.650Z",
-        "updatedAt": "2026-06-02T21:50:35.338213Z",
+        "updatedAt": "2026-06-07T12:21:37.722866Z",
         "currentRound": 5,
         "totalRounds": 5,
         "currentSeason": 1,
@@ -2814,13 +2814,13 @@
           "name": "questvr111",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
+            "matchesPlayed": 5,
             "matchesWon": 1,
-            "matchesLost": 3,
+            "matchesLost": 4,
             "framesWon": 2,
-            "framesLost": 6,
+            "framesLost": 8,
             "points": 1,
-            "frameDifference": -4,
+            "frameDifference": -6,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -2874,13 +2874,13 @@
           "name": "fret1308",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
-            "matchesWon": 2,
+            "matchesPlayed": 5,
+            "matchesWon": 3,
             "matchesLost": 2,
-            "framesWon": 5,
+            "framesWon": 7,
             "framesLost": 4,
-            "points": 2,
-            "frameDifference": 1,
+            "points": 3,
+            "frameDifference": 3,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -4035,12 +4035,22 @@
               "id": "c06d301a-e673-4098-9a05-ff97c4181b25",
               "player1Id": "f1641da2-8c44-4bf8-b81e-d9613fa77e1a",
               "player2Id": "f57bcbb3-d84f-4429-aa0a-adeff5eaf92c",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "f1641da2-8c44-4bf8-b81e-d9613fa77e1a"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "f1641da2-8c44-4bf8-b81e-d9613fa77e1a"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "f1641da2-8c44-4bf8-b81e-d9613fa77e1a",
+              "isBye": false,
+              "completedAt": "2026-06-07T12:21:37.722841Z"
             },
             {
               "id": "fca9f0af-813e-419b-b6da-d8ede4112fee",
