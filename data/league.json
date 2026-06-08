@@ -2759,7 +2759,7 @@
         "bestOfFrames": 3,
         "trackFrameScores": false,
         "createdAt": "2026-03-20T23:14:57.650Z",
-        "updatedAt": "2026-06-07T12:21:37.722866Z",
+        "updatedAt": "2026-06-08T22:30:02.658917Z",
         "currentRound": 5,
         "totalRounds": 5,
         "currentSeason": 1,
@@ -2784,13 +2784,13 @@
           "name": "austinio7116",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
-            "matchesWon": 1,
+            "matchesPlayed": 5,
+            "matchesWon": 2,
             "matchesLost": 3,
-            "framesWon": 2,
+            "framesWon": 4,
             "framesLost": 7,
-            "points": 1,
-            "frameDifference": -5,
+            "points": 2,
+            "frameDifference": -3,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -2844,13 +2844,13 @@
           "name": "orms16",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
+            "matchesPlayed": 5,
             "matchesWon": 1,
-            "matchesLost": 3,
+            "matchesLost": 4,
             "framesWon": 4,
-            "framesLost": 6,
+            "framesLost": 8,
             "points": 1,
-            "frameDifference": -2,
+            "frameDifference": -4,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -4024,12 +4024,22 @@
               "id": "eeea5b33-96e6-4b6c-9e86-141e60d636e6",
               "player1Id": "45ac3bda-f16b-47d4-a6b3-500b38fe0b5f",
               "player2Id": "ad80d6d0-f7bc-43ad-9056-1b6d220cbf4e",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "45ac3bda-f16b-47d4-a6b3-500b38fe0b5f"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "45ac3bda-f16b-47d4-a6b3-500b38fe0b5f"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "45ac3bda-f16b-47d4-a6b3-500b38fe0b5f",
+              "isBye": false,
+              "completedAt": "2026-06-08T22:30:02.658896Z"
             },
             {
               "id": "c06d301a-e673-4098-9a05-ff97c4181b25",
