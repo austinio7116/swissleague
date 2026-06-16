@@ -4340,12 +4340,1044 @@
           "finalStandings": null
         }
       ]
+    },
+    "9d7625ac-2cae-4b29-a664-b98a4283c52e": {
+      "league": {
+        "id": "9d7625ac-2cae-4b29-a664-b98a4283c52e",
+        "name": "Unlimited Snooker Summer 2026 League",
+        "format": "tiered-round-robin",
+        "bestOfFrames": 2,
+        "trackFrameScores": false,
+        "createdAt": "2026-06-16T21:34:06.671Z",
+        "updatedAt": "2026-06-16T21:40:19.644Z",
+        "currentRound": 1,
+        "totalRounds": 7,
+        "currentSeason": 1,
+        "tierConfig": {
+          "playersPerTier": 8,
+          "tierSizes": [
+            8,
+            8,
+            8
+          ],
+          "promotionCount": 2,
+          "tiers": [
+            "Diamond",
+            "Gold",
+            "Silver"
+          ]
+        }
+      },
+      "players": [
+        {
+          "id": "e1452ca8-73e5-4386-9080-55929cb25c46",
+          "name": "lle9endd",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Diamond",
+          "tierRank": 1,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "09d61d67-6303-4cd6-93a7-bc1e50791a7d",
+          "name": "fret1308",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Diamond",
+          "tierRank": 2,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "d3199c7a-b243-4154-8295-8ef89789981b",
+          "name": "oops62",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Diamond",
+          "tierRank": 3,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "1100b79c-e2aa-4d42-99c0-111573802510",
+          "name": "austinio7116",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Diamond",
+          "tierRank": 4,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "2a586eef-e2ad-4f00-822e-910f310ddaa4",
+          "name": "kin3pin",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Diamond",
+          "tierRank": 5,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "595d3924-1168-40d5-b68c-e60063321c17",
+          "name": "naedangerpawl",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Diamond",
+          "tierRank": 6,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "7ff45fdd-0ddd-41b6-a377-f913b74bc1ab",
+          "name": "questvr111",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Diamond",
+          "tierRank": 7,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "6548c3d3-73b4-497d-8de0-46927b160319",
+          "name": "joethe147",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Diamond",
+          "tierRank": 8,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "add146f3-7a8d-4f7d-85fe-9e88793bb423",
+          "name": "redeyeknightuk",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Gold",
+          "tierRank": 1,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "3f98d620-79c2-46d8-b1f4-a4e42f83f875",
+          "name": "relisys196",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Gold",
+          "tierRank": 2,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "519798ad-fc25-4141-9a90-6947c2b976ae",
+          "name": "nathan1045.",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Gold",
+          "tierRank": 3,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "cae0bfd7-d473-4632-a5c7-c08a1e99209d",
+          "name": "kidbrush52.",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Gold",
+          "tierRank": 4,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "5d888951-3c0b-403d-b303-d7fcdbd45a13",
+          "name": "jimmyo76",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Gold",
+          "tierRank": 5,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "4618ed05-7118-4d27-bf68-8f81517e3b7d",
+          "name": "speddr0w",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Gold",
+          "tierRank": 6,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "9bd2af57-c2fa-4fc2-b375-b50e1d13d9f8",
+          "name": "nsdchronicle",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Gold",
+          "tierRank": 7,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "1cef3efe-1e12-4597-901b-7571c0383771",
+          "name": "red_dead_steve",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Gold",
+          "tierRank": 8,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "cd1c9f44-7ede-4735-9aa8-e29f35e451ea",
+          "name": "brandonio4569",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Silver",
+          "tierRank": 1,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "152369a6-4c98-4651-8a24-978f03b14ef5",
+          "name": "strbxz",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Silver",
+          "tierRank": 2,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "4812f04f-be10-4cc7-9c97-cc0c9d60bb5f",
+          "name": "bridgey81",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Silver",
+          "tierRank": 3,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "1f3172ab-8485-4a1e-b57f-7dbb86c9897e",
+          "name": "vr147snookered_85244",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Silver",
+          "tierRank": 4,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "7f7be595-dc26-4a50-86dc-f2e761e7e575",
+          "name": "barnsley3000_00876",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Silver",
+          "tierRank": 5,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "34366f16-8852-4566-9e11-22a749c5fcd3",
+          "name": "kingofdiamonds7328",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Silver",
+          "tierRank": 6,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "4fa69abc-f5bf-4734-ac50-0d0cafe3323b",
+          "name": "harmonythemoonwing",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Silver",
+          "tierRank": 7,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        },
+        {
+          "id": "8b2e3ab1-e41b-4ce3-833a-fe95337ad8ea",
+          "name": "missmac74",
+          "active": true,
+          "stats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "frameDifference": 0,
+            "byesReceived": 0,
+            "forfeitsReceived": 0,
+            "forfeitsGiven": 0,
+            "strengthOfSchedule": 0,
+            "buchholzScore": 0
+          },
+          "tier": "Silver",
+          "tierRank": 8,
+          "careerStats": {
+            "matchesPlayed": 0,
+            "matchesWon": 0,
+            "matchesLost": 0,
+            "matchesDrawn": 0,
+            "framesWon": 0,
+            "framesLost": 0,
+            "points": 0,
+            "seasonsPlayed": 0
+          }
+        }
+      ],
+      "rounds": [
+        {
+          "roundNumber": 1,
+          "status": "pending",
+          "matches": [
+            {
+              "id": "d8a74fc4-981d-461a-82ef-78eb7583d4cc",
+              "player1Id": "e1452ca8-73e5-4386-9080-55929cb25c46",
+              "player2Id": "09d61d67-6303-4cd6-93a7-bc1e50791a7d",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "d3773cc7-c604-4dd5-bb08-6cfa4667f6e8",
+              "player1Id": "d3199c7a-b243-4154-8295-8ef89789981b",
+              "player2Id": "6548c3d3-73b4-497d-8de0-46927b160319",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "91da3970-b3bf-4674-bb6a-7f315ff77957",
+              "player1Id": "1100b79c-e2aa-4d42-99c0-111573802510",
+              "player2Id": "7ff45fdd-0ddd-41b6-a377-f913b74bc1ab",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "7cc0a732-a1f1-4dd8-89d6-985db20795a0",
+              "player1Id": "2a586eef-e2ad-4f00-822e-910f310ddaa4",
+              "player2Id": "595d3924-1168-40d5-b68c-e60063321c17",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "9b4c7389-09af-48bf-9ad4-0f0d3f6de96a",
+              "player1Id": "add146f3-7a8d-4f7d-85fe-9e88793bb423",
+              "player2Id": "3f98d620-79c2-46d8-b1f4-a4e42f83f875",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "92346ae9-822d-40d1-b789-966923f27e02",
+              "player1Id": "519798ad-fc25-4141-9a90-6947c2b976ae",
+              "player2Id": "1cef3efe-1e12-4597-901b-7571c0383771",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "b5567433-04fe-44fb-9a6f-421f2ce563af",
+              "player1Id": "cae0bfd7-d473-4632-a5c7-c08a1e99209d",
+              "player2Id": "9bd2af57-c2fa-4fc2-b375-b50e1d13d9f8",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "dd1e70ea-31b1-4fda-9e47-8442cef80b1a",
+              "player1Id": "5d888951-3c0b-403d-b303-d7fcdbd45a13",
+              "player2Id": "4618ed05-7118-4d27-bf68-8f81517e3b7d",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "b8a9b623-b175-4ae2-bc3b-24875c548f20",
+              "player1Id": "cd1c9f44-7ede-4735-9aa8-e29f35e451ea",
+              "player2Id": "152369a6-4c98-4651-8a24-978f03b14ef5",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "e7389e14-9c1b-46d0-b0be-2360888e764f",
+              "player1Id": "4812f04f-be10-4cc7-9c97-cc0c9d60bb5f",
+              "player2Id": "8b2e3ab1-e41b-4ce3-833a-fe95337ad8ea",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "044ec398-ad9d-438e-a4bb-7075d95d9829",
+              "player1Id": "1f3172ab-8485-4a1e-b57f-7dbb86c9897e",
+              "player2Id": "4fa69abc-f5bf-4734-ac50-0d0cafe3323b",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            },
+            {
+              "id": "1599c3bb-147e-4576-90dd-1460eba2d025",
+              "player1Id": "7f7be595-dc26-4a50-86dc-f2e761e7e575",
+              "player2Id": "34366f16-8852-4566-9e11-22a749c5fcd3",
+              "status": "pending",
+              "frames": [],
+              "player1FramesWon": 0,
+              "player2FramesWon": 0,
+              "winnerId": null,
+              "isBye": false
+            }
+          ],
+          "generatedAt": "2026-06-16T21:37:31.815Z"
+        }
+      ],
+      "pairingHistory": [
+        [
+          "e1452ca8-73e5-4386-9080-55929cb25c46",
+          "09d61d67-6303-4cd6-93a7-bc1e50791a7d"
+        ],
+        [
+          "d3199c7a-b243-4154-8295-8ef89789981b",
+          "6548c3d3-73b4-497d-8de0-46927b160319"
+        ],
+        [
+          "1100b79c-e2aa-4d42-99c0-111573802510",
+          "7ff45fdd-0ddd-41b6-a377-f913b74bc1ab"
+        ],
+        [
+          "2a586eef-e2ad-4f00-822e-910f310ddaa4",
+          "595d3924-1168-40d5-b68c-e60063321c17"
+        ],
+        [
+          "add146f3-7a8d-4f7d-85fe-9e88793bb423",
+          "3f98d620-79c2-46d8-b1f4-a4e42f83f875"
+        ],
+        [
+          "519798ad-fc25-4141-9a90-6947c2b976ae",
+          "1cef3efe-1e12-4597-901b-7571c0383771"
+        ],
+        [
+          "cae0bfd7-d473-4632-a5c7-c08a1e99209d",
+          "9bd2af57-c2fa-4fc2-b375-b50e1d13d9f8"
+        ],
+        [
+          "5d888951-3c0b-403d-b303-d7fcdbd45a13",
+          "4618ed05-7118-4d27-bf68-8f81517e3b7d"
+        ],
+        [
+          "cd1c9f44-7ede-4735-9aa8-e29f35e451ea",
+          "152369a6-4c98-4651-8a24-978f03b14ef5"
+        ],
+        [
+          "4812f04f-be10-4cc7-9c97-cc0c9d60bb5f",
+          "8b2e3ab1-e41b-4ce3-833a-fe95337ad8ea"
+        ],
+        [
+          "1f3172ab-8485-4a1e-b57f-7dbb86c9897e",
+          "4fa69abc-f5bf-4734-ac50-0d0cafe3323b"
+        ],
+        [
+          "7f7be595-dc26-4a50-86dc-f2e761e7e575",
+          "34366f16-8852-4566-9e11-22a749c5fcd3"
+        ]
+      ],
+      "seasons": [
+        {
+          "seasonNumber": 1,
+          "status": "active",
+          "startedAt": "2026-06-16T21:34:06.673Z",
+          "completedAt": null,
+          "tierAssignments": {
+            "Diamond": [
+              "e1452ca8-73e5-4386-9080-55929cb25c46",
+              "09d61d67-6303-4cd6-93a7-bc1e50791a7d",
+              "d3199c7a-b243-4154-8295-8ef89789981b",
+              "1100b79c-e2aa-4d42-99c0-111573802510",
+              "2a586eef-e2ad-4f00-822e-910f310ddaa4",
+              "595d3924-1168-40d5-b68c-e60063321c17",
+              "7ff45fdd-0ddd-41b6-a377-f913b74bc1ab",
+              "6548c3d3-73b4-497d-8de0-46927b160319"
+            ],
+            "Gold": [
+              "add146f3-7a8d-4f7d-85fe-9e88793bb423",
+              "3f98d620-79c2-46d8-b1f4-a4e42f83f875",
+              "519798ad-fc25-4141-9a90-6947c2b976ae",
+              "cae0bfd7-d473-4632-a5c7-c08a1e99209d",
+              "5d888951-3c0b-403d-b303-d7fcdbd45a13",
+              "4618ed05-7118-4d27-bf68-8f81517e3b7d",
+              "9bd2af57-c2fa-4fc2-b375-b50e1d13d9f8",
+              "1cef3efe-1e12-4597-901b-7571c0383771"
+            ],
+            "Silver": [
+              "cd1c9f44-7ede-4735-9aa8-e29f35e451ea",
+              "152369a6-4c98-4651-8a24-978f03b14ef5",
+              "4812f04f-be10-4cc7-9c97-cc0c9d60bb5f",
+              "1f3172ab-8485-4a1e-b57f-7dbb86c9897e",
+              "7f7be595-dc26-4a50-86dc-f2e761e7e575",
+              "34366f16-8852-4566-9e11-22a749c5fcd3",
+              "4fa69abc-f5bf-4734-ac50-0d0cafe3323b",
+              "8b2e3ab1-e41b-4ce3-833a-fe95337ad8ea"
+            ]
+          },
+          "promotions": [],
+          "relegations": [],
+          "finalStandings": null
+        }
+      ]
     }
   },
-  "currentLeagueId": "198671c8-4642-4fc6-8af4-488f6f0805dd",
+  "currentLeagueId": "9d7625ac-2cae-4b29-a664-b98a4283c52e",
   "metadata": {
     "version": "2.0",
-    "lastUpdated": "2026-05-25T22:17:46.973Z",
+    "lastUpdated": "2026-06-16T21:40:19.644Z",
     "exportedBy": "Swiss Snooker League Admin"
   }
 }
