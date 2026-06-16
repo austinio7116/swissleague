@@ -518,8 +518,8 @@ async def send_tiered_standings(interaction, league_data, league_name, tier_filt
             return
         tiers = matching
 
-    sections = [f"**{league_name} - Season {season} Standings**"]
-
+    # One message per tier (a very large tier may still split into extra blocks).
+    messages = []
     for tier_name in tiers:
         players = all_standings.get(tier_name, [])
         if not players:
@@ -558,15 +558,28 @@ async def send_tiered_standings(interaction, league_data, league_name, tier_filt
                 f"{i+1:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>{wl_width}}  {diff_str:>4} {marker}"
             )
 
-        # Keep the tier label attached to its (first) code block so they stay together
+        # The tier label rides on the tier's first code block.
         blocks = code_blocks(header, separator, rows)
         if blocks:
-            sections.append(f"**{tier_name}**\n{blocks[0]}")
-            sections.extend(blocks[1:])
+            messages.append(f"**{tier_name}**\n{blocks[0]}")
+            messages.extend(blocks[1:])
 
-    sections.append("^ = promotion zone, v = relegation zone")
-    sections.append("\nFull standings: https://austinio7116.github.io/swissleague/display/")
-    await send_sections(interaction, sections)
+    if not messages:
+        await interaction.followup.send(f"**{league_name} - Season {season} Standings**\nNo standings yet.")
+        return
+
+    # Fold the title into the first message and the legend/link into the last.
+    title = f"**{league_name} - Season {season} Standings**"
+    messages[0] = f"{title}\n{messages[0]}"
+    footer = ("^ = promotion zone, v = relegation zone\n"
+              "Full standings: https://austinio7116.github.io/swissleague/display/")
+    if len(messages[-1]) + 1 + len(footer) <= 1990:
+        messages[-1] = f"{messages[-1]}\n{footer}"
+    else:
+        messages.append(footer)
+
+    for message in messages:
+        await interaction.followup.send(message)
 
 
 @tree.command(name='matches', description='Show your pending matches')
