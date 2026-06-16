@@ -407,6 +407,42 @@ async def standings(interaction: discord.Interaction, tier: str = None):
         await interaction.followup.send(f"Error: {str(e)}")
 
 
+DISCORD_MSG_LIMIT = 2000
+
+
+async def send_sections(interaction, sections, max_len=1990):
+    """Send pre-formatted sections across as few followup messages as possible,
+    each under Discord's 2000-char limit. Each section must already be < max_len
+    and self-contained (e.g. a complete ``` code block) so it is never split."""
+    buf = ""
+    for sec in sections:
+        if buf and len(buf) + 1 + len(sec) > max_len:
+            await interaction.followup.send(buf)
+            buf = sec
+        else:
+            buf = sec if not buf else f"{buf}\n{sec}"
+    if buf:
+        await interaction.followup.send(buf)
+
+
+def code_blocks(header, separator, rows, max_len=1900):
+    """Pack table rows into one or more ``` code blocks, each under max_len."""
+    blocks = []
+    base_len = len(header) + len(separator) + 10  # fences + newlines
+    cur = [header, separator]
+    cur_len = base_len
+    for row in rows:
+        if len(cur) > 2 and cur_len + len(row) + 1 > max_len:
+            blocks.append("```\n" + "\n".join(cur) + "\n```")
+            cur = [header, separator]
+            cur_len = base_len
+        cur.append(row)
+        cur_len += len(row) + 1
+    if len(cur) > 2:
+        blocks.append("```\n" + "\n".join(cur) + "\n```")
+    return blocks
+
+
 async def send_swiss_standings(interaction, league_data, league_name):
     """Send Swiss format standings."""
     players = get_standings(league_data)
@@ -435,13 +471,7 @@ async def send_swiss_standings(interaction, league_data, league_name):
     header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {wl_header:>{wl_width}}  {'Frames':>7}"
     separator = "-" * len(header)
 
-    lines = [
-        f"**{league_name} Standings**",
-        f"```",
-        header,
-        separator
-    ]
-
+    rows = []
     for i, player in enumerate(players):
         stats = player['stats']
         rank = ranks[i]
@@ -456,13 +486,14 @@ async def send_swiss_standings(interaction, league_data, league_name):
             wl += f"-{stats.get('matchesDrawn', 0)}"
         frames = f"{stats['framesWon']}-{stats['framesLost']}"
 
-        lines.append(
+        rows.append(
             f"{rank_str:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>{wl_width}}  {frames:>7}"
         )
 
-    lines.append("```")
-    lines.append("\nFull standings: https://austinio7116.github.io/swissleague/display/")
-    await interaction.followup.send('\n'.join(lines))
+    sections = [f"**{league_name} Standings**"]
+    sections += code_blocks(header, separator, rows)
+    sections.append("\nFull standings: https://austinio7116.github.io/swissleague/display/")
+    await send_sections(interaction, sections)
 
 
 async def send_tiered_standings(interaction, league_data, league_name, tier_filter=None):
@@ -487,9 +518,9 @@ async def send_tiered_standings(interaction, league_data, league_name, tier_filt
             return
         tiers = matching
 
-    lines = [f"**{league_name} - Season {season} Standings**\n"]
+    sections = [f"**{league_name} - Season {season} Standings**"]
 
-    for t_idx, tier_name in enumerate(tiers):
+    for tier_name in tiers:
         players = all_standings.get(tier_name, [])
         if not players:
             continue
@@ -503,14 +534,10 @@ async def send_tiered_standings(interaction, league_data, league_name, tier_filt
         header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {wl_header:>{wl_width}}  {'F+/-':>4}"
         separator = "-" * len(header)
 
-        lines.append(f"**{tier_name}**")
-        lines.append("```")
-        lines.append(header)
-        lines.append(separator)
-
         is_top_tier = tier_name == tier_config.get("tiers", [None])[0]
         is_bottom_tier = tier_name == tier_config.get("tiers", [None])[-1]
 
+        rows = []
         for i, player in enumerate(players):
             stats = player['stats']
             name = formatted_names[i]
@@ -527,15 +554,19 @@ async def send_tiered_standings(interaction, league_data, league_name, tier_filt
             elif not is_bottom_tier and i >= len(players) - promotion_count:
                 marker = "v"  # relegation
 
-            lines.append(
+            rows.append(
                 f"{i+1:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>{wl_width}}  {diff_str:>4} {marker}"
             )
 
-        lines.append("```")
+        # Keep the tier label attached to its (first) code block so they stay together
+        blocks = code_blocks(header, separator, rows)
+        if blocks:
+            sections.append(f"**{tier_name}**\n{blocks[0]}")
+            sections.extend(blocks[1:])
 
-    lines.append("^ = promotion zone, v = relegation zone")
-    lines.append("\nFull standings: https://austinio7116.github.io/swissleague/display/")
-    await interaction.followup.send('\n'.join(lines))
+    sections.append("^ = promotion zone, v = relegation zone")
+    sections.append("\nFull standings: https://austinio7116.github.io/swissleague/display/")
+    await send_sections(interaction, sections)
 
 
 @tree.command(name='matches', description='Show your pending matches')
