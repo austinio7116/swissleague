@@ -1,4 +1,4 @@
-import { POINTS, ERROR_TYPES } from '../../shared/constants.js';
+import { POINTS, ERROR_TYPES, getFramesToWin } from '../../shared/constants.js';
 import { sortByStandings } from '../utils/helpers.js';
 import { LeagueError } from './storage.js';
 
@@ -198,7 +198,7 @@ export class SwissPairing {
   }
 
   static createByeMatch(player, bestOfFrames) {
-    const framesToWin = Math.ceil(bestOfFrames / 2);
+    const framesToWin = getFramesToWin(bestOfFrames);
     return {
       player1: player,
       player2: null,

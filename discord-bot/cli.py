@@ -12,6 +12,7 @@ import subprocess
 from pathlib import Path
 
 from league import (
+    allows_draws,
     find_player_by_name,
     find_pending_match,
     apply_match_result,
@@ -138,12 +139,13 @@ def format_match_preview(match_info, frame_scores, overall_frames, input_player1
             winner = display_p1['name'] if p1_score > p2_score else display_p2['name']
             lines.append(f"  Frame {i}: {p1_score}-{p2_score} ({winner})")
 
-    # Show winner
+    # Show winner (or draw)
     if display_overall[0] > display_overall[1]:
-        winner_name = display_p1['name']
+        lines.append(f"\nMatch Winner: {display_p1['name']}")
+    elif display_overall[1] > display_overall[0]:
+        lines.append(f"\nMatch Winner: {display_p2['name']}")
     else:
-        winner_name = display_p2['name']
-    lines.append(f"\nMatch Winner: {winner_name}")
+        lines.append("\nMatch Result: Draw (1 point each)")
     lines.append("=" * 60)
 
     return "\n".join(lines)
@@ -276,6 +278,7 @@ def main():
         print("\nExamples:")
         print('  python cli.py "john Vs jane 2-1 63-40 42-66 60-63"  # with frame scores')
         print('  python cli.py "john Vs jane 2-1"                     # frames only (tiered leagues)')
+        print('  python cli.py "john Vs jane 1-1"                     # best-of-2 draw (1 point each)')
         print('  python cli.py "john Vs jane forfeit john"            # john forfeits, jane wins')
         print('  python cli.py "john Vs jane double-forfeit"          # both forfeit, both lose')
         sys.exit(1)
@@ -520,19 +523,25 @@ def handle_regular_result(input_str, dev_mode):
             sys.exit(1)
     else:
         # Frames-only mode - just validate the overall score
-        frames_to_win = (best_of_frames // 2) + 1
         p1_frames, p2_frames = overall_frames
         total = p1_frames + p2_frames
 
-        if p1_frames == p2_frames:
-            print("\nError: Match cannot be a draw")
-            sys.exit(1)
-        if max(p1_frames, p2_frames) < frames_to_win:
-            print(f"\nError: Match not complete - need {frames_to_win} frames to win (best of {best_of_frames})")
-            sys.exit(1)
-        if total > best_of_frames:
-            print(f"\nError: Too many frames ({total}) for best of {best_of_frames}")
-            sys.exit(1)
+        if allows_draws(best_of_frames):
+            # Best of 2: a fixed 2 frames; 2-0, 1-1, 0-2 are all valid
+            if total != best_of_frames:
+                print(f"\nError: Best of {best_of_frames} must have exactly {best_of_frames} frames (e.g. 2-0, 1-1, 0-2)")
+                sys.exit(1)
+        else:
+            frames_to_win = (best_of_frames // 2) + 1
+            if p1_frames == p2_frames:
+                print("\nError: Match cannot be a draw")
+                sys.exit(1)
+            if max(p1_frames, p2_frames) < frames_to_win:
+                print(f"\nError: Match not complete - need {frames_to_win} frames to win (best of {best_of_frames})")
+                sys.exit(1)
+            if total > best_of_frames:
+                print(f"\nError: Too many frames ({total}) for best of {best_of_frames}")
+                sys.exit(1)
 
         # Generate synthetic frame data from overall score
         frame_scores = make_frames_from_score(p1_frames, p2_frames)

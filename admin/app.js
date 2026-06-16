@@ -16,7 +16,7 @@ import {
   readJSONFile,
   validateLeagueData
 } from './utils/helpers.js';
-import { VIEWS, ERROR_TYPES, LEAGUE_FORMATS, TRACK_FRAME_SCORES_DEFAULT, TIER_DEFAULTS } from '../shared/constants.js';
+import { VIEWS, ERROR_TYPES, LEAGUE_FORMATS, TRACK_FRAME_SCORES_DEFAULT, TIER_DEFAULTS, allowsDraws } from '../shared/constants.js';
 
 class AdminApp {
   constructor() {
@@ -186,7 +186,10 @@ class AdminApp {
     const container = document.getElementById('league-setup-content');
     if (!container) return;
 
-    const bestOfOptions = LeagueManager.getBestOfOptions();
+    const buildBestOfOptions = (format) => LeagueManager.getBestOfOptions(format)
+      .map(n => `<option value="${n}"${n === 5 ? ' selected' : ''}>${n === 2 ? 'Best of 2 (draws, 2/1/0 pts)' : `Best of ${n}`}</option>`)
+      .join('');
+    const bestOfOptionsHtml = buildBestOfOptions('swiss');
 
     let html = `
       <div class="create-league-form">
@@ -205,7 +208,7 @@ class AdminApp {
         <div class="form-group">
           <label for="best-of-frames">Best of Frames</label>
           <select id="best-of-frames" class="form-control">
-            ${bestOfOptions.map(n => `<option value="${n}"${n === 5 ? ' selected' : ''}>Best of ${n}</option>`).join('')}
+            ${bestOfOptionsHtml}
           </select>
         </div>
         <div id="swiss-config-fields">
@@ -263,10 +266,21 @@ class AdminApp {
 
     const trackFrameScoresCheckbox = document.getElementById('track-frame-scores');
 
+    const bestOfSelect = document.getElementById('best-of-frames');
+
     const toggleFormatFields = () => {
       const isTiered = formatSelect.value === LEAGUE_FORMATS.TIERED_ROUND_ROBIN;
       swissFields.style.display = isTiered ? 'none' : 'block';
       tierFields.style.display = isTiered ? 'block' : 'none';
+      // Rebuild best-of options (tiered adds the Best of 2 draw format), keeping selection if still valid
+      if (bestOfSelect) {
+        const previous = bestOfSelect.value;
+        const options = LeagueManager.getBestOfOptions(formatSelect.value);
+        bestOfSelect.innerHTML = options
+          .map(n => `<option value="${n}">${n === 2 ? 'Best of 2 (draws, 2/1/0 pts)' : `Best of ${n}`}</option>`)
+          .join('');
+        bestOfSelect.value = options.map(String).includes(previous) ? previous : '5';
+      }
       // Auto-set default based on format
       if (trackFrameScoresCheckbox) {
         trackFrameScoresCheckbox.checked = TRACK_FRAME_SCORES_DEFAULT[formatSelect.value] !== false;
@@ -470,6 +484,7 @@ class AdminApp {
                 <th>Played</th>
                 <th>Won</th>
                 <th>Lost</th>
+                ${allowsDraws(this.leagueData.league.bestOfFrames) ? '<th>Drawn</th>' : ''}
                 <th>Frames +/-</th>
                 <th>Actions</th>
               </tr>
@@ -483,6 +498,7 @@ class AdminApp {
                   <td>${player.stats.matchesPlayed}</td>
                   <td>${player.stats.matchesWon}</td>
                   <td>${player.stats.matchesLost}</td>
+                  ${allowsDraws(this.leagueData.league.bestOfFrames) ? `<td>${player.stats.matchesDrawn || 0}</td>` : ''}
                   <td>${player.stats.frameDifference > 0 ? '+' : ''}${player.stats.frameDifference}</td>
                   <td>
                     <button class="btn btn-sm btn-secondary" onclick="app.editPlayer('${player.id}')">Edit</button>
@@ -722,7 +738,7 @@ class AdminApp {
 
         <div class="match-header">
           <h3>${escapeHtml(matchData.player1.name)} vs ${escapeHtml(matchData.player2.name)}</h3>
-          <p>Best of ${this.leagueData.league.bestOfFrames} (First to ${progress.framesToWin})</p>
+          <p>Best of ${this.leagueData.league.bestOfFrames}${progress.allowsDraws ? ' (2 frames - draw possible, 2/1/0 pts)' : ` (First to ${progress.framesToWin})`}</p>
           <p class="match-score">
             <span class="player1-score">${matchData.player1.name}: ${progress.player1FramesWon}</span>
             <span class="separator">-</span>
@@ -764,7 +780,9 @@ class AdminApp {
           </div>
         `) : `
           <div class="alert alert-success">
-            <strong>Match Complete!</strong> Winner: ${escapeHtml(matchData.player1.id === matchData.winnerId ? matchData.player1.name : matchData.player2.name)}
+            <strong>Match Complete!</strong> ${matchData.winnerId
+              ? `Winner: ${escapeHtml(matchData.player1.id === matchData.winnerId ? matchData.player1.name : matchData.player2.name)}`
+              : 'Draw (1 point each)'}
           </div>
         `}
 
@@ -1055,7 +1073,7 @@ class AdminApp {
       showValidationErrors(['Frame counts must be non-negative numbers'], 'frame-errors');
       return;
     }
-    if (p1Frames === p2Frames) {
+    if (p1Frames === p2Frames && !allowsDraws(this.leagueData.league.bestOfFrames)) {
       showValidationErrors(['Match cannot be a draw - one player must win more frames'], 'frame-errors');
       return;
     }

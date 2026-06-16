@@ -1,4 +1,5 @@
 import { escapeHtml, getPlayerById } from '../utils/helpers.js';
+import { allowsDraws } from '../../shared/constants.js';
 
 export class PlayerModal {
   static leagueData = null;
@@ -82,6 +83,8 @@ export class PlayerModal {
 
     let html = '<h3>Match History</h3><div class="match-history-list">';
 
+    const winPoints = allowsDraws(this.leagueData.league.bestOfFrames) ? 2 : 1;
+
     for (const { match, roundNumber } of matches) {
       const isPlayer1 = match.player1Id === playerId;
       const opponentId = isPlayer1 ? match.player2Id : match.player1Id;
@@ -97,7 +100,7 @@ export class PlayerModal {
               <span class="match-opponent">BYE</span>
             </div>
             <div class="match-right">
-              <span class="frames-score">+1 pt</span>
+              <span class="frames-score">+${winPoints} pt${winPoints === 1 ? '' : 's'}</span>
             </div>
           </div>
         `;
@@ -110,7 +113,7 @@ export class PlayerModal {
         const isWinner = match.winnerId === playerId;
         const resultClass = isDoubleForfeit ? 'loss' : (isWinner ? 'win' : 'loss');
         const resultLabel = isDoubleForfeit ? 'DBL FF' : (isWinner ? 'FF WIN' : 'FORFEIT');
-        const pointsText = isDoubleForfeit ? '0 pts' : (isWinner ? '+1 pt' : '0 pts');
+        const pointsText = isDoubleForfeit ? '0 pts' : (isWinner ? `+${winPoints} pt${winPoints === 1 ? '' : 's'}` : '0 pts');
 
         html += `
           <div class="match-card ${resultClass} forfeit">
@@ -132,8 +135,10 @@ export class PlayerModal {
 
       const playerFrames = isPlayer1 ? match.player1FramesWon : match.player2FramesWon;
       const opponentFrames = isPlayer1 ? match.player2FramesWon : match.player1FramesWon;
+      const isDraw = !match.winnerId;
       const isWinner = match.winnerId === playerId;
-      const resultClass = isWinner ? 'win' : 'loss';
+      const resultClass = isDraw ? 'draw' : (isWinner ? 'win' : 'loss');
+      const resultLabel = isDraw ? 'DRAW' : (isWinner ? 'WIN' : 'LOSS');
 
       // Calculate snooker points for this match (only if frame scores are tracked)
       const hasFrameScores = (match.frames || []).length > 0 &&
@@ -162,7 +167,7 @@ export class PlayerModal {
         <div class="match-card ${resultClass}">
           <div class="match-left">
             <span class="match-round">Round ${roundNumber}</span>
-            <span class="result-badge ${resultClass}">${isWinner ? 'WIN' : 'LOSS'}</span>
+            <span class="result-badge ${resultClass}">${resultLabel}</span>
           </div>
           <div class="match-center">
             <span class="match-opponent">vs ${escapeHtml(opponent?.name || 'Unknown')}</span>

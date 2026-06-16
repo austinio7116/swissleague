@@ -2322,6 +2322,10 @@ button:focus-visible {
   border-left: 3px solid var(--broadcast-gold);
 }
 
+.match-history-list .match-card.draw {
+  border-left: 3px solid var(--text-tertiary);
+}
+
 /* Left section: Round & Result */
 .match-left {
   display: flex;
@@ -2359,6 +2363,11 @@ button:focus-visible {
 .match-history-list .result-badge.loss {
   background: rgba(255, 51, 102, 0.3);
   color: var(--broadcast-red);
+}
+
+.match-history-list .result-badge.draw {
+  background: rgba(160, 160, 160, 0.3);
+  color: var(--text-secondary);
 }
 
 /* Center section: Opponent & Frames */

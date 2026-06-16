@@ -1,5 +1,5 @@
 import { generateId } from '../utils/helpers.js';
-import { BEST_OF_OPTIONS, LEAGUE_FORMATS, DEFAULT_TIER_NAMES, TIER_DEFAULTS, TRACK_FRAME_SCORES_DEFAULT } from '../../shared/constants.js';
+import { BEST_OF_OPTIONS, TIERED_BEST_OF_OPTIONS, LEAGUE_FORMATS, DEFAULT_TIER_NAMES, TIER_DEFAULTS, TRACK_FRAME_SCORES_DEFAULT } from '../../shared/constants.js';
 
 export class LeagueManager {
   static createLeague(name, bestOfFrames, totalRounds, options = {}) {
@@ -197,8 +197,9 @@ export class LeagueManager {
     };
   }
 
-  static getBestOfOptions() {
-    return BEST_OF_OPTIONS;
+  static getBestOfOptions(format) {
+    // Tiered round-robin also offers Best of 2 (fixed 2 frames, draws allowed)
+    return format === LEAGUE_FORMATS.TIERED_ROUND_ROBIN ? TIERED_BEST_OF_OPTIONS : BEST_OF_OPTIONS;
   }
 
   static getRecommendedRounds(playerCount) {

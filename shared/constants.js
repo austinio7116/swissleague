@@ -24,11 +24,21 @@ export const ROUND_STATUS = {
 
 export const POINTS = {
   WIN: 1,
+  DRAW: 1,
   LOSS: 0,
   BYE: 1,
   FORFEIT_WIN: 1,
   FORFEIT_LOSS: 0,
   DOUBLE_FORFEIT: 0
+};
+
+// Best-of-2 scoring: a fixed 2-frame match that can end in a draw (1-1).
+// Win = 2 points, Draw = 1 point, Loss = 0. All other (odd) formats use 1/0.
+export const BEST_OF_2_POINTS = {
+  WIN: 2,
+  DRAW: 1,
+  LOSS: 0,
+  BYE: 2
 };
 
 export const FORFEIT_TYPE = {
@@ -52,6 +62,43 @@ export const TIER_DEFAULTS = {
 };
 
 export const BEST_OF_OPTIONS = [3, 5, 7, 9, 11];
+
+// Tiered round-robin also offers Best of 2 (fixed 2 frames, draws allowed, 2/1/0 scoring)
+export const TIERED_BEST_OF_OPTIONS = [2, 3, 5, 7, 9, 11];
+
+// A best-of-2 match plays a fixed 2 frames and may end in a draw (1-1).
+export function allowsDraws(bestOfFrames) {
+  return parseInt(bestOfFrames, 10) === 2;
+}
+
+// Frames a player must win to take the match (only meaningful for odd best-of formats).
+export function getFramesToWin(bestOfFrames) {
+  return Math.floor(parseInt(bestOfFrames, 10) / 2) + 1;
+}
+
+// Points awarded for win/draw/loss/bye, depending on the match format.
+export function getMatchPoints(bestOfFrames) {
+  return allowsDraws(bestOfFrames)
+    ? { ...BEST_OF_2_POINTS }
+    : { WIN: POINTS.WIN, DRAW: 0, LOSS: POINTS.LOSS, BYE: POINTS.BYE };
+}
+
+// Whether a match is finished given current frame wins and frames played.
+// Best-of-2: complete once both frames are played. Odd: once someone reaches frames-to-win.
+export function isMatchDecided(player1FramesWon, player2FramesWon, framesPlayed, bestOfFrames) {
+  if (allowsDraws(bestOfFrames)) {
+    return framesPlayed >= parseInt(bestOfFrames, 10);
+  }
+  const framesToWin = getFramesToWin(bestOfFrames);
+  return player1FramesWon >= framesToWin || player2FramesWon >= framesToWin;
+}
+
+// Resolve the winner of a completed match; null indicates a draw (best-of-2 only).
+export function getMatchWinnerId(player1FramesWon, player2FramesWon, player1Id, player2Id) {
+  if (player1FramesWon > player2FramesWon) return player1Id;
+  if (player2FramesWon > player1FramesWon) return player2Id;
+  return null;
+}
 
 // Whether to track individual frame point scores (e.g. 63-45) vs just frame wins
 // When false, only overall match frame score (e.g. 2-1) is recorded

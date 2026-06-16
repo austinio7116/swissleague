@@ -1,5 +1,5 @@
 import { generateId } from '../utils/helpers.js';
-import { MATCH_STATUS, ROUND_STATUS, ERROR_TYPES, LEAGUE_FORMATS } from '../../shared/constants.js';
+import { MATCH_STATUS, ROUND_STATUS, ERROR_TYPES, LEAGUE_FORMATS, getFramesToWin } from '../../shared/constants.js';
 import { SwissPairing } from './swiss-pairing.js';
 import { RoundRobinPairing } from './round-robin-pairing.js';
 import { TierManager } from './tier-manager.js';
@@ -116,7 +116,7 @@ export class RoundManager {
 
   static createMatchFromPairing(pairing, bestOfFrames) {
     if (pairing.isBye) {
-      const framesToWin = Math.ceil(bestOfFrames / 2);
+      const framesToWin = getFramesToWin(bestOfFrames);
       return {
         id: generateId(),
         player1Id: pairing.player1.id,

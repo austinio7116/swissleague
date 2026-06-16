@@ -1,6 +1,6 @@
 import { calculateStandings, escapeHtml, calculateWinRate, calculateAvgFrames, sortByTierStandings } from '../utils/helpers.js';
 import { PlayerModal } from './player-modal.js';
-import { LEAGUE_FORMATS } from '../../shared/constants.js';
+import { LEAGUE_FORMATS, allowsDraws } from '../../shared/constants.js';
 
 export class StandingsRenderer {
   static arePlayersTied(a, b) {
@@ -57,6 +57,7 @@ export class StandingsRenderer {
 
     const standings = calculateStandings(leagueData);
     const trackScores = leagueData.league.trackFrameScores !== false;
+    const showDrawn = allowsDraws(leagueData.league.bestOfFrames);
 
     if (standings.length === 0) {
       container.innerHTML = '<p class="no-data">No players in the league yet.</p>';
@@ -80,6 +81,7 @@ export class StandingsRenderer {
               <th data-sort="played">Played</th>
               <th data-sort="won">Won</th>
               <th data-sort="lost">Lost</th>
+              ${showDrawn ? '<th data-sort="drawn">Drawn</th>' : ''}
               <th data-sort="framesWon">Frames Won</th>
               <th data-sort="framesLost">Frames Lost</th>
               <th data-sort="frameDiff">Frame +/-</th>
@@ -126,8 +128,8 @@ export class StandingsRenderer {
       if (trackScores) {
         const snookerPoints = this.calculateSnookerPoints(leagueData, player.id);
         pointsCols = `
-          <td>${snookerPoints.pointsScored}</td>
-          <td>${snookerPoints.pointsConceded}</td>
+          <td class="points-scored">${snookerPoints.pointsScored}</td>
+          <td class="points-conceded">${snookerPoints.pointsConceded}</td>
           <td class="points-diff ${snookerPoints.pointsDifference >= 0 ? 'positive' : 'negative'}">
             ${snookerPoints.pointsDifference > 0 ? '+' : ''}${snookerPoints.pointsDifference}
           </td>
@@ -141,16 +143,17 @@ export class StandingsRenderer {
           <td class="points"><strong>${player.stats.points}</strong></td>
           <td class="buchholz">${buchholz}</td>
           <td class="sos">${sosPercent}%</td>
-          <td>${player.stats.matchesPlayed}</td>
+          <td class="played">${player.stats.matchesPlayed}</td>
           <td class="wins">${player.stats.matchesWon}</td>
           <td class="losses">${player.stats.matchesLost}</td>
-          <td>${player.stats.framesWon}</td>
-          <td>${player.stats.framesLost}</td>
+          ${showDrawn ? `<td class="draws">${player.stats.matchesDrawn || 0}</td>` : ''}
+          <td class="frames-won">${player.stats.framesWon}</td>
+          <td class="frames-lost">${player.stats.framesLost}</td>
           <td class="frame-diff ${player.stats.frameDifference >= 0 ? 'positive' : 'negative'}">
             ${player.stats.frameDifference > 0 ? '+' : ''}${player.stats.frameDifference}
           </td>
           ${pointsCols}
-          <td>${winRate}%</td>
+          <td class="win-rate">${winRate}%</td>
         </tr>
       `;
     });
@@ -244,8 +247,8 @@ export class StandingsRenderer {
           bVal = parseFloat(b.querySelector('.sos').textContent);
           break;
         case 'played':
-          aVal = parseInt(a.cells[5].textContent);
-          bVal = parseInt(b.cells[5].textContent);
+          aVal = parseInt(a.querySelector('.played').textContent);
+          bVal = parseInt(b.querySelector('.played').textContent);
           break;
         case 'won':
           aVal = parseInt(a.querySelector('.wins').textContent);
@@ -255,33 +258,37 @@ export class StandingsRenderer {
           aVal = parseInt(a.querySelector('.losses').textContent);
           bVal = parseInt(b.querySelector('.losses').textContent);
           break;
+        case 'drawn':
+          aVal = parseInt(a.querySelector('.draws')?.textContent || '0');
+          bVal = parseInt(b.querySelector('.draws')?.textContent || '0');
+          break;
         case 'framesWon':
-          aVal = parseInt(a.cells[8].textContent);
-          bVal = parseInt(b.cells[8].textContent);
+          aVal = parseInt(a.querySelector('.frames-won').textContent);
+          bVal = parseInt(b.querySelector('.frames-won').textContent);
           break;
         case 'framesLost':
-          aVal = parseInt(a.cells[9].textContent);
-          bVal = parseInt(b.cells[9].textContent);
+          aVal = parseInt(a.querySelector('.frames-lost').textContent);
+          bVal = parseInt(b.querySelector('.frames-lost').textContent);
           break;
         case 'frameDiff':
           aVal = parseInt(a.querySelector('.frame-diff').textContent);
           bVal = parseInt(b.querySelector('.frame-diff').textContent);
           break;
         case 'pointsScored':
-          aVal = parseInt(a.cells[11].textContent);
-          bVal = parseInt(b.cells[11].textContent);
+          aVal = parseInt(a.querySelector('.points-scored').textContent);
+          bVal = parseInt(b.querySelector('.points-scored').textContent);
           break;
         case 'pointsConceded':
-          aVal = parseInt(a.cells[12].textContent);
-          bVal = parseInt(b.cells[12].textContent);
+          aVal = parseInt(a.querySelector('.points-conceded').textContent);
+          bVal = parseInt(b.querySelector('.points-conceded').textContent);
           break;
         case 'pointsDiff':
           aVal = parseInt(a.querySelector('.points-diff').textContent);
           bVal = parseInt(b.querySelector('.points-diff').textContent);
           break;
         case 'winRate':
-          aVal = parseFloat(a.cells[14].textContent);
-          bVal = parseFloat(b.cells[14].textContent);
+          aVal = parseFloat(a.querySelector('.win-rate').textContent);
+          bVal = parseFloat(b.querySelector('.win-rate').textContent);
           break;
         default:
           return 0;
@@ -307,6 +314,7 @@ export class StandingsRenderer {
     const { tierConfig } = leagueData.league;
     const { tiers, promotionCount } = tierConfig;
     const trackScores = leagueData.league.trackFrameScores !== false;
+    const showDrawn = allowsDraws(leagueData.league.bestOfFrames);
     const tierColors = {
       'Diamond': '#b9f2ff',
       'Gold': '#ffd700',
@@ -343,6 +351,7 @@ export class StandingsRenderer {
                   <th>Played</th>
                   <th>Won</th>
                   <th>Lost</th>
+                  ${showDrawn ? '<th>Drawn</th>' : ''}
                   <th>Frames Won</th>
                   <th>Frames Lost</th>
                   <th>Frame +/-</th>
@@ -379,6 +388,7 @@ export class StandingsRenderer {
             <td>${player.stats.matchesPlayed}</td>
             <td class="wins">${player.stats.matchesWon}</td>
             <td class="losses">${player.stats.matchesLost}</td>
+            ${showDrawn ? `<td class="draws">${player.stats.matchesDrawn || 0}</td>` : ''}
             <td>${player.stats.framesWon}</td>
             <td>${player.stats.framesLost}</td>
             <td class="frame-diff ${player.stats.frameDifference >= 0 ? 'positive' : 'negative'}">

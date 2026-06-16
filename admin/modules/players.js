@@ -1,5 +1,5 @@
 import { generateId } from '../utils/helpers.js';
-import { POINTS, LEAGUE_FORMATS } from '../../shared/constants.js';
+import { POINTS, LEAGUE_FORMATS, getMatchPoints } from '../../shared/constants.js';
 
 export class PlayerManager {
   static createPlayer(name, options = {}) {
@@ -11,6 +11,7 @@ export class PlayerManager {
         matchesPlayed: 0,
         matchesWon: 0,
         matchesLost: 0,
+        matchesDrawn: 0,
         framesWon: 0,
         framesLost: 0,
         points: 0,
@@ -30,6 +31,7 @@ export class PlayerManager {
         matchesPlayed: 0,
         matchesWon: 0,
         matchesLost: 0,
+        matchesDrawn: 0,
         framesWon: 0,
         framesLost: 0,
         points: 0,
@@ -115,6 +117,7 @@ export class PlayerManager {
         matchesPlayed: 0,
         matchesWon: 0,
         matchesLost: 0,
+        matchesDrawn: 0,
         framesWon: 0,
         framesLost: 0,
         points: 0,
@@ -127,6 +130,9 @@ export class PlayerManager {
       };
       opponentMap[player.id] = [];
     }
+
+    // Points scheme depends on the match format (best-of-2 uses 2/1/0 with draws)
+    const matchPoints = getMatchPoints(leagueData.league && leagueData.league.bestOfFrames);
 
     // Pass 1: Calculate basic stats from match history
     for (const round of leagueData.rounds) {
@@ -145,7 +151,7 @@ export class PlayerManager {
           if (freshStats[player1Id]) {
             freshStats[player1Id].matchesPlayed++;
             freshStats[player1Id].matchesWon++;
-            freshStats[player1Id].points += POINTS.BYE;
+            freshStats[player1Id].points += matchPoints.BYE;
             freshStats[player1Id].byesReceived++;
           }
           // Byes are NOT added to opponentMap (excluded from SOS/Buchholz)
@@ -174,7 +180,7 @@ export class PlayerManager {
               freshStats[player1Id].matchesPlayed++;
               if (winnerId === player1Id) {
                 freshStats[player1Id].matchesWon++;
-                freshStats[player1Id].points += POINTS.WIN;
+                freshStats[player1Id].points += matchPoints.WIN;
                 freshStats[player1Id].forfeitsReceived++;
               } else {
                 freshStats[player1Id].matchesLost++;
@@ -185,7 +191,7 @@ export class PlayerManager {
               freshStats[player2Id].matchesPlayed++;
               if (winnerId === player2Id) {
                 freshStats[player2Id].matchesWon++;
-                freshStats[player2Id].points += POINTS.WIN;
+                freshStats[player2Id].points += matchPoints.WIN;
                 freshStats[player2Id].forfeitsReceived++;
               } else {
                 freshStats[player2Id].matchesLost++;
@@ -197,19 +203,24 @@ export class PlayerManager {
           continue;
         }
 
-        // Regular match - update both players
+        // Regular match - update both players.
+        // A null winnerId on a completed, non-bye, non-forfeit match is a draw (best-of-2).
+        const isDraw = !winnerId;
         if (freshStats[player1Id]) {
           freshStats[player1Id].matchesPlayed++;
           freshStats[player1Id].framesWon += match.player1FramesWon || 0;
           freshStats[player1Id].framesLost += match.player2FramesWon || 0;
           // Only actually played matches count for SOS/Buchholz
           opponentMap[player1Id].push(player2Id);
-          if (winnerId === player1Id) {
+          if (isDraw) {
+            freshStats[player1Id].matchesDrawn++;
+            freshStats[player1Id].points += matchPoints.DRAW;
+          } else if (winnerId === player1Id) {
             freshStats[player1Id].matchesWon++;
-            freshStats[player1Id].points += POINTS.WIN;
+            freshStats[player1Id].points += matchPoints.WIN;
           } else {
             freshStats[player1Id].matchesLost++;
-            freshStats[player1Id].points += POINTS.LOSS;
+            freshStats[player1Id].points += matchPoints.LOSS;
           }
         }
 
@@ -219,12 +230,15 @@ export class PlayerManager {
           freshStats[player2Id].framesLost += match.player1FramesWon || 0;
           // Only actually played matches count for SOS/Buchholz
           opponentMap[player2Id].push(player1Id);
-          if (winnerId === player2Id) {
+          if (isDraw) {
+            freshStats[player2Id].matchesDrawn++;
+            freshStats[player2Id].points += matchPoints.DRAW;
+          } else if (winnerId === player2Id) {
             freshStats[player2Id].matchesWon++;
-            freshStats[player2Id].points += POINTS.WIN;
+            freshStats[player2Id].points += matchPoints.WIN;
           } else {
             freshStats[player2Id].matchesLost++;
-            freshStats[player2Id].points += POINTS.LOSS;
+            freshStats[player2Id].points += matchPoints.LOSS;
           }
         }
       }

@@ -1,5 +1,5 @@
 import { TierManager } from './tier-manager.js';
-import { LEAGUE_FORMATS, DEFAULT_TIER_NAMES, TIER_DEFAULTS } from '../../shared/constants.js';
+import { LEAGUE_FORMATS, DEFAULT_TIER_NAMES, TIER_DEFAULTS, allowsDraws } from '../../shared/constants.js';
 import { escapeHtml, formatDate } from '../utils/helpers.js';
 
 /**
@@ -241,6 +241,8 @@ export class TieredViews {
       'Bronze': '#cd7f32'
     };
 
+    const showDrawn = allowsDraws(leagueData.league.bestOfFrames);
+
     let html = '<div class="tier-assignments" style="margin-top: 2rem;">';
     html += '<h3>Tier Assignments</h3>';
 
@@ -266,6 +268,7 @@ export class TieredViews {
                 <th>Played</th>
                 <th>Won</th>
                 <th>Lost</th>
+                ${showDrawn ? '<th>Drawn</th>' : ''}
                 <th>Frames +/-</th>
                 <th>Actions</th>
               </tr>
@@ -289,6 +292,7 @@ export class TieredViews {
                     <td>${player.stats.matchesPlayed}</td>
                     <td>${player.stats.matchesWon}</td>
                     <td>${player.stats.matchesLost}</td>
+                    ${showDrawn ? `<td>${player.stats.matchesDrawn || 0}</td>` : ''}
                     <td>${player.stats.frameDifference > 0 ? '+' : ''}${player.stats.frameDifference}</td>
                     <td>
                       <button class="btn btn-sm btn-secondary" onclick="app.editPlayer('${player.id}')">Edit</button>

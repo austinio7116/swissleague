@@ -4,8 +4,9 @@ import {
   getHeadToHead,
   escapeHtml, 
   calculateWinRate, 
-  calculateAvgFrames 
+  calculateAvgFrames
 } from '../utils/helpers.js';
+import { allowsDraws } from '../../shared/constants.js';
 
 export class StatisticsRenderer {
   static currentSort = { column: 'matchesWon', direction: 'desc' };
@@ -62,6 +63,7 @@ export class StatisticsRenderer {
 
     // Sort players
     const sortedPlayers = this.sortPlayers(players, leagueData, this.currentSort.column, this.currentSort.direction);
+    const showDrawn = allowsDraws(leagueData.league.bestOfFrames);
 
     let html = `
       <div class="player-statistics">
@@ -76,6 +78,7 @@ export class StatisticsRenderer {
                 <th data-sort="strengthOfSchedule" class="${this.currentSort.column === 'strengthOfSchedule' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('strengthOfSchedule')" title="Strength of Schedule (SOS): Shows how strong your opponents were on average. 100% = all opponents won all their matches. 0% = all opponents lost all their matches. Used as second tiebreaker.">SOS ⓘ</th>
                 <th data-sort="matchesWon" class="${this.currentSort.column === 'matchesWon' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesWon')">Wins</th>
                 <th data-sort="matchesLost" class="${this.currentSort.column === 'matchesLost' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesLost')">Losses</th>
+                ${showDrawn ? `<th data-sort="matchesDrawn" class="${this.currentSort.column === 'matchesDrawn' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesDrawn')">Draws</th>` : ''}
                 <th data-sort="matchesPlayed" class="${this.currentSort.column === 'matchesPlayed' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('matchesPlayed')">Played</th>
                 <th data-sort="winRate" class="${this.currentSort.column === 'winRate' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('winRate')">Win %</th>
                 <th data-sort="framesWon" class="${this.currentSort.column === 'framesWon' ? 'sort-' + this.currentSort.direction : ''}" onclick="displayApp.sortPlayerStats('framesWon')">Frames Won</th>
@@ -105,6 +108,7 @@ export class StatisticsRenderer {
           <td class="sos">${sosPercent}%</td>
           <td class="wins">${player.stats.matchesWon}</td>
           <td class="losses">${player.stats.matchesLost}</td>
+          ${showDrawn ? `<td class="draws">${player.stats.matchesDrawn || 0}</td>` : ''}
           <td>${player.stats.matchesPlayed}</td>
           <td>${winRate}%</td>
           <td>${player.stats.framesWon}</td>
@@ -193,7 +197,12 @@ export class StatisticsRenderer {
           aVal = a.stats.matchesLost;
           bVal = b.stats.matchesLost;
           break;
-        
+
+        case 'matchesDrawn':
+          aVal = a.stats.matchesDrawn || 0;
+          bVal = b.stats.matchesDrawn || 0;
+          break;
+
         case 'matchesPlayed':
           aVal = a.stats.matchesPlayed;
           bVal = b.stats.matchesPlayed;

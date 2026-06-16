@@ -1,4 +1,4 @@
-import { MAX_FRAME_SCORE, ERROR_TYPES } from '../../shared/constants.js';
+import { MAX_FRAME_SCORE, ERROR_TYPES, allowsDraws, getFramesToWin } from '../../shared/constants.js';
 import { LeagueError } from '../modules/storage.js';
 
 export class ScoreValidator {
@@ -45,9 +45,18 @@ export class ScoreValidator {
   }
 
   static validateMatch(match, bestOfFrames) {
-    const framesToWin = Math.ceil(bestOfFrames / 2);
     const errors = [];
-    
+
+    if (allowsDraws(bestOfFrames)) {
+      // Best-of-2: all frames are played; the only limit is the frame count
+      if (match.frames.length >= bestOfFrames) {
+        errors.push(`Cannot add more frames - best of ${bestOfFrames} limit reached`);
+      }
+      return { valid: errors.length === 0, errors };
+    }
+
+    const framesToWin = getFramesToWin(bestOfFrames);
+
     // Check if match is already decided
     if (match.player1FramesWon >= framesToWin) {
       errors.push(`Match already won by player 1 (${match.player1FramesWon} frames)`);
@@ -55,12 +64,12 @@ export class ScoreValidator {
     if (match.player2FramesWon >= framesToWin) {
       errors.push(`Match already won by player 2 (${match.player2FramesWon} frames)`);
     }
-    
+
     // Check frame count doesn't exceed best-of limit
     if (match.frames.length >= bestOfFrames) {
       errors.push(`Cannot add more frames - best of ${bestOfFrames} limit reached`);
     }
-    
+
     return {
       valid: errors.length === 0,
       errors
@@ -130,11 +139,12 @@ export class ScoreValidator {
     if (num < 1) {
       errors.push('Best of frames must be at least 1');
     }
-    
-    if (num % 2 === 0) {
-      errors.push('Best of frames must be an odd number');
+
+    // Best of 2 is a special fixed-2-frame format that allows draws; otherwise odd only
+    if (num !== 2 && num % 2 === 0) {
+      errors.push('Best of frames must be an odd number (or 2 for the draw format)');
     }
-    
+
     if (num > 21) {
       errors.push('Best of frames cannot exceed 21');
     }

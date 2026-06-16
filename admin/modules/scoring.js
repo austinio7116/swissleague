@@ -1,4 +1,4 @@
-import { MATCH_STATUS, ROUND_STATUS, ERROR_TYPES } from '../../shared/constants.js';
+import { MATCH_STATUS, ROUND_STATUS, ERROR_TYPES, allowsDraws, getFramesToWin, isMatchDecided, getMatchWinnerId } from '../../shared/constants.js';
 import { LeagueError } from './storage.js';
 import { PlayerManager } from './players.js';
 
@@ -31,10 +31,10 @@ export class ScoringManager {
       throw new LeagueError('Match is already completed', ERROR_TYPES.VALIDATION);
     }
 
-    const framesToWin = Math.ceil(leagueData.league.bestOfFrames / 2);
+    const bestOfFrames = leagueData.league.bestOfFrames;
 
-    // Check if match is already decided
-    if (match.player1FramesWon >= framesToWin || match.player2FramesWon >= framesToWin) {
+    // Check if match is already decided (best-of-2 ends once both frames are played)
+    if (isMatchDecided(match.player1FramesWon, match.player2FramesWon, match.frames.length, bestOfFrames)) {
       throw new LeagueError('Match is already decided', ERROR_TYPES.VALIDATION);
     }
 
@@ -61,14 +61,13 @@ export class ScoringManager {
       status: MATCH_STATUS.IN_PROGRESS
     };
 
-    // Check if match is now complete
-    if (updatedMatch.player1FramesWon >= framesToWin) {
+    // Check if match is now complete (draw possible in best-of-2)
+    if (isMatchDecided(updatedMatch.player1FramesWon, updatedMatch.player2FramesWon, updatedMatch.frames.length, bestOfFrames)) {
       updatedMatch.status = MATCH_STATUS.COMPLETED;
-      updatedMatch.winnerId = match.player1Id;
-      updatedMatch.completedAt = new Date().toISOString();
-    } else if (updatedMatch.player2FramesWon >= framesToWin) {
-      updatedMatch.status = MATCH_STATUS.COMPLETED;
-      updatedMatch.winnerId = match.player2Id;
+      updatedMatch.winnerId = getMatchWinnerId(
+        updatedMatch.player1FramesWon, updatedMatch.player2FramesWon,
+        match.player1Id, match.player2Id
+      );
       updatedMatch.completedAt = new Date().toISOString();
     }
 
@@ -122,28 +121,77 @@ export class ScoringManager {
     }
 
     const totalFrames = player1FramesWon + player2FramesWon;
-    const framesToWin = Math.ceil(leagueData.league.bestOfFrames / 2);
+    const bestOfFrames = leagueData.league.bestOfFrames;
 
-    if (player1FramesWon < framesToWin && player2FramesWon < framesToWin) {
-      throw new LeagueError(`Match not complete: need ${framesToWin} frames to win`, ERROR_TYPES.VALIDATION);
+    if (allowsDraws(bestOfFrames)) {
+      // Best-of-2: a fixed 2 frames are always played; 2-0, 1-1 and 0-2 are all valid
+      if (totalFrames !== bestOfFrames) {
+        throw new LeagueError(`Best of ${bestOfFrames}: exactly ${bestOfFrames} frames must be played (e.g. 2-0, 1-1, 0-2)`, ERROR_TYPES.VALIDATION);
+      }
+    } else {
+      const framesToWin = getFramesToWin(bestOfFrames);
+      if (player1FramesWon < framesToWin && player2FramesWon < framesToWin) {
+        throw new LeagueError(`Match not complete: need ${framesToWin} frames to win`, ERROR_TYPES.VALIDATION);
+      }
+      if (player1FramesWon >= framesToWin && player2FramesWon >= framesToWin) {
+        throw new LeagueError('Both players cannot reach the frames needed to win', ERROR_TYPES.VALIDATION);
+      }
+      if (totalFrames > bestOfFrames) {
+        throw new LeagueError(`Too many frames: ${totalFrames} exceeds best of ${bestOfFrames}`, ERROR_TYPES.VALIDATION);
+      }
     }
-    if (player1FramesWon >= framesToWin && player2FramesWon >= framesToWin) {
-      throw new LeagueError('Both players cannot reach the frames needed to win', ERROR_TYPES.VALIDATION);
-    }
-    if (totalFrames > leagueData.league.bestOfFrames) {
-      throw new LeagueError(`Too many frames: ${totalFrames} exceeds best of ${leagueData.league.bestOfFrames}`, ERROR_TYPES.VALIDATION);
-    }
+
+    // addFrame closes the match the instant the winner reaches the threshold, so we
+    // can't just add all of one player's frames first (the remainder would be rejected
+    // with "Match is already completed"). Order the frames so the match-deciding frame
+    // is added last.
+    const order = this.buildFrameOrder(
+      match.player1Id, match.player2Id,
+      player1FramesWon, player2FramesWon, bestOfFrames
+    );
 
     let updatedData = leagueData;
-    // Add player1's winning frames first, then player2's, then remaining in order
-    for (let i = 0; i < player1FramesWon; i++) {
-      updatedData = this.addFrameByWinner(updatedData, matchId, match.player1Id);
-    }
-    for (let i = 0; i < player2FramesWon; i++) {
-      updatedData = this.addFrameByWinner(updatedData, matchId, match.player2Id);
+    for (const winnerId of order) {
+      updatedData = this.addFrameByWinner(updatedData, matchId, winnerId);
     }
 
     return updatedData;
+  }
+
+  static buildFrameOrder(player1Id, player2Id, player1FramesWon, player2FramesWon, bestOfFrames) {
+    // Produce a sequence of frame winners such that the match is only "decided" after
+    // the final frame. Greedily prefer a frame that does not end the match early; the
+    // last remaining frame is always allowed to be the deciding one.
+    const total = player1FramesWon + player2FramesWon;
+    const order = [];
+    let p1Count = 0, p2Count = 0;
+    let p1Remaining = player1FramesWon, p2Remaining = player2FramesWon;
+
+    while (order.length < total) {
+      const isLastFrame = order.length === total - 1;
+      let chosen = null;
+
+      for (const addToP1 of [true, false]) {
+        if (addToP1 ? p1Remaining <= 0 : p2Remaining <= 0) continue;
+        const nextP1 = p1Count + (addToP1 ? 1 : 0);
+        const nextP2 = p2Count + (addToP1 ? 0 : 1);
+        if (isLastFrame || !isMatchDecided(nextP1, nextP2, nextP1 + nextP2, bestOfFrames)) {
+          chosen = addToP1 ? player1Id : player2Id;
+          if (addToP1) { p1Count++; p1Remaining--; } else { p2Count++; p2Remaining--; }
+          break;
+        }
+      }
+
+      if (chosen === null) {
+        // Fallback (should not occur for a validated result): take any remaining frame.
+        if (p1Remaining > 0) { chosen = player1Id; p1Count++; p1Remaining--; }
+        else { chosen = player2Id; p2Count++; p2Remaining--; }
+      }
+
+      order.push(chosen);
+    }
+
+    return order;
   }
 
   static updateFrame(leagueData, matchId, frameNumber, player1Score, player2Score) {
@@ -179,7 +227,7 @@ export class ScoringManager {
       else player2FramesWon++;
     }
 
-    const framesToWin = Math.ceil(leagueData.league.bestOfFrames / 2);
+    const bestOfFrames = leagueData.league.bestOfFrames;
 
     // Update match
     const updatedMatch = {
@@ -189,16 +237,10 @@ export class ScoringManager {
       player2FramesWon
     };
 
-    // Check if match status needs updating
-    if (player1FramesWon >= framesToWin) {
+    // Check if match status needs updating (draw possible in best-of-2)
+    if (isMatchDecided(player1FramesWon, player2FramesWon, updatedFrames.length, bestOfFrames)) {
       updatedMatch.status = MATCH_STATUS.COMPLETED;
-      updatedMatch.winnerId = match.player1Id;
-      if (!updatedMatch.completedAt) {
-        updatedMatch.completedAt = new Date().toISOString();
-      }
-    } else if (player2FramesWon >= framesToWin) {
-      updatedMatch.status = MATCH_STATUS.COMPLETED;
-      updatedMatch.winnerId = match.player2Id;
+      updatedMatch.winnerId = getMatchWinnerId(player1FramesWon, player2FramesWon, match.player1Id, match.player2Id);
       if (!updatedMatch.completedAt) {
         updatedMatch.completedAt = new Date().toISOString();
       }
@@ -321,14 +363,15 @@ export class ScoringManager {
   }
 
   static getMatchProgress(match, bestOfFrames) {
-    const framesToWin = Math.ceil(bestOfFrames / 2);
-    
+    const framesToWin = getFramesToWin(bestOfFrames);
+
     return {
       player1FramesWon: match.player1FramesWon,
       player2FramesWon: match.player2FramesWon,
       framesToWin,
       framesPlayed: match.frames.length,
       maxFrames: bestOfFrames,
+      allowsDraws: allowsDraws(bestOfFrames),
       isComplete: match.status === MATCH_STATUS.COMPLETED
     };
   }

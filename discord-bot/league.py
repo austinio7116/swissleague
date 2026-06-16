@@ -8,6 +8,23 @@ from datetime import datetime, timezone
 from difflib import SequenceMatcher
 
 
+def allows_draws(best_of_frames):
+    """Best of 2 is a fixed 2-frame format where a 1-1 draw is possible."""
+    return int(best_of_frames) == 2
+
+
+def frames_to_win(best_of_frames):
+    """Frames needed to win the match (only meaningful for odd best-of formats)."""
+    return (int(best_of_frames) // 2) + 1
+
+
+def get_match_points(best_of_frames):
+    """Points awarded for win/draw/loss/bye. Best-of-2 uses 2/1/0; odd formats use 1/0."""
+    if allows_draws(best_of_frames):
+        return {"win": 2, "draw": 1, "loss": 0, "bye": 2}
+    return {"win": 1, "draw": 0, "loss": 0, "bye": 1}
+
+
 def fuzzy_match_score(name1, name2):
     """Return similarity score between two names (0-1)."""
     return SequenceMatcher(None, name1.lower(), name2.lower()).ratio()
@@ -215,6 +232,10 @@ def recalculate_all_player_stats(league_data):
     """
     players = league_data.get("players", [])
 
+    # Points scheme depends on the match format (best-of-2 uses 2/1/0 with draws)
+    best_of_frames = league_data.get("league", {}).get("bestOfFrames", 3)
+    match_points = get_match_points(best_of_frames)
+
     # Initialize fresh stats for all players
     fresh_stats = {}
     opponent_map = {}  # Track opponents for each player (for SOS/Buchholz - played matches only)
@@ -225,6 +246,7 @@ def recalculate_all_player_stats(league_data):
             "matchesPlayed": 0,
             "matchesWon": 0,
             "matchesLost": 0,
+            "matchesDrawn": 0,
             "framesWon": 0,
             "framesLost": 0,
             "points": 0,
@@ -256,7 +278,7 @@ def recalculate_all_player_stats(league_data):
                 if player1_id in fresh_stats:
                     fresh_stats[player1_id]["matchesPlayed"] += 1
                     fresh_stats[player1_id]["matchesWon"] += 1
-                    fresh_stats[player1_id]["points"] += 1
+                    fresh_stats[player1_id]["points"] += match_points["bye"]
                     fresh_stats[player1_id]["byesReceived"] += 1
                 # Byes are NOT added to opponent_map (excluded from SOS/Buchholz)
                 continue
@@ -282,7 +304,7 @@ def recalculate_all_player_stats(league_data):
                         fresh_stats[player1_id]["matchesPlayed"] += 1
                         if winner_id == player1_id:
                             fresh_stats[player1_id]["matchesWon"] += 1
-                            fresh_stats[player1_id]["points"] += 1
+                            fresh_stats[player1_id]["points"] += match_points["win"]
                             fresh_stats[player1_id]["forfeitsReceived"] += 1
                         else:
                             fresh_stats[player1_id]["matchesLost"] += 1
@@ -291,7 +313,7 @@ def recalculate_all_player_stats(league_data):
                         fresh_stats[player2_id]["matchesPlayed"] += 1
                         if winner_id == player2_id:
                             fresh_stats[player2_id]["matchesWon"] += 1
-                            fresh_stats[player2_id]["points"] += 1
+                            fresh_stats[player2_id]["points"] += match_points["win"]
                             fresh_stats[player2_id]["forfeitsReceived"] += 1
                         else:
                             fresh_stats[player2_id]["matchesLost"] += 1
@@ -299,18 +321,24 @@ def recalculate_all_player_stats(league_data):
                 # Forfeits are NOT added to opponent_map (excluded from SOS/Buchholz)
                 continue
 
-            # Regular match - update both players
+            # Regular match - update both players.
+            # A null winner on a completed, non-bye, non-forfeit match is a draw (best-of-2).
+            is_draw = not winner_id
             if player1_id in fresh_stats:
                 fresh_stats[player1_id]["matchesPlayed"] += 1
                 fresh_stats[player1_id]["framesWon"] += match.get("player1FramesWon", 0)
                 fresh_stats[player1_id]["framesLost"] += match.get("player2FramesWon", 0)
                 # Only actually played matches count for SOS/Buchholz
                 opponent_map[player1_id].append(player2_id)
-                if winner_id == player1_id:
+                if is_draw:
+                    fresh_stats[player1_id]["matchesDrawn"] += 1
+                    fresh_stats[player1_id]["points"] += match_points["draw"]
+                elif winner_id == player1_id:
                     fresh_stats[player1_id]["matchesWon"] += 1
-                    fresh_stats[player1_id]["points"] += 1
+                    fresh_stats[player1_id]["points"] += match_points["win"]
                 else:
                     fresh_stats[player1_id]["matchesLost"] += 1
+                    fresh_stats[player1_id]["points"] += match_points["loss"]
 
             if player2_id in fresh_stats:
                 fresh_stats[player2_id]["matchesPlayed"] += 1
@@ -318,11 +346,15 @@ def recalculate_all_player_stats(league_data):
                 fresh_stats[player2_id]["framesLost"] += match.get("player1FramesWon", 0)
                 # Only actually played matches count for SOS/Buchholz
                 opponent_map[player2_id].append(player1_id)
-                if winner_id == player2_id:
+                if is_draw:
+                    fresh_stats[player2_id]["matchesDrawn"] += 1
+                    fresh_stats[player2_id]["points"] += match_points["draw"]
+                elif winner_id == player2_id:
                     fresh_stats[player2_id]["matchesWon"] += 1
-                    fresh_stats[player2_id]["points"] += 1
+                    fresh_stats[player2_id]["points"] += match_points["win"]
                 else:
                     fresh_stats[player2_id]["matchesLost"] += 1
+                    fresh_stats[player2_id]["points"] += match_points["loss"]
 
     # Calculate frame difference for all players
     for player_id in fresh_stats:
@@ -416,8 +448,13 @@ def apply_match_result(league_data, match, submitter_id, opponent_id, frame_scor
             frame["player2Score"] = p2_score
         frames.append(frame)
 
-    # Determine match winner
-    match_winner_id = match_p1_id if p1_frames_won > p2_frames_won else match_p2_id
+    # Determine match winner (None indicates a draw, possible in best-of-2)
+    if p1_frames_won > p2_frames_won:
+        match_winner_id = match_p1_id
+    elif p2_frames_won > p1_frames_won:
+        match_winner_id = match_p2_id
+    else:
+        match_winner_id = None
 
     # Update match
     match["frames"] = frames
@@ -624,6 +661,15 @@ def validate_match_completion(frame_scores, best_of_frames):
     """
     if not frame_scores:
         return False, "No frame scores provided"
+
+    # Best of 2: a fixed 2 frames are always played; 2-0, 1-1 and 0-2 are all valid
+    if allows_draws(best_of_frames):
+        if len(frame_scores) != best_of_frames:
+            return False, (
+                f"Best of {best_of_frames}: exactly {best_of_frames} frames must be "
+                f"played (e.g. 2-0, 1-1, 0-2), got {len(frame_scores)}."
+            )
+        return True, None
 
     frames_to_win = (best_of_frames // 2) + 1  # e.g., 2 for best-of-3, 3 for best-of-5
 

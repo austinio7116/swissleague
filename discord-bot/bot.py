@@ -17,6 +17,7 @@ import secrets
 import time
 
 from league import (
+    allows_draws,
     find_player_by_name_exact,
     find_pending_match,
     find_pending_matches_for_player,
@@ -164,7 +165,7 @@ async def resolve_opponent_to_username(guild, opponent_input):
 @tree.command(name='result', description='Submit a match result')
 @app_commands.describe(
     opponent='Your opponent (their Discord username or display name)',
-    score='Overall match score (e.g. 2-1) - required for leagues without frame tracking',
+    score='Overall match score (e.g. 2-1, or 1-1 for a best-of-2 draw) - required for leagues without frame tracking',
     frame1='Frame 1 score (your-score-opponent-score, e.g. 63-45)',
     frame2='Frame 2 score (e.g. 52-60)',
     frame3='Frame 3 score (optional, e.g. 71-38)',
@@ -297,32 +298,45 @@ async def submit_result(
 
             submitter_frames, opponent_frames = parsed_score
             total_frames = submitter_frames + opponent_frames
-            frames_to_win = (best_of_frames // 2) + 1
 
-            if submitter_frames == opponent_frames:
-                await interaction.followup.send("Match cannot be a draw - one player must win more frames.")
-                return
-            if max(submitter_frames, opponent_frames) < frames_to_win:
-                await interaction.followup.send(
-                    f"Match not complete: need {frames_to_win} frames to win (best of {best_of_frames}). "
-                    f"Score {submitter_frames}-{opponent_frames} doesn't have a winner."
-                )
-                return
-            if min(submitter_frames, opponent_frames) >= frames_to_win:
-                await interaction.followup.send(
-                    f"Invalid score: both players can't reach {frames_to_win} frames."
-                )
-                return
-            if total_frames > best_of_frames:
-                await interaction.followup.send(
-                    f"Too many frames: {total_frames} exceeds best of {best_of_frames}."
-                )
-                return
+            if allows_draws(best_of_frames):
+                # Best of 2: a fixed 2 frames; 2-0, 1-1, 0-2 are all valid
+                if total_frames != best_of_frames:
+                    await interaction.followup.send(
+                        f"Best of {best_of_frames} must have exactly {best_of_frames} frames (e.g. 2-0, 1-1, 0-2)."
+                    )
+                    return
+            else:
+                frames_to_win = (best_of_frames // 2) + 1
+                if submitter_frames == opponent_frames:
+                    await interaction.followup.send("Match cannot be a draw - one player must win more frames.")
+                    return
+                if max(submitter_frames, opponent_frames) < frames_to_win:
+                    await interaction.followup.send(
+                        f"Match not complete: need {frames_to_win} frames to win (best of {best_of_frames}). "
+                        f"Score {submitter_frames}-{opponent_frames} doesn't have a winner."
+                    )
+                    return
+                if min(submitter_frames, opponent_frames) >= frames_to_win:
+                    await interaction.followup.send(
+                        f"Invalid score: both players can't reach {frames_to_win} frames."
+                    )
+                    return
+                if total_frames > best_of_frames:
+                    await interaction.followup.send(
+                        f"Too many frames: {total_frames} exceeds best of {best_of_frames}."
+                    )
+                    return
 
             frames = make_frames_from_score(submitter_frames, opponent_frames)
             frame_summary = f"{submitter_frames}-{opponent_frames}"
 
-        winner = submitter['name'] if submitter_frames > opponent_frames else opponent_player['name']
+        if submitter_frames > opponent_frames:
+            result_text = f"{submitter['name']} wins!"
+        elif opponent_frames > submitter_frames:
+            result_text = f"{opponent_player['name']} wins!"
+        else:
+            result_text = "Draw - 1 point each"
 
         # Apply the match result (this also recalculates all stats)
         league_data = apply_match_result(
@@ -348,7 +362,7 @@ async def submit_result(
         await interaction.followup.send(
             f"**Match Result Recorded**{tier_info}\n"
             f"Round {round_num}: **{submitter['name']}** vs **{opponent_player['name']}**\n"
-            f"Result: **{submitter_frames}-{opponent_frames}** - {winner} wins!\n\n"
+            f"Result: **{submitter_frames}-{opponent_frames}** - {result_text}\n\n"
             f"Stats have been updated."
         )
 
@@ -396,6 +410,9 @@ async def standings(interaction: discord.Interaction, tier: str = None):
 async def send_swiss_standings(interaction, league_data, league_name):
     """Send Swiss format standings."""
     players = get_standings(league_data)
+    show_draws = allows_draws(league_data.get("league", {}).get("bestOfFrames", 3))
+    wl_header = "W-L-D" if show_draws else "W-L"
+    wl_width = 7 if show_draws else 5
 
     ranks = []
     current_rank = 1
@@ -415,7 +432,7 @@ async def send_swiss_standings(interaction, league_data, league_name):
 
     max_name = max(len(n) for n in formatted_names) if formatted_names else 10
 
-    header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'Frames':>7}"
+    header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {wl_header:>{wl_width}}  {'Frames':>7}"
     separator = "-" * len(header)
 
     lines = [
@@ -435,10 +452,12 @@ async def send_swiss_standings(interaction, league_data, league_name):
         )
         rank_str = f"T{rank}" if is_tied else str(rank)
         wl = f"{stats['matchesWon']}-{stats['matchesLost']}"
+        if show_draws:
+            wl += f"-{stats.get('matchesDrawn', 0)}"
         frames = f"{stats['framesWon']}-{stats['framesLost']}"
 
         lines.append(
-            f"{rank_str:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>5}  {frames:>7}"
+            f"{rank_str:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>{wl_width}}  {frames:>7}"
         )
 
     lines.append("```")
@@ -454,6 +473,9 @@ async def send_tiered_standings(interaction, league_data, league_name, tier_filt
     season = league_data.get("league", {}).get("currentSeason", 1)
 
     all_standings = get_all_tier_standings(league_data)
+    show_draws = allows_draws(league_data.get("league", {}).get("bestOfFrames", 3))
+    wl_header = "W-L-D" if show_draws else "W-L"
+    wl_width = 7 if show_draws else 5
 
     # Filter to specific tier if requested
     if tier_filter:
@@ -478,7 +500,7 @@ async def send_tiered_standings(interaction, league_data, league_name, tier_filt
         ]
         max_name = max(len(n) for n in formatted_names) if formatted_names else 10
 
-        header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {'W-L':>5}  {'F+/-':>4}"
+        header = f"{'#':<4} {'Player':<{max_name}}  {'Pts':>3}  {wl_header:>{wl_width}}  {'F+/-':>4}"
         separator = "-" * len(header)
 
         lines.append(f"**{tier_name}**")
@@ -493,6 +515,8 @@ async def send_tiered_standings(interaction, league_data, league_name, tier_filt
             stats = player['stats']
             name = formatted_names[i]
             wl = f"{stats['matchesWon']}-{stats['matchesLost']}"
+            if show_draws:
+                wl += f"-{stats.get('matchesDrawn', 0)}"
             diff = stats['frameDifference']
             diff_str = f"+{diff}" if diff > 0 else str(diff)
 
@@ -504,7 +528,7 @@ async def send_tiered_standings(interaction, league_data, league_name, tier_filt
                 marker = "v"  # relegation
 
             lines.append(
-                f"{i+1:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>5}  {diff_str:>4} {marker}"
+                f"{i+1:<4} {name:<{max_name}}  {stats['points']:>3}  {wl:>{wl_width}}  {diff_str:>4} {marker}"
             )
 
         lines.append("```")

@@ -62,11 +62,18 @@ Open `admin/index.html` or `display/index.html` directly in browser.
 ### Shared Constants (`shared/constants.js`)
 - `STORAGE_KEYS` - localStorage keys for leagues, settings, backups
 - `MAX_FRAME_SCORE` - 147 (maximum snooker break)
-- `POINTS` - WIN: 1, LOSS: 0, BYE: 1
+- `POINTS` - WIN: 1, DRAW: 1, LOSS: 0, BYE: 1
+- Helpers: `allowsDraws(bestOf)`, `getFramesToWin(bestOf)`, `getMatchPoints(bestOf)`, `isMatchDecided(...)`, `getMatchWinnerId(...)` (mirrored in `discord-bot/league.py`)
+
+### Best of 2 Format (draws)
+Tiered leagues may use **Best of 2** (`bestOfFrames === 2`): a fixed 2 frames per match that
+can end in a **draw** (1-1). Scoring is **2 pts win / 1 pt draw / 0 pts loss** (bye = 2). All
+other best-of options are odd and never draw (1 pt win / 0 loss). A draw is stored as a completed,
+non-bye, non-forfeit match with `winnerId === null` and counted in `stats.matchesDrawn`.
 
 ### Stats Calculation
 Player stats are recalculated from match history on every result submission:
-- Pass 1: matchesPlayed/Won/Lost, framesWon/Lost, points
+- Pass 1: matchesPlayed/Won/Lost/Drawn, framesWon/Lost, points (via `getMatchPoints`)
 - Pass 2: Strength of Schedule (opponent win rates), Buchholz Score (opponent points sum)
 
 ### Standings Sort Order
