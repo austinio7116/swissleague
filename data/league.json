@@ -4644,7 +4644,7 @@
         "bestOfFrames": 2,
         "trackFrameScores": false,
         "createdAt": "2026-06-16T21:34:06.671Z",
-        "updatedAt": "2026-06-20T19:47:14.029594Z",
+        "updatedAt": "2026-06-20T19:53:26.106892Z",
         "currentRound": 1,
         "totalRounds": 7,
         "currentSeason": 1,
@@ -5277,14 +5277,14 @@
           "name": "vr147snookered_85244",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
-            "matchesWon": 0,
+            "matchesPlayed": 1,
+            "matchesWon": 1,
             "matchesLost": 0,
             "matchesDrawn": 0,
-            "framesWon": 0,
+            "framesWon": 2,
             "framesLost": 0,
-            "points": 0,
-            "frameDifference": 0,
+            "points": 2,
+            "frameDifference": 2,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -5373,14 +5373,14 @@
           "name": "harmonythemoonwing",
           "active": true,
           "stats": {
-            "matchesPlayed": 0,
+            "matchesPlayed": 1,
             "matchesWon": 0,
-            "matchesLost": 0,
+            "matchesLost": 1,
             "matchesDrawn": 0,
             "framesWon": 0,
-            "framesLost": 0,
+            "framesLost": 2,
             "points": 0,
-            "frameDifference": 0,
+            "frameDifference": -2,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -5572,12 +5572,22 @@
               "id": "044ec398-ad9d-438e-a4bb-7075d95d9829",
               "player1Id": "1f3172ab-8485-4a1e-b57f-7dbb86c9897e",
               "player2Id": "4fa69abc-f5bf-4734-ac50-0d0cafe3323b",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "1f3172ab-8485-4a1e-b57f-7dbb86c9897e"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "1f3172ab-8485-4a1e-b57f-7dbb86c9897e"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "1f3172ab-8485-4a1e-b57f-7dbb86c9897e",
+              "isBye": false,
+              "completedAt": "2026-06-20T19:53:26.106873Z"
             },
             {
               "id": "1599c3bb-147e-4576-90dd-1460eba2d025",
