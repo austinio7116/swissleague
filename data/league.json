@@ -4644,7 +4644,7 @@
         "bestOfFrames": 2,
         "trackFrameScores": false,
         "createdAt": "2026-06-16T21:34:06.671Z",
-        "updatedAt": "2026-06-28T20:33:56.785714Z",
+        "updatedAt": "2026-06-28T22:19:25.294653Z",
         "currentRound": 1,
         "totalRounds": 7,
         "currentSeason": 1,
@@ -5182,13 +5182,13 @@
           "active": true,
           "stats": {
             "matchesPlayed": 1,
-            "matchesWon": 0,
-            "matchesLost": 1,
+            "matchesWon": 1,
+            "matchesLost": 0,
             "matchesDrawn": 0,
-            "framesWon": 0,
-            "framesLost": 2,
-            "points": 0,
-            "frameDifference": -2,
+            "framesWon": 2,
+            "framesLost": 0,
+            "points": 2,
+            "frameDifference": 2,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -5214,13 +5214,13 @@
           "active": true,
           "stats": {
             "matchesPlayed": 1,
-            "matchesWon": 1,
-            "matchesLost": 0,
+            "matchesWon": 0,
+            "matchesLost": 1,
             "matchesDrawn": 0,
-            "framesWon": 2,
-            "framesLost": 0,
-            "points": 2,
-            "frameDifference": 2,
+            "framesWon": 0,
+            "framesLost": 2,
+            "points": 0,
+            "frameDifference": -2,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -5614,18 +5614,18 @@
               "frames": [
                 {
                   "frameNumber": 1,
-                  "winnerId": "152369a6-4c98-4651-8a24-978f03b14ef5"
+                  "winnerId": "cd1c9f44-7ede-4735-9aa8-e29f35e451ea"
                 },
                 {
                   "frameNumber": 2,
-                  "winnerId": "152369a6-4c98-4651-8a24-978f03b14ef5"
+                  "winnerId": "cd1c9f44-7ede-4735-9aa8-e29f35e451ea"
                 }
               ],
-              "player1FramesWon": 0,
-              "player2FramesWon": 2,
-              "winnerId": "152369a6-4c98-4651-8a24-978f03b14ef5",
+              "player1FramesWon": 2,
+              "player2FramesWon": 0,
+              "winnerId": "cd1c9f44-7ede-4735-9aa8-e29f35e451ea",
               "isBye": false,
-              "completedAt": "2026-06-28T19:57:24.640745Z"
+              "completedAt": "2026-06-28T22:19:25.294634Z"
             },
             {
               "id": "e7389e14-9c1b-46d0-b0be-2360888e764f",
@@ -5782,7 +5782,7 @@
   "currentLeagueId": "9d7625ac-2cae-4b29-a664-b98a4283c52e",
   "metadata": {
     "version": "2.0",
-    "lastUpdated": "2026-06-16T21:50:24.590Z",
+    "lastUpdated": "2026-06-28T22:19:25.294723Z",
     "exportedBy": "Swiss Snooker League Admin"
   }
 }
