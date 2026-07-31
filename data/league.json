@@ -4644,7 +4644,7 @@
         "bestOfFrames": 2,
         "trackFrameScores": false,
         "createdAt": "2026-06-16T21:34:06.671Z",
-        "updatedAt": "2026-07-24T22:09:36.658639Z",
+        "updatedAt": "2026-07-31T19:39:24.191827Z",
         "currentRound": 2,
         "totalRounds": 7,
         "currentSeason": 1,
@@ -4765,14 +4765,14 @@
           "name": "austinio7116",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "matchesWon": 1,
-            "matchesLost": 0,
+            "matchesLost": 1,
             "matchesDrawn": 0,
             "framesWon": 2,
-            "framesLost": 0,
+            "framesLost": 2,
             "points": 2,
-            "frameDifference": 2,
+            "frameDifference": 0,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -4797,14 +4797,14 @@
           "name": "kin3pin",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
-            "matchesWon": 1,
+            "matchesPlayed": 2,
+            "matchesWon": 2,
             "matchesLost": 0,
             "matchesDrawn": 0,
-            "framesWon": 2,
+            "framesWon": 4,
             "framesLost": 0,
-            "points": 2,
-            "frameDifference": 2,
+            "points": 4,
+            "frameDifference": 4,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -5764,12 +5764,22 @@
               "id": "a36e69ea-af63-4730-96da-1772e44d35df",
               "player1Id": "1100b79c-e2aa-4d42-99c0-111573802510",
               "player2Id": "2a586eef-e2ad-4f00-822e-910f310ddaa4",
-              "status": "pending",
-              "frames": [],
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "2a586eef-e2ad-4f00-822e-910f310ddaa4"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "2a586eef-e2ad-4f00-822e-910f310ddaa4"
+                }
+              ],
               "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "player2FramesWon": 2,
+              "winnerId": "2a586eef-e2ad-4f00-822e-910f310ddaa4",
+              "isBye": false,
+              "completedAt": "2026-07-31T19:39:24.191800Z"
             },
             {
               "id": "9a052a6a-ae05-4200-a7ec-19830fbfae21",
