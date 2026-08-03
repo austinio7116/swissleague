@@ -4644,7 +4644,7 @@
         "bestOfFrames": 2,
         "trackFrameScores": false,
         "createdAt": "2026-06-16T21:34:06.671Z",
-        "updatedAt": "2026-07-31T19:39:24.191827Z",
+        "updatedAt": "2026-08-03T19:45:48.217870Z",
         "currentRound": 2,
         "totalRounds": 7,
         "currentSeason": 1,
@@ -5277,14 +5277,14 @@
           "name": "vr147snookered_85244",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
+            "matchesPlayed": 2,
             "matchesWon": 1,
-            "matchesLost": 0,
+            "matchesLost": 1,
             "matchesDrawn": 0,
             "framesWon": 2,
-            "framesLost": 0,
+            "framesLost": 2,
             "points": 2,
-            "frameDifference": 2,
+            "frameDifference": 0,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -5309,14 +5309,14 @@
           "name": "barnsley3000_00876",
           "active": true,
           "stats": {
-            "matchesPlayed": 1,
-            "matchesWon": 0,
+            "matchesPlayed": 2,
+            "matchesWon": 1,
             "matchesLost": 1,
             "matchesDrawn": 0,
-            "framesWon": 0,
+            "framesWon": 2,
             "framesLost": 2,
-            "points": 0,
-            "frameDifference": -2,
+            "points": 2,
+            "frameDifference": 0,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -5695,7 +5695,7 @@
         },
         {
           "roundNumber": 2,
-          "status": "pending",
+          "status": "completed",
           "matches": [
             {
               "id": "4e6fd2f7-b4c8-4234-9094-a33bafe5a191",
@@ -5932,12 +5932,22 @@
               "id": "cd2ed3f5-34d3-470b-9980-4ee36a4c4383",
               "player1Id": "1f3172ab-8485-4a1e-b57f-7dbb86c9897e",
               "player2Id": "7f7be595-dc26-4a50-86dc-f2e761e7e575",
-              "status": "pending",
-              "frames": [],
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "7f7be595-dc26-4a50-86dc-f2e761e7e575"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "7f7be595-dc26-4a50-86dc-f2e761e7e575"
+                }
+              ],
               "player1FramesWon": 0,
-              "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "player2FramesWon": 2,
+              "winnerId": "7f7be595-dc26-4a50-86dc-f2e761e7e575",
+              "isBye": false,
+              "completedAt": "2026-08-03T19:45:48.217841Z"
             }
           ],
           "generatedAt": "2026-07-05T22:23:55.287Z"
