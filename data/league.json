@@ -4644,7 +4644,7 @@
         "bestOfFrames": 2,
         "trackFrameScores": false,
         "createdAt": "2026-06-16T21:34:06.671Z",
-        "updatedAt": "2026-08-05T19:40:45.826Z",
+        "updatedAt": "2026-08-05T21:39:30.777651Z",
         "currentRound": 3,
         "totalRounds": 7,
         "currentSeason": 1,
@@ -4957,14 +4957,14 @@
           "name": "relisys196",
           "active": true,
           "stats": {
-            "matchesPlayed": 2,
-            "matchesWon": 2,
+            "matchesPlayed": 3,
+            "matchesWon": 3,
             "matchesLost": 0,
             "matchesDrawn": 0,
-            "framesWon": 4,
+            "framesWon": 6,
             "framesLost": 0,
-            "points": 4,
-            "frameDifference": 4,
+            "points": 6,
+            "frameDifference": 6,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -5053,14 +5053,14 @@
           "name": "jimmyo76",
           "active": true,
           "stats": {
-            "matchesPlayed": 2,
+            "matchesPlayed": 3,
             "matchesWon": 0,
-            "matchesLost": 0,
+            "matchesLost": 1,
             "matchesDrawn": 2,
             "framesWon": 2,
-            "framesLost": 2,
+            "framesLost": 4,
             "points": 2,
-            "frameDifference": 0,
+            "frameDifference": -2,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -6026,12 +6026,22 @@
               "id": "dd36086e-f9b1-474b-a656-06270dcd7302",
               "player1Id": "3f98d620-79c2-46d8-b1f4-a4e42f83f875",
               "player2Id": "5d888951-3c0b-403d-b303-d7fcdbd45a13",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "3f98d620-79c2-46d8-b1f4-a4e42f83f875"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "3f98d620-79c2-46d8-b1f4-a4e42f83f875"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "3f98d620-79c2-46d8-b1f4-a4e42f83f875",
+              "isBye": false,
+              "completedAt": "2026-08-05T21:39:30.777627Z"
             },
             {
               "id": "3c0e7a92-6184-4e20-8277-098277608b0e",
