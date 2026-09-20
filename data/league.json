@@ -4644,7 +4644,7 @@
         "bestOfFrames": 2,
         "trackFrameScores": false,
         "createdAt": "2026-06-16T21:34:06.671Z",
-        "updatedAt": "2026-09-18T20:40:45.314332Z",
+        "updatedAt": "2026-09-20T21:38:16.538374Z",
         "currentRound": 4,
         "totalRounds": 7,
         "currentSeason": 1,
@@ -4765,13 +4765,13 @@
           "name": "austinio7116",
           "active": true,
           "stats": {
-            "matchesPlayed": 3,
+            "matchesPlayed": 4,
             "matchesWon": 2,
             "matchesLost": 1,
-            "matchesDrawn": 0,
-            "framesWon": 2,
-            "framesLost": 2,
-            "points": 4,
+            "matchesDrawn": 1,
+            "framesWon": 3,
+            "framesLost": 3,
+            "points": 5,
             "frameDifference": 0,
             "byesReceived": 0,
             "forfeitsReceived": 1,
@@ -4893,13 +4893,13 @@
           "name": "joethe147",
           "active": true,
           "stats": {
-            "matchesPlayed": 3,
+            "matchesPlayed": 4,
             "matchesWon": 2,
             "matchesLost": 1,
-            "matchesDrawn": 0,
-            "framesWon": 4,
-            "framesLost": 2,
-            "points": 4,
+            "matchesDrawn": 1,
+            "framesWon": 5,
+            "framesLost": 3,
+            "points": 5,
             "frameDifference": 2,
             "byesReceived": 0,
             "forfeitsReceived": 0,
@@ -6243,12 +6243,22 @@
               "id": "439ce955-fe7e-4d26-8ff7-c466ea309359",
               "player1Id": "6548c3d3-73b4-497d-8de0-46927b160319",
               "player2Id": "1100b79c-e2aa-4d42-99c0-111573802510",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
-              "player2FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "1100b79c-e2aa-4d42-99c0-111573802510"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "6548c3d3-73b4-497d-8de0-46927b160319"
+                }
+              ],
+              "player1FramesWon": 1,
+              "player2FramesWon": 1,
               "winnerId": null,
-              "isBye": false
+              "isBye": false,
+              "completedAt": "2026-09-20T21:38:16.538351Z"
             },
             {
               "id": "7c76192d-2308-4f9e-8b10-7952a2586781",
