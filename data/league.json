@@ -4644,7 +4644,7 @@
         "bestOfFrames": 2,
         "trackFrameScores": false,
         "createdAt": "2026-06-16T21:34:06.671Z",
-        "updatedAt": "2026-10-11T19:28:20.223267Z",
+        "updatedAt": "2026-10-11T19:29:39.634011Z",
         "currentRound": 5,
         "totalRounds": 7,
         "currentSeason": 1,
@@ -5213,15 +5213,15 @@
           "name": "strbxz",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
-            "matchesWon": 0,
+            "matchesPlayed": 5,
+            "matchesWon": 1,
             "matchesLost": 3,
             "matchesDrawn": 1,
             "framesWon": 1,
             "framesLost": 7,
-            "points": 1,
+            "points": 3,
             "frameDifference": -6,
-            "byesReceived": 0,
+            "byesReceived": 1,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
             "strengthOfSchedule": 0,
@@ -5277,15 +5277,15 @@
           "name": "vr147snookered_85244",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
-            "matchesWon": 2,
+            "matchesPlayed": 5,
+            "matchesWon": 3,
             "matchesLost": 2,
             "matchesDrawn": 0,
             "framesWon": 2,
             "framesLost": 2,
-            "points": 4,
+            "points": 6,
             "frameDifference": 0,
-            "byesReceived": 0,
+            "byesReceived": 1,
             "forfeitsReceived": 1,
             "forfeitsGiven": 1,
             "strengthOfSchedule": 0,
@@ -5339,7 +5339,7 @@
         {
           "id": "34366f16-8852-4566-9e11-22a749c5fcd3",
           "name": "kingofdiamonds7328",
-          "active": true,
+          "active": false,
           "stats": {
             "matchesPlayed": 4,
             "matchesWon": 2,
@@ -5403,7 +5403,7 @@
         {
           "id": "8b2e3ab1-e41b-4ce3-833a-fe95337ad8ea",
           "name": "missmac74",
-          "active": true,
+          "active": false,
           "stats": {
             "matchesPlayed": 4,
             "matchesWon": 0,
@@ -6545,14 +6545,15 @@
             },
             {
               "id": "8fa8aafd-f451-45e3-9193-df78681950b9",
-              "player1Id": "34366f16-8852-4566-9e11-22a749c5fcd3",
-              "player2Id": "1f3172ab-8485-4a1e-b57f-7dbb86c9897e",
-              "status": "pending",
+              "player1Id": "1f3172ab-8485-4a1e-b57f-7dbb86c9897e",
+              "player2Id": null,
+              "status": "completed",
               "frames": [],
-              "player1FramesWon": 0,
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "1f3172ab-8485-4a1e-b57f-7dbb86c9897e",
+              "isBye": true,
+              "completedAt": "2026-10-11T19:29:39.634011Z"
             },
             {
               "id": "c4fea620-7633-41f6-aed7-48155028c50f",
@@ -6567,14 +6568,15 @@
             },
             {
               "id": "742bec62-2241-4e17-9f6e-cc24393d7c8d",
-              "player1Id": "8b2e3ab1-e41b-4ce3-833a-fe95337ad8ea",
-              "player2Id": "152369a6-4c98-4651-8a24-978f03b14ef5",
-              "status": "pending",
+              "player1Id": "152369a6-4c98-4651-8a24-978f03b14ef5",
+              "player2Id": null,
+              "status": "completed",
               "frames": [],
-              "player1FramesWon": 0,
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "152369a6-4c98-4651-8a24-978f03b14ef5",
+              "isBye": true,
+              "completedAt": "2026-10-11T19:29:39.634011Z"
             }
           ],
           "generatedAt": "2026-10-11T19:28:20.223267Z"
@@ -6810,16 +6812,8 @@
           "7f7be595-dc26-4a50-86dc-f2e761e7e575"
         ],
         [
-          "34366f16-8852-4566-9e11-22a749c5fcd3",
-          "1f3172ab-8485-4a1e-b57f-7dbb86c9897e"
-        ],
-        [
           "4fa69abc-f5bf-4734-ac50-0d0cafe3323b",
           "4812f04f-be10-4cc7-9c97-cc0c9d60bb5f"
-        ],
-        [
-          "8b2e3ab1-e41b-4ce3-833a-fe95337ad8ea",
-          "152369a6-4c98-4651-8a24-978f03b14ef5"
         ]
       ],
       "seasons": [
