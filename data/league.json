@@ -4644,7 +4644,7 @@
         "bestOfFrames": 2,
         "trackFrameScores": false,
         "createdAt": "2026-06-16T21:34:06.671Z",
-        "updatedAt": "2026-10-13T19:00:12.331839Z",
+        "updatedAt": "2026-10-16T20:03:50.912008Z",
         "currentRound": 5,
         "totalRounds": 7,
         "currentSeason": 1,
@@ -4733,14 +4733,14 @@
           "name": "oops62",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
+            "matchesPlayed": 5,
             "matchesWon": 1,
-            "matchesLost": 3,
+            "matchesLost": 4,
             "matchesDrawn": 0,
             "framesWon": 2,
-            "framesLost": 4,
+            "framesLost": 6,
             "points": 2,
-            "frameDifference": -2,
+            "frameDifference": -4,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 1,
@@ -4861,14 +4861,14 @@
           "name": "questvr111",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
-            "matchesWon": 2,
+            "matchesPlayed": 5,
+            "matchesWon": 3,
             "matchesLost": 1,
             "matchesDrawn": 1,
-            "framesWon": 5,
+            "framesWon": 7,
             "framesLost": 3,
-            "points": 5,
-            "frameDifference": 2,
+            "points": 7,
+            "frameDifference": 4,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -6470,12 +6470,22 @@
               "id": "cd4e7a3f-706f-4691-a7a0-00c87a86bd19",
               "player1Id": "7ff45fdd-0ddd-41b6-a377-f913b74bc1ab",
               "player2Id": "d3199c7a-b243-4154-8295-8ef89789981b",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "7ff45fdd-0ddd-41b6-a377-f913b74bc1ab"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "7ff45fdd-0ddd-41b6-a377-f913b74bc1ab"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "7ff45fdd-0ddd-41b6-a377-f913b74bc1ab",
+              "isBye": false,
+              "completedAt": "2026-10-16T20:03:50.911968Z"
             },
             {
               "id": "f608a375-f4a1-439b-a2b1-280de414f74b",
