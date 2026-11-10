@@ -4644,7 +4644,7 @@
         "bestOfFrames": 2,
         "trackFrameScores": false,
         "createdAt": "2026-06-16T21:34:06.671Z",
-        "updatedAt": "2026-10-26T21:34:32.914398Z",
+        "updatedAt": "2026-11-10T00:33:45.880650Z",
         "currentRound": 5,
         "totalRounds": 7,
         "currentSeason": 1,
@@ -5021,14 +5021,14 @@
           "name": "kidbrush52.",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
+            "matchesPlayed": 5,
             "matchesWon": 2,
-            "matchesLost": 1,
+            "matchesLost": 2,
             "matchesDrawn": 1,
             "framesWon": 5,
-            "framesLost": 3,
+            "framesLost": 5,
             "points": 5,
-            "frameDifference": 2,
+            "frameDifference": 0,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -5085,14 +5085,14 @@
           "name": "speddr0w",
           "active": true,
           "stats": {
-            "matchesPlayed": 4,
-            "matchesWon": 2,
+            "matchesPlayed": 5,
+            "matchesWon": 3,
             "matchesLost": 0,
             "matchesDrawn": 2,
-            "framesWon": 6,
+            "framesWon": 8,
             "framesLost": 2,
-            "points": 6,
-            "frameDifference": 4,
+            "points": 8,
+            "frameDifference": 6,
             "byesReceived": 0,
             "forfeitsReceived": 0,
             "forfeitsGiven": 0,
@@ -6523,12 +6523,22 @@
               "id": "33cb0a41-264e-4e1d-b406-bab5779281be",
               "player1Id": "4618ed05-7118-4d27-bf68-8f81517e3b7d",
               "player2Id": "cae0bfd7-d473-4632-a5c7-c08a1e99209d",
-              "status": "pending",
-              "frames": [],
-              "player1FramesWon": 0,
+              "status": "completed",
+              "frames": [
+                {
+                  "frameNumber": 1,
+                  "winnerId": "4618ed05-7118-4d27-bf68-8f81517e3b7d"
+                },
+                {
+                  "frameNumber": 2,
+                  "winnerId": "4618ed05-7118-4d27-bf68-8f81517e3b7d"
+                }
+              ],
+              "player1FramesWon": 2,
               "player2FramesWon": 0,
-              "winnerId": null,
-              "isBye": false
+              "winnerId": "4618ed05-7118-4d27-bf68-8f81517e3b7d",
+              "isBye": false,
+              "completedAt": "2026-11-10T00:33:45.880627Z"
             },
             {
               "id": "0effa655-cac2-473b-a8a4-0c96fe66568c",
